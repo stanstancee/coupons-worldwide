@@ -1,0 +1,198 @@
+"use client";
+
+import React from "react";
+import { Button } from "@/components/ui/button";
+
+import { useForm } from "react-hook-form";
+
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProfileInput } from "@/components/ui/custom-input";
+import { CustomTextarea } from "@/components/ui/custom-textarea";
+
+const About = ({ onNext }: { onNext: () => void }) => {
+  const formSchema = z.object({
+    about: z.string().min(20),
+    primary_category: z.string().min(3),
+    secondary_category: z.string().min(3),
+    linkedin: z.string().min(0),
+    twitter: z.string().min(0),
+    instagram: z.string().min(0),
+    facebook: z.string().min(0),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      about: "",
+      primary_category: "",
+      secondary_category: "",
+      linkedin: "",
+      twitter: "",
+      instagram: "",
+      facebook: "",
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    onNext();
+    console.log(data);
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-6"
+      >
+        <FormField
+          control={form.control}
+          name="about"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <CustomTextarea
+                  className="h-[268px]"
+                  label="About Company"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div>
+          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
+            Social Media Accounts
+          </h1>
+          <div className="grid grid-cols-2 gap-4 lg:gap-6">
+            <FormField
+              control={form.control}
+              name="primary_category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput label="Primary Category" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="secondary_category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput label="Sub Category" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div>
+          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
+            Social Media Accounts
+          </h1>
+          <div className="grid grid-cols-2 gap-4 lg:gap-6">
+            <FormField
+              control={form.control}
+              name="linkedin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput
+                      leftIcon="/svg/linkedin.svg"
+                      label="Linkedin"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="facebook"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput
+                      leftIcon="/svg/facebook.svg"
+                      label="Facebook"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="twitter"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput
+                      leftIcon="/svg/x.svg"
+                      label="X (twitter)"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="instagram"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput
+                      leftIcon="/svg/instagram.svg"
+                      label="Instagram"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <section className="flex justify-between gap-5 w-full mt-4">
+          <Button
+            size={"lg"}
+            variant={"outline"}
+            className="flex-1 text-primary border-primary font-bold text-base"
+            onClick={() => console.log("clicked")}
+          >
+            Return to Company Details
+          </Button>
+          <Button
+            type="submit"
+            size={"lg"}
+            className="flex-1 font-bold text-base"
+          >
+            Next
+          </Button>
+        </section>
+      </form>
+    </Form>
+  );
+};
+
+export default About;
