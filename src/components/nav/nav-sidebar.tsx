@@ -41,10 +41,15 @@ export function NavSidebar() {
 
   const pathname = usePathname();
   const getActive = (href: string) => {
-    if (href === "/dashboard" && pathname === "/dashboard") {
+    if (
+      href === "/dashboard" &&
+      pathname === "/dashboard" &&
+      !pathname.includes("/dashboard/")
+    ) {
       return true;
+    } else {
+      return pathname.startsWith(href) && href !== "/dashboard";
     }
-    return pathname.startsWith(href);
   };
 
   return (

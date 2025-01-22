@@ -1,0 +1,183 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import * as React from "react";
+import { UploadIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+import { FormField, FormControl, FormLabel, FormItem } from "../ui/form";
+import { Textarea } from "../ui/textarea";
+
+export default function CouponForm({ form }: { form: any }) {
+  const [generationType, setGenerationType] = React.useState("automated");
+  const [activationType, setActivationType] = React.useState("online");
+  const formatAmount = (value: string) => {
+    return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  return (
+    <div className="w-full space-y-8 lg:space-y-14 ">
+      <div className="shadow-grid-item bg-white p-4 lg:p-7 rounded-[12px] space-y-4 lg:space-xy-8 2xl:space-y-10">
+        <div>
+          <h3 className="text-[#1D1B23] font-semibold mb-5">
+            Coupon Generation Type
+          </h3>
+          <RadioGroup
+            defaultValue="automated"
+            onValueChange={setGenerationType}
+            className="flex gap-8 text-[#1D1B23] font-normal text-sm "
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem
+                value="automated"
+                id="automated"
+                className="text-c-orange"
+              />
+              <Label htmlFor="automated" className="font-normal">
+                System Automated Generation
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="upload" id="upload" />
+              <Label htmlFor="upload" className="font-normal">
+                Upload Coupon Data
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {generationType === "automated" ? (
+          <FormField
+            control={form.control}
+            name="number_of_coupons"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel
+                  className="text-[#1D1B23] font-semibold"
+                  htmlFor="amount"
+                  aria-required
+                >
+                  Number of Coupons to Generate
+                  <span className="text-red-500 ml-1">*</span>
+                </FormLabel>
+                <FormControl id="amount">
+                  <Input
+                    {...field}
+                    id="amount"
+                    placeholder=""
+                    className="h-[50px] w-full border-c-orange shadow-grid-item rounded-[12px] px-6 py-5 focus-visible:outline-none focus-visible:ring-c-orange active:border-c-orange max-w-[200px]"
+                    onChange={(e) =>
+                      field.onChange(formatAmount(e.target.value))
+                    }
+                    value={formatAmount(field.value)}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        ) : (
+          <div className="space-y-2">
+            <FormField
+              control={form.control}
+              name="csv_file"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <div className="flex items-center justify-between gap-1">
+                    <FormLabel
+                      className="text-[#1D1B23] font-semibold"
+                      htmlFor="csv_file"
+                      aria-required
+                    >
+                      Upload your coupon CSV file
+                      <span className="text-red-500 ml-1">*</span>
+                    </FormLabel>
+                    <span className="text-c-orange  text-xs font-semibold">
+                      Download Sample CSV
+                    </span>
+                  </div>
+                  <FormControl id="csv_file">
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        id="csv_file"
+                        placeholder="select csv file"
+                        accept=".csv"
+                        type="file"
+                        className="h-[50px] w-full shadow-grid-item rounded-[12px] px-6 py-5 pr-10  "
+                      />
+                      <UploadIcon className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+      </div>
+      <div className="shadow-grid-item bg-white p-4 lg:p-7 rounded-[12px] space-y-4 lg:space-xy-8 2xl:space-y-10">
+        <div className="pt-4">
+          <h3 className="text-[#1D1B23] font-semibold mb-5">
+            Coupon Activation Type
+          </h3>
+          <RadioGroup
+            defaultValue="online"
+            onValueChange={setActivationType}
+            className="flex gap-8 text-[#1D1B23] font-normal text-sm "
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="online" id="online" />
+              <Label htmlFor="online" className="font-normal">
+                ONLINE ACTIVATION
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="instore" id="instore" />
+              <Label htmlFor="instore" className="font-normal">
+                IN STORE ACTIVATION
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {activationType === "online" ? (
+          <FormField
+            control={form.control}
+            name="activation_url"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormControl id="activation_url">
+                  <Input
+                    {...field}
+                    id="activation_url"
+                    type="url"
+                    placeholder="www.websiteaddress.com display website address here"
+                    className="w-full shadow-grid-item rounded-[12px] px-6  h-[50px]"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        ) : (
+          <FormField
+            control={form.control}
+            name="activation_code"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormControl id="activation_code">
+                  <Textarea
+                    {...field}
+                    id="activation_code"
+                    placeholder="Display store address here"
+                    className="w-full shadow-grid-item rounded-[12px] px-6 py-5 h-[130px]"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        )}
+      </div>
+    </div>
+  );
+}

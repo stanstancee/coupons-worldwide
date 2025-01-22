@@ -41,13 +41,15 @@ export default function Pagination({
       </p>
       <div className="flex items-center gap-1">
         <Button
-          variant="outline"
-          className="h-9 w-9 px-0"
+          
+          className=""
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          <ChevronsLeft className="h-4 w-4" />
-          <span className="sr-only">Previous page</span>
+            <ChevronsLeft className="h-4 w-4" />
+            <span className="">Previous page</span>
+
+
         </Button>
         {getPageNumbers().map((pageNumber) => (
           <Button
@@ -60,13 +62,14 @@ export default function Pagination({
           </Button>
         ))}
         <Button
-          variant="outline"
-          className="h-9 w-9 px-0"
+
+          className=""
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
+           <span className="">Next page</span>
           <ChevronsRight className="h-4 w-4" />
-          <span className="sr-only">Next page</span>
+
         </Button>
       </div>
     </div>
