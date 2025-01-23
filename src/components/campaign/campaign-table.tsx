@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, ArrowUpDown, } from "lucide-react";
+import { Search, SlidersHorizontal, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -29,6 +29,7 @@ import {
 import Image from "next/image";
 import ActionDropdown from "./action";
 import Pagination from "../pagination";
+import { useRouter } from "next/navigation";
 
 export default function CampaignTable() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,8 +39,7 @@ export default function CampaignTable() {
   );
 
   const campaigns = useMemo(() => campaignService.getCampaigns(), []);
-
-
+  const router = useRouter();
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -79,16 +79,14 @@ export default function CampaignTable() {
     return num.toString();
   };
 
-    //totalItems, itemsPerPage, currentPage, onPageChange
-    const totalItems = campaigns.length;
-    const itemsPerPage = 10;
-    const [currentPage, setCurrentPage] = useState(1);
+  //totalItems, itemsPerPage, currentPage, onPageChange
+  const totalItems = campaigns.length;
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedCampaigns = filteredCampaigns.slice(startIndex, endIndex);
-
-
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedCampaigns = filteredCampaigns.slice(startIndex, endIndex);
 
   return (
     <div className="w-full  mx-auto p-4 space-y-6">
@@ -156,7 +154,13 @@ export default function CampaignTable() {
           </TableHeader>
           <TableBody>
             {paginatedCampaigns.map((campaign, index) => (
-              <TableRow key={index} className="border-none">
+              <TableRow
+                key={index}
+                className="border-none cursor-auto"
+                onClick={() =>
+                  router.push(`/dashboard/campaign/${campaign.id}`)
+                }
+              >
                 <TableCell className=" p-5 pl-6 whitespace-nowrap font-semibold">
                   {campaign.name}
                 </TableCell>

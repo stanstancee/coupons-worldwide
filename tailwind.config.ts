@@ -15,6 +15,7 @@ export default {
      'top-nav':'0px 3px 12px -1px #1C345429',
      'cards':'0px 3.47px 5.21px 0px #3E49540A',
      'grid-item': 'box-shadow: 0px 4px 6px 0px #3E49540A',
+     'btn': '0px 4px 6px 0px #3E49540A , 0px 4px 4px 0px #00000040'
 
 
 	  },
