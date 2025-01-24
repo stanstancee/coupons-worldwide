@@ -12,7 +12,7 @@ const CampaignHeaderInfo = () => {
         </article>
         <p className="text-[#717579]">Name of Campaign Here</p>
       </div>
-      <Button className="shadow-btn text-c-green bg-white hover:bg-slate-50 py-[17px] font-bold">
+      <Button className="shadow-btn text-c-green bg-white hover:bg-slate-50 py-[17px] font-bold h-[50px]">
         <svg
           width="24"
           height="24"

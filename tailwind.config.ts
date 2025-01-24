@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'subscription_bg':'url(/subscription_bg.png)',
+      } ,
       boxShadow: {
 		 'nav-bar':'0px 3px 12px -1px #1C345429' ,
      'nav-item':'0px 27.1px 67.75px 0px #0000000D' ,
@@ -20,6 +23,7 @@ export default {
 
 	  },
       colors: {
+        'c-yellow':'#FED035' ,
         'c-red':"#FD5353",
         'c-green':"#32D16D",
         'c-orange':"#FF8723",

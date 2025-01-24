@@ -1,4 +1,4 @@
-import { createLucideIcon } from "lucide-react";
+import { createLucideIcon , LucideProps } from "lucide-react";
 
 export const DashboardIcon = createLucideIcon("DashboardIcon", [
   [
@@ -23,64 +23,57 @@ export const DashboardIcon = createLucideIcon("DashboardIcon", [
 
 
 
-export const Campaign = createLucideIcon("Campaign", [
-  [
-    "path",
-    {
-      d: "M7.1288 20.5295H21.8584C24.1542 20.5295 25.3625 19.3603 25.3625 17.1388V2.99118H3.61255V17.1388C3.62463 19.3603 4.83297 20.5295 7.1288 20.5295Z",
-      stroke: "currentColor",
-      "stroke-width": "1.8125",
-      "stroke-miterlimit": "10",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-    },
-  ],
-  [
-    "path",
-    {
-      d: "M2.41699 2.99118H26.5837",
-      stroke: "currentColor",
-      "stroke-width": "1.8125",
-      "stroke-miterlimit": "10",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-    },
-  ],
-  [
-    "path",
-    {
-      d: "M9.66699 26.3756L14.5003 24.0372V20.5295",
-      stroke: "currentColor",
-      "stroke-width": "1.8125",
-      "stroke-miterlimit": "10",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-    },
-  ],
-  [
-    "path",
-    {
-      d: "M19.3331 26.3756L14.4998 24.0372",
-      stroke: "currentColor",
-      "stroke-width": "1.8125",
-      "stroke-miterlimit": "10",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-    },
-  ],
-  [
-    "path",
-    {
-      d: "M9.06226 13.5142L12.8685 10.4391C13.1706 10.1936 13.5693 10.2638 13.7747 10.5911L15.2248 12.9296C15.4302 13.257 15.8289 13.3154 16.131 13.0816L19.9373 10.0065",
-      stroke: "currentColor",
-      "stroke-width": "1.8125",
-      "stroke-miterlimit": "10",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-    },
-  ],
-]);
-
+export const CampaignIcon = (props: LucideProps) => (
+  <svg
+    width="29"
+    height="29"
+    viewBox="0 0 29 29"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M7.12856 20.5295H21.8581C24.154 20.5295 25.3623 19.3603 25.3623 17.1388V2.99118H3.6123V17.1388C3.62439 19.3603 4.83273 20.5295 7.12856 20.5295Z"
+      stroke="currentColor"
+      strokeWidth="1.8125"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M2.41699 2.99118H26.5837"
+      stroke="currentColor"
+      strokeWidth="1.8125"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9.66699 26.3756L14.5003 24.0372V20.5295"
+      stroke="currentColor"
+      strokeWidth="1.8125"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M19.3328 26.3756L14.4995 24.0372"
+      stroke="currentColor"
+      strokeWidth="1.8125"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9.06201 13.5142L12.8683 10.4391C13.1703 10.1936 13.5691 10.2638 13.7745 10.5911L15.2245 12.9296C15.4299 13.257 15.8287 13.3154 16.1308 13.0816L19.937 10.0065"
+      stroke="currentColor"
+      strokeWidth="1.8125"
+      strokeMiterlimit="10"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 
 export const Promote = createLucideIcon("Promote", [

@@ -73,7 +73,7 @@ const initialData: Coupon[] = [
 
 export default function RecentCampaigns() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [data, ] = useState<Coupon[]>(initialData);
+  const [data] = useState<Coupon[]>(initialData);
 
   const filteredData = data.filter((item) =>
     Object.values(item).some((value) =>
@@ -166,7 +166,11 @@ export default function RecentCampaigns() {
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 " />
         </div>
-        <Button variant="outline" size="lg">
+        <Button
+          variant="outline"
+          size="lg"
+          className="h-[50px] justify-between gap-4 font-medium text-[#1D1B23] "
+        >
           <svg
             width="24"
             height="24"
@@ -200,7 +204,7 @@ export default function RecentCampaigns() {
       </div>
       <div className=" border shadow-cards bg-white rounded-[10px] py-4 md:py-6">
         <Table>
-          <TableHeader className="text-left font-semibold text-[#717171] border-b ">
+          <TableHeader className="text-left font-semibold text-[#1D1B23] border-b ">
             <TableRow>
               <TableHead className=" p-5 pl-6">ID</TableHead>
               <TableHead className="p-5">Coupon Code</TableHead>
@@ -214,10 +218,18 @@ export default function RecentCampaigns() {
           <TableBody>
             {filteredData.map((row) => (
               <TableRow key={row.id}>
-                <TableCell className=" p-5 pl-6 whitespace-nowrap">{row.id}</TableCell>
-                <TableCell  className="font-medium p-5 whitespace-nowrap">{row.couponCode}</TableCell>
-                <TableCell className=" p-5 whitespace-nowrap">{row.firstName}</TableCell>
-                <TableCell className=" p-5 whitespace-nowrap">{row.lastName}</TableCell>
+                <TableCell className=" p-5 pl-6 whitespace-nowrap">
+                  {row.id}
+                </TableCell>
+                <TableCell className="font-medium p-5 whitespace-nowrap">
+                  {row.couponCode}
+                </TableCell>
+                <TableCell className=" p-5 whitespace-nowrap">
+                  {row.firstName}
+                </TableCell>
+                <TableCell className=" p-5 whitespace-nowrap">
+                  {row.lastName}
+                </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
                   {format(new Date(row.dateGrabbed), "MMM dd yyyy HH:mm")}
                 </TableCell>

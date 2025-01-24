@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 
-import { Campaign } from "@/components/icons/nav-icons";
+import { CampaignIcon } from "@/components/icons/nav-icons";
 import { usePathname } from "next/navigation";
 
 import Link from "next/link";
@@ -27,7 +27,7 @@ const navigation = [
     icon: LayoutDashboard,
     current: true,
   },
-  { name: "Campaign", href: "/dashboard/campaign", icon: Campaign },
+  { name: "Campaign", href: "/dashboard/campaign", icon: CampaignIcon },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart },
   { name: "Promote", href: "/dashboard/promote", icon: BadgeCheck },
   { name: "Team", href: "/dashboard/team", icon: Users },
@@ -89,21 +89,21 @@ export function NavSidebar() {
         <nav className="px-4 md:px-6 flex flex-col gap-3">
           {navigation.map((item, index) =>
             item.name === "Line" ? (
-              <Separator key={index} />
+              <Separator key={index} className="my-4 py-[1px]" />
             ) : (
               <Link
                 key={index}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "py-3 px-6 flex gap-2 text-[#0C0C0D] md:text-lg hover:text-[#1A2B88] hover:font-bold hover:transition-all hover:animate-out",
+                  "py-3 px-6 grid grid-cols-[2.5rem_1fr]  text-[#0C0C0D] md:text-lg hover:text-[#1A2B88] hover:font-bold hover:transition-all hover:animate-out",
                   getActive(item.href)
                     ? "font-bold text-[#1A2B88] shadow-nav-item border border-[#EFEEEB] rounded-[1rem]"
                     : ""
                 )}
               >
                 <item.icon />
-                {item.name}
+              <span>  {item.name} </span>
               </Link>
             )
           )}
