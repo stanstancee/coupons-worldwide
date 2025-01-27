@@ -11,6 +11,17 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "flagcdn.com",
+        port: "",
+        search: "",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

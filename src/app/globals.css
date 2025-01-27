@@ -91,3 +91,21 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #8d8d8d;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Ensure proper spacing in the editor */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 0;
+}
+
