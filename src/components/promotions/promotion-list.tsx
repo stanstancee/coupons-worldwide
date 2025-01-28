@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { CustomChartIcon, CustomWalletIcon } from "../icons/icons";
 import Pagination from "../pagination";
 import WalletTopUp from "./wallet-modal";
+import { PromotionForm } from "./promotion-form";
 
 interface Promotion {
   id: string;
@@ -90,6 +91,7 @@ const initialData: Promotion[] = [
 
 export default function PromotionList() {
   const [open, setOpen] = useState<boolean>(false);
+  const [openForm, setOpenForm] = useState<boolean>(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [data] = useState<Promotion[]>(initialData);
@@ -159,7 +161,7 @@ export default function PromotionList() {
           <Button
             className="h-[50px]"
             variant={"outline"}
-            onClick={() => setOpen(true)}
+            onClick={() => setOpenForm(true)}
           >
             <CustomChartIcon className="h-4 w-4 mr-2 text-c-yellow" />
             Run Promotion
@@ -233,7 +235,8 @@ export default function PromotionList() {
           onPageChange={setCurrentPage}
         />
       </div>
-        <WalletTopUp isOpen={open} setIsOpen={setOpen} />
+      <WalletTopUp isOpen={open} setIsOpen={setOpen} />
+      <PromotionForm isOpen={openForm} setIsOpen={setOpenForm} />
     </div>
   );
 }

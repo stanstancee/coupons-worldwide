@@ -62,6 +62,20 @@ export const SocialSchem = z.object({
   youtube : z.string().url("Please enter a valid URL."),
 })
 
+
+
+export const promotionSchema = z.object({
+  promotionType: z.enum(["campaign", "store"]),
+  campaignId: z.string().optional(),
+  adChannel: z.enum(["featured", "promoted", "popular"]),
+  duration: z.enum([ "7", "14", "30", "90", "180", "365"]),
+})
+
+
+
+export type PromotionFormData = z.infer<typeof promotionSchema>
+
+
 export type SocialFormValues = z.infer<typeof SocialSchem>
 
 export type CompanyFormValues = z.infer<typeof companyFormSchema>

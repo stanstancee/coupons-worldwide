@@ -1,3 +1,6 @@
+
+
+
 export function formatMessageDate(date: Date): string {
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
@@ -16,6 +19,8 @@ export function formatMessageDate(date: Date): string {
     })
   }
 }
+
+
 
 export function formatMessageTime(date: Date): string {
   const now = new Date()

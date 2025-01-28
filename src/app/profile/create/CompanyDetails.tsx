@@ -21,6 +21,7 @@ interface CompanyDetailsProps {
   onNext: () => void;
 }
 
+
 const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   const formSchema = z.object({
     name: z.string().min(3),
