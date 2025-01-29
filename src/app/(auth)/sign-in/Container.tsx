@@ -16,11 +16,18 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ForgotPasswordToggle from "./ForgotPasswordToggle";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { signInAction } from "@/actions/auth";
+import { encryptData } from "@/lib/crypto";
+import Cookies from "js-cookie";
 
 const Container = () => {
   const [staySignedIn, setStaySignedIn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { toast } = useToast();
   const formSchema = z.object({
-    email: z.string().email(),
+    login: z.string().email(),
     password: z
       .string()
       .min(6, { message: "Password must be at least 6 characters" })
@@ -30,7 +37,7 @@ const Container = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      login: "",
       password: "",
     },
   });
@@ -38,8 +45,41 @@ const Container = () => {
   const router = useRouter();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    router.push("/");
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    try {
+      setLoading(true);
+      const response = await signInAction(formData);
+
+      if (response.status) {
+        toast({
+          description: response.message,
+          variant: "default",
+        });
+        Cookies.set("token", encryptData(response.data.token));
+        Cookies.set("user", JSON.stringify(response.data.user));
+        router.push("/");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: response.message,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Something went wrong. Please try again later.",
+      });
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <div className="grid place-items-center h-full place-content-center pt-8">
@@ -56,9 +96,8 @@ const Container = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className=" grid gap-6">
             <FormField
-             
               control={form.control}
-              name="email"
+              name="login"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -85,7 +124,12 @@ const Container = () => {
               staySignedIn={staySignedIn}
               setStaySignedIn={setStaySignedIn}
             />
-            <Button className="font-bold" type="submit" size={"lg"}>
+            <Button
+              isLoading={loading}
+              className="font-bold"
+              type="submit"
+              size={"lg"}
+            >
               Submit
             </Button>
 

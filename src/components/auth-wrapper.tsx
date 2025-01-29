@@ -1,14 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import React from "react";
 import { Separator } from "./ui/separator";
+import Cookies from "js-cookie";
 
 type ResponsiveWrapperProps = {
   children: React.ReactNode;
 };
-
-
 
 const AuthWrapper: React.FC<ResponsiveWrapperProps> = ({ children }) => {
   return (
@@ -40,6 +40,11 @@ export default AuthWrapper;
 export const ProfileRegWrapper: React.FC<ResponsiveWrapperProps> = ({
   children,
 }) => {
+  let user: any = Cookies.get("user");
+  if (user) {
+    user = JSON.parse(user);
+  }
+
   return (
     <div className="min-h-screen  flex flex-col lg:flex-row">
       {/* Left Image Section */}
@@ -56,10 +61,16 @@ export const ProfileRegWrapper: React.FC<ResponsiveWrapperProps> = ({
         <div className="flex justify-end items-center p-4 md:px-5 md:py-6">
           <div className="flex gap-3 items-center">
             <Avatar className="md:h-12 md:w-12">
-              <AvatarImage src="/avatar.png" />
-              <AvatarFallback>S1</AvatarFallback>
+              <AvatarImage src={user?.profile_image} />
+              <AvatarFallback>
+                {`${user?.first_name?.charAt(0) || ""} ${
+                  user?.last_name?.charAt(0) || ""
+                }`}
+              </AvatarFallback>
             </Avatar>
-            <p className="text-sm text-[#4A4A4A]">Stanley Ifeoha</p>
+            <p className="text-sm text-[#4A4A4A]">
+              {`${user?.first_name || ""} ${user?.last_name || ""}`}
+            </p>
           </div>
         </div>
         <Separator />

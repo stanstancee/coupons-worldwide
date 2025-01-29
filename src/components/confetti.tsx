@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 'use client'
 
@@ -10,7 +11,7 @@ const Confetti: React.FC = () => {
     const duration = 5 * 1000; // 5 seconds
     const animationEnd = Date.now() + duration;
 
-    const interval = setInterval(() => {
+    const interval: any = setInterval(() => {
       if (Date.now() > animationEnd) {
         return clearInterval(interval);
       }

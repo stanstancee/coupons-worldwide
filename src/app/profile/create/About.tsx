@@ -1,34 +1,29 @@
-"use client";
+"use client"
 
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React, { useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { useForm } from "react-hook-form"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ProfileInput } from "@/components/ui/custom-input"
+import { CustomTextarea } from "@/components/ui/custom-textarea"
+import Cookies from "js-cookie"
 
-import { useForm } from "react-hook-form";
+const formSchema = z.object({
+  about: z.string().min(20),
+  primary_category: z.string().min(3),
+  secondary_category: z.string().min(3),
+  linkedin: z.string().min(0),
+  twitter: z.string().min(0),
+  instagram: z.string().min(0),
+  facebook: z.string().min(0),
+})
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ProfileInput } from "@/components/ui/custom-input";
-import { CustomTextarea } from "@/components/ui/custom-textarea";
+type FormData = z.infer<typeof formSchema>
 
 const About = ({ onNext }: { onNext: () => void }) => {
-  const formSchema = z.object({
-    about: z.string().min(20),
-    primary_category: z.string().min(3),
-    secondary_category: z.string().min(3),
-    linkedin: z.string().min(0),
-    twitter: z.string().min(0),
-    instagram: z.string().min(0),
-    facebook: z.string().min(0),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       about: "",
@@ -39,39 +34,43 @@ const About = ({ onNext }: { onNext: () => void }) => {
       instagram: "",
       facebook: "",
     },
-  });
+  })
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    onNext();
-    console.log(data);
-  };
+  useEffect(() => {
+    const cookieData = Cookies.get("aboutFormData")
+    if (cookieData) {
+      const parsedData = JSON.parse(cookieData)
+      Object.keys(parsedData).forEach((key) => {
+        form.setValue(key as keyof FormData, parsedData[key])
+      })
+    }       
+  }, [form])
+
+  const onSubmit = (data: FormData) => {
+    const values = JSON.stringify(data)
+
+    Cookies.set("aboutFormData", values , { expires: 7 }) 
+    onNext()
+    console.log(values)
+  }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
         <FormField
           control={form.control}
           name="about"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <CustomTextarea
-                  className="h-[268px]"
-                  label="About Company"
-                  {...field}
-                />
+                <CustomTextarea className="h-[268px]" label="About Company" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div>
-          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
-            Social Media Accounts
-          </h1>
+          <h1 className="text-blue1 font-bold text-sm mb-[10px]">Social Media Accounts</h1>
           <div className="grid grid-cols-2 gap-4 lg:gap-6">
             <FormField
               control={form.control}
@@ -100,9 +99,7 @@ const About = ({ onNext }: { onNext: () => void }) => {
           </div>
         </div>
         <div>
-          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
-            Social Media Accounts
-          </h1>
+          <h1 className="text-blue1 font-bold text-sm mb-[10px]">Social Media Accounts</h1>
           <div className="grid grid-cols-2 gap-4 lg:gap-6">
             <FormField
               control={form.control}
@@ -110,11 +107,7 @@ const About = ({ onNext }: { onNext: () => void }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput
-                      leftIcon="/svg/linkedin.svg"
-                      label="Linkedin"
-                      {...field}
-                    />
+                    <ProfileInput leftIcon="/svg/linkedin.svg" label="Linkedin" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -126,45 +119,31 @@ const About = ({ onNext }: { onNext: () => void }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput
-                      leftIcon="/svg/facebook.svg"
-                      label="Facebook"
-                      {...field}
-                    />
+                    <ProfileInput leftIcon="/svg/facebook.svg" label="Facebook" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="twitter"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput
-                      leftIcon="/svg/x.svg"
-                      label="X (twitter)"
-                      {...field}
-                    />
+                    <ProfileInput leftIcon="/svg/x.svg" label="X (twitter)" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="instagram"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput
-                      leftIcon="/svg/instagram.svg"
-                      label="Instagram"
-                      {...field}
-                    />
+                    <ProfileInput leftIcon="/svg/instagram.svg" label="Instagram" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -172,7 +151,6 @@ const About = ({ onNext }: { onNext: () => void }) => {
             />
           </div>
         </div>
-
         <section className="flex justify-between gap-5 w-full mt-4">
           <Button
             size={"lg"}
@@ -182,17 +160,14 @@ const About = ({ onNext }: { onNext: () => void }) => {
           >
             Return to Company Details
           </Button>
-          <Button
-            type="submit"
-            size={"lg"}
-            className="flex-1 font-bold text-base"
-          >
+          <Button type="submit" size={"lg"} className="flex-1 font-bold text-base">
             Next
           </Button>
         </section>
       </form>
     </Form>
-  );
-};
+  )
+}
 
-export default About;
+export default About
+

@@ -1,64 +1,55 @@
-"use client";
+"use client"
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { PhoneInput } from "@/components/ui/phone-input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ProfileInput } from "@/components/ui/custom-input";
-import { handleDateChange } from "@/utils/handleDateChange";
+import type React from "react"
+import { useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { PhoneInput } from "@/components/ui/phone-input"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ProfileInput } from "@/components/ui/custom-input"
+import { handleDateChange } from "@/utils/handleDateChange"
+import Cookies from "js-cookie"
+
 
 interface CompanyDetailsProps {
-  onNext: () => void;
+  onNext: () => void
 }
 
+const formSchema = z.object({
+  name: z.string().min(3),
+  size: z.string().min(1, { message: "Company size is required" }),
+  address: z.string().min(3, { message: "Company address is required" }),
+  phone: z.string().min(3, { message: "Company phone is required" }),
+  country: z.string().min(2, { message: "Company country is required" }),
+  state: z.string().min(2, { message: "Company state is required" }),
+  city: z.string().min(2, { message: "Company city is required" }),
+  date: z.string().refine(
+    (val) => {
+      const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/
+      const dateParts = val.split("/")
+      if (dateRegex.test(val) && dateParts.length === 3) {
+        const month = Number.parseInt(dateParts[0], 10)
+        const day = Number.parseInt(dateParts[1], 10)
+        const year = Number.parseInt(dateParts[2], 10)
+        const d = new Date(year, month - 1, day)
+        return d.getMonth() + 1 === month && d.getFullYear() === year && d.getDate() === day && !isNaN(d.getTime())
+      }
+      return false
+    },
+    { message: "Date must be in MM/DD/YYYY format and valid" },
+  ),
+  email: z.string().email(),
+})
+
+type FormData = z.infer<typeof formSchema>
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
-  const formSchema = z.object({
-    name: z.string().min(3),
-    size: z.string().min(1, { message: "Company size is required" }),
-    address: z.string().min(3, { message: "Company address is required" }),
-    phone: z.string().min(3, { message: "Company phone is required" }),
-    country: z.string().min(2, { message: "Company country is required" }),
-    state: z.string().min(2, { message: "Company state is required" }),
-    city: z.string().min(2, { message: "Company city is required" }),
-    //check for valid date format
-    date: z.string().refine(
-      (val) => {
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        const dateParts = val.split("/");
-        if (dateRegex.test(val) && dateParts.length === 3) {
-          const month = parseInt(dateParts[0], 10);
-          const day = parseInt(dateParts[1], 10);
-          const year = parseInt(dateParts[2], 10);
-          const d = new Date(year, month - 1, day);
-          return (
-            d.getMonth() + 1 === month &&
-            d.getFullYear() === year &&
-            d.getDate() === day &&
-            !isNaN(d.getTime())
-          );
-        }
-        return false;
-      },
-      { message: "Date must be in MM/DD/YYYY format and valid" }
-    ),
-    //
-    email: z.string().email(),
-  });
+  const router = useRouter()
 
-  const router = useRouter();
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -71,19 +62,28 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       city: "",
       date: "",
     },
-  });
+  })
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    onNext();
-    console.log(values);
-  };
+  useEffect(() => {
+    const cookieData = Cookies.get("companyDetailsFormData")
+    if (cookieData) {
+      const parsedData = JSON.parse(cookieData)
+      Object.keys(parsedData).forEach((key) => {
+        form.setValue(key as keyof FormData, parsedData[key])
+      })
+    }
+  }, [form])
+
+  const onSubmit = (values: FormData) => {
+    Cookies.set("companyDetailsFormData", JSON.stringify(values), { expires: 7 }) // Expires in 7 days
+    onNext()
+    console.log(values)
+  }
+
   return (
     <div>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <FormField
             control={form.control}
             name="name"
@@ -96,7 +96,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               </FormItem>
             )}
           />
-
+    
           <FormField
             control={form.control}
             name="size"
@@ -107,8 +107,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                     label="Company Size"
                     {...field}
                     onChange={(e) => {
-                      e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                      field.onChange(e);
+                      e.target.value = e.target.value.replace(/[^0-9]/g, "")
+                      field.onChange(e)
                     }}
                     rightIcon={"/svg/employee.svg"}
                   />
@@ -187,11 +187,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                         label="Enter Date"
                         placeholder="MM/DD/YYYY"
                         type="text"
-                        maxLength={10} // Limit input to 10 characters
+                        maxLength={10}
                         value={field.value || ""}
                         onChange={(e) => {
-                          handleDateChange(e);
-                          field.onChange(e);
+                          handleDateChange(e)
+                          field.onChange(e)
                         }}
                       />
                     </FormControl>
@@ -238,18 +238,15 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             >
               Return to onboarding
             </Button>
-            <Button
-              type="submit"
-              size={"lg"}
-              className="flex-1 font-bold text-base"
-            >
+            <Button type="submit" size={"lg"} className="flex-1 font-bold text-base">
               Next
             </Button>
           </section>
         </form>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default CompanyDetails;
+export default CompanyDetails
+
