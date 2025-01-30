@@ -109,23 +109,24 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     setCountry(form.watch("country"));
   }, [form]);
 
+  console.log(country, form.getValues("country"));
+
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
     if (addressComponents) {
-      form.setValue("address", address?.formatted_address);
       addressComponents?.forEach((component: any) => {
         if (component?.types.includes("locality")) {
           form.setValue("city", component?.long_name);
         }
         if (component.types.includes("country")) {
           form.setValue("country", component?.long_name);
+          setCountry(component?.long_name);
         }
         if (component?.types.includes("administrative_area_level_1")) {
           form.setValue("state", component?.long_name);
         }
       });
     }
-  
   };
 
   const getCountryFlag = (code: string) => {
@@ -205,26 +206,27 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                     <FormControl>
                       <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                         <SelectValue placeholder="Select country">
-                          {country || field.value && (
-                            <div className="flex items-center gap-2">
-                              <Image
-                                src={
-                                  getCountryFlag(
-                                    countries.find(
-                                      (c) =>
-                                        (c.name === field.value) ||
-                                        (c.name === country)
-                                    )?.code || ""
-                                  ) || "/placeholder.svg"
-                                }
-                                alt=""
-                                width={24}
-                                height={18}
-                                className="rounded-sm"
-                              />
-                              {field.value || country}
-                            </div>
-                          )}
+                          {country ||
+                            (field.value && (
+                              <div className="flex items-center gap-2">
+                                <Image
+                                  src={
+                                    getCountryFlag(
+                                      countries.find(
+                                        (c) =>
+                                          c.name === field.value ||
+                                          c.name === country
+                                      )?.code || ""
+                                    ) || "/placeholder.svg"
+                                  }
+                                  alt=""
+                                  width={24}
+                                  height={18}
+                                  className="rounded-sm"
+                                />
+                                {field.value || country}
+                              </div>
+                            ))}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
