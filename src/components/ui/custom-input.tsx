@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useCallback,  useRef } from "react";
+import React, { useCallback,  useRef  , useState} from "react";
 import { cn } from "@/lib/utils";
 
 import { EyeClosed, Eye } from "lucide-react";
@@ -223,14 +223,15 @@ export function ProfileInput({
   );
 }
 
-interface GoogleAddressInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  onAddressSelect: (address: any) => void;
-  placeholder?: string;
-  leftIcon?: string;
-  rightIcon?: string;
-  error?: string;
-  apiKey: string;
+
+
+interface GoogleAddressInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  onAddressSelect: (address: any) => void
+  placeholder?: string
+  leftIcon?: string
+  rightIcon?: string
+  error?: string
+  apiKey: string
 }
 
 export function GoogleAddressInput({
@@ -243,19 +244,16 @@ export function GoogleAddressInput({
   apiKey,
   ...props
 }: GoogleAddressInputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [inputValue, setInputValue] = useState("")
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
 
-  const onLoad = useCallback(
-    (autocomplete: google.maps.places.Autocomplete) => {
-      autocompleteRef.current = autocomplete;
-    },
-    []
-  );
+  const onLoad = useCallback((autocomplete: google.maps.places.Autocomplete) => {
+    autocompleteRef.current = autocomplete
+  }, [])
 
   const onPlaceChanged = useCallback(() => {
     if (autocompleteRef.current) {
-      const place = autocompleteRef.current.getPlace();
+      const place = autocompleteRef.current.getPlace()
       const address = {
         address: place?.formatted_address,
         lat:
@@ -269,12 +267,16 @@ export function GoogleAddressInput({
         url: place?.url,
         place_id: place?.place_id,
         address_components: place?.address_components,
-      };
+      }
 
-      onAddressSelect(address);
-      
+      onAddressSelect(address)
+      setInputValue(place?.formatted_address || "")
     }
-  }, [onAddressSelect]);
+  }, [onAddressSelect])
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value)
+  }
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={["places"]}>
@@ -282,42 +284,33 @@ export function GoogleAddressInput({
         <div className="relative">
           <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
             <Input
-              ref={inputRef}
               type="text"
               className={cn(
                 "flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
                 leftIcon && "pl-10",
                 rightIcon && "pr-10",
-                className
+                className,
               )}
               placeholder={placeholder}
+              value={inputValue}
+              onChange={handleInputChange}
               {...props}
             />
           </Autocomplete>
           {rightIcon && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <Image
-                src={rightIcon || "/placeholder.svg"}
-                alt="icon"
-                width={20}
-                height={20}
-              />
+              <Image src={rightIcon || "/placeholder.svg"} alt="icon" width={20} height={20} />
             </div>
           )}
           {leftIcon && (
             <div className="absolute left-3 top-1/2 -translate-y-1/2">
-              <Image
-                src={leftIcon || "/placeholder.svg"}
-                alt="icon"
-                className="w-6 h-6"
-                width={24}
-                height={24}
-              />
+              <Image src={leftIcon || "/placeholder.svg"} alt="icon" className="w-6 h-6" width={24} height={24} />
             </div>
           )}
         </div>
         {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
       </div>
     </LoadScript>
-  );
+  )
 }
+
