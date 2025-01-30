@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
 
 interface CompanyDetailsProps {
   onNext: () => void;
@@ -259,7 +260,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput label="State" {...field} />
+                    <Input className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50" placeholder="State" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -272,7 +273,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput label="City" {...field} />
+                    <Input className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50" placeholder="City" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
