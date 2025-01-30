@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import type React from "react";
-import { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -103,23 +103,21 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     console.log(values);
   };
 
-  const [selectedCountry, setSelectedCountry] = useState("");
+  const [country, setCountry] = React.useState("");
+
   useEffect(() => {
-    if (selectedCountry) {
-      form.setValue("country", selectedCountry);
-    }
-  }, [form, selectedCountry]);
+    setCountry(form.watch("country"));
+  }, [form]);
 
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
     if (addressComponents) {
-      form.setValue("address", address?.formatted_address);
       addressComponents?.forEach((component: any) => {
         if (component?.types.includes("locality")) {
           form.setValue("city", component?.long_name);
         }
         if (component.types.includes("country")) {
-          setSelectedCountry(component?.long_name);
+          form.setValue("country", component?.long_name);
         }
         if (component?.types.includes("administrative_area_level_1")) {
           form.setValue("state", component?.long_name);
@@ -183,8 +181,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                 <FormControl>
                   <GoogleAddressInput
                     onAddressSelect={handleAddressSelect}
-                    label="Enter company address"
-                    placeholder="Enter your address"
+                    placeholder="Enter company address"
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
                     {...field}
                   />
@@ -207,13 +204,15 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                     <FormControl>
                       <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                         <SelectValue placeholder="Select country">
-                          {field.value && (
+                          {country || field.value && (
                             <div className="flex items-center gap-2">
                               <Image
                                 src={
                                   getCountryFlag(
                                     countries.find(
-                                      (c) => c.name === field.value
+                                      (c) =>
+                                        (c.name === field.value) ||
+                                        (c.name === country)
                                     )?.code || ""
                                   ) || "/placeholder.svg"
                                 }
@@ -222,7 +221,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                                 height={18}
                                 className="rounded-sm"
                               />
-                              {field.value}
+                              {field.value || country}
                             </div>
                           )}
                         </SelectValue>
@@ -260,7 +259,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50" placeholder="State" {...field} />
+                    <Input
+                      className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      placeholder="State"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -273,7 +276,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50" placeholder="City" {...field} />
+                    <Input
+                      className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      placeholder="City"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

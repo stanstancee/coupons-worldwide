@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback,  useRef } from "react";
 import { cn } from "@/lib/utils";
 
 import { EyeClosed, Eye } from "lucide-react";
@@ -226,7 +226,7 @@ export function ProfileInput({
 interface GoogleAddressInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   onAddressSelect: (address: any) => void;
-  label?: string;
+  placeholder?: string;
   leftIcon?: string;
   rightIcon?: string;
   error?: string;
@@ -235,7 +235,7 @@ interface GoogleAddressInputProps
 
 export function GoogleAddressInput({
   className,
-  label,
+  placeholder,
   leftIcon,
   rightIcon,
   error,
@@ -243,9 +243,6 @@ export function GoogleAddressInput({
   apiKey,
   ...props
 }: GoogleAddressInputProps) {
-  const [inputValue, setInputValue] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-  const [hasValue, setHasValue] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -273,58 +270,26 @@ export function GoogleAddressInput({
         place_id: place?.place_id,
         address_components: place?.address_components,
       };
-      if (address) {
-        setInputValue(address?.address || "");
-        setHasValue(true);
-        onAddressSelect(address);
-      }
+
+      onAddressSelect(address);
     }
   }, [onAddressSelect]);
-
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(false);
-    setHasValue(!!e.target.value);
-  };
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={["places"]}>
       <div className="w-full">
         <div className="relative">
-          {label && (
-            <label
-              onClick={() => {
-                setIsFocused(true);
-                inputRef.current?.focus();
-              }}
-              className={cn(
-                "absolute left-6 text-xs text-[#1A4F6E]/40 transition-all duration-200 ease-in-out bg-white px-1",
-                isFocused || hasValue
-                  ? "-top-2 text-xs text-[#1A4F6E]/40  "
-                  : "top-1/2 -translate-y-1/2 ",
-                leftIcon && (!isFocused || hasValue) && "pl-5"
-              )}
-            >
-              {label}
-            </label>
-          )}
           <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
             <Input
               ref={inputRef}
               type="text"
-              value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-                setHasValue(!!e.target.value);
-              }}
               className={cn(
                 "flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
                 leftIcon && "pl-10",
                 rightIcon && "pr-10",
                 className
               )}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
+              placeholder={placeholder}
               {...props}
             />
           </Autocomplete>
