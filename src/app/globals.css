@@ -116,7 +116,7 @@ body {
   font-weight: bold;
   font-family: monospace;
   font-size: 30px;
-  background: radial-gradient(circle closest-side,#0F172A 94%,#000) right/calc(200% - 1em) 100%;
+  background: radial-gradient(circle closest-side,#0F172A 94%,#1D1B23) right/calc(200% - 1em) 100%;
   animation: l24 1s infinite alternate linear;
 }
 .custom-loader::before {
@@ -124,7 +124,7 @@ body {
   line-height: 1em;
   color: #0000;
   background: inherit;
-  background-image: radial-gradient(circle closest-side,#fff 94%,#000);
+  background-image: radial-gradient(circle closest-side,#fff 94%,#FF7D34);
   -webkit-background-clip:text;
           background-clip:text;
 }

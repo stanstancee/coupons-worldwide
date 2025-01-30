@@ -1,11 +1,12 @@
 "use client";
 
-import * as React from "react";
+import React  , {useCallback, useState , useRef} from "react";
 import { cn } from "@/lib/utils";
 
 import { EyeClosed, Eye } from "lucide-react";
 import Image from "next/image";
 import { Input } from "./input";
+import { LoadScript, Autocomplete } from "@react-google-maps/api"
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -148,6 +149,7 @@ export function ProfileInput({
   // Check if the input has a value on mount (for autofill)
   React.useEffect(() => {
     if (inputRef.current) {
+    
       setHasValue(!!inputRef.current.value);
     }
   }, []);
@@ -168,7 +170,7 @@ export function ProfileInput({
                 : "top-1/2 -translate-y-1/2 ",
               leftIcon && (!isFocused || hasValue) && "pl-5"
             )}
-          >
+          > 
             {label}
           </label>
         )}
@@ -222,3 +224,110 @@ export function ProfileInput({
     </div>
   );
 }
+
+
+
+interface GoogleAddressInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  onAddressSelect: (address: string) => void
+  label?: string
+  leftIcon?: string
+  rightIcon?: string
+  error?: string
+  apiKey: string
+}
+
+export function GoogleAddressInput({
+  className,
+  label,
+  leftIcon,
+  rightIcon,
+  error,
+  onAddressSelect,
+  apiKey,
+  ...props
+}: GoogleAddressInputProps) {
+  const [inputValue, setInputValue] = useState("")
+  const [isFocused, setIsFocused] = useState(false)
+  const [hasValue, setHasValue] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
+
+  const onLoad = useCallback((autocomplete: google.maps.places.Autocomplete) => {
+    autocompleteRef.current = autocomplete
+  }, [])
+
+  const onPlaceChanged = useCallback(() => {
+    if (autocompleteRef.current) {
+      const place = autocompleteRef.current.getPlace()
+      console.log(place)
+      const address = place.formatted_address
+      if (address) {
+        setInputValue(address)
+        setHasValue(true)
+        onAddressSelect(address)
+      }
+    }
+  }, [onAddressSelect])
+
+  const handleFocus = () => setIsFocused(true)
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setIsFocused(false)
+    setHasValue(!!e.target.value)
+  }
+
+  return (
+    <LoadScript googleMapsApiKey={apiKey} libraries={["places"]}>
+      <div className="w-full">
+        <div className="relative">
+          {label && (
+            <label
+              onClick={() => {
+                setIsFocused(true)
+                inputRef.current?.focus()
+              }}
+              className={cn(
+                "absolute left-6 text-xs text-[#1A4F6E]/40 transition-all duration-200 ease-in-out bg-white px-1",
+                isFocused || hasValue ? "-top-2 text-xs text-[#1A4F6E]/40  " : "top-1/2 -translate-y-1/2 ",
+                leftIcon && (!isFocused || hasValue) && "pl-5",
+              )}
+            >
+              {label}
+            </label>
+          )}
+          <Autocomplete onLoad={onLoad} onPlaceChanged={onPlaceChanged}>
+            <Input
+              ref={inputRef}
+              type="text"
+              value={inputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value)
+                setHasValue(!!e.target.value)
+              }}
+              className={cn(
+                "flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
+                leftIcon && "pl-10",
+                rightIcon && "pr-10",
+                className,
+              )}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              {...props}
+            />
+          </Autocomplete>
+          {rightIcon && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <Image src={rightIcon || "/placeholder.svg"} alt="icon" width={20} height={20} />
+            </div>
+          )}
+          {leftIcon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+              <Image src={leftIcon || "/placeholder.svg"} alt="icon" className="w-6 h-6" width={24} height={24} />
+            </div>
+          )}
+        </div>
+        {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      </div>
+    </LoadScript>
+  )
+}
+

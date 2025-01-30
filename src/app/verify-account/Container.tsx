@@ -62,7 +62,7 @@ const Container = ({ email }: { email: string }) => {
       setIsLoading(true);
       const res = await verifyAction({ email, otp: values.otp });
       if (res.status) {
-        router.push("/");
+        router.push("/welcome");
       } else {
         toast({
           description: res.message,
@@ -74,7 +74,6 @@ const Container = ({ email }: { email: string }) => {
       setIsLoading(false);
     }
   };
-  
 
   const onResendOTP = async () => {
     try {
@@ -162,7 +161,7 @@ const Container = ({ email }: { email: string }) => {
           </form>
         </Form>
       </div>
-      <Loading loading={loadingResendOTP} />
+      <Loading loading={isLoading} />
     </div>
   );
 };

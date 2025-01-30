@@ -1,21 +1,26 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { PhoneInput } from "@/components/ui/phone-input"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ProfileInput } from "@/components/ui/custom-input"
-import { handleDateChange } from "@/utils/handleDateChange"
-import Cookies from "js-cookie"
-
+import type React from "react";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { PhoneInput } from "@/components/ui/phone-input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProfileInput, GoogleAddressInput } from "@/components/ui/custom-input";
+import { handleDateChange } from "@/utils/handleDateChange";
+import Cookies from "js-cookie";
 
 interface CompanyDetailsProps {
-  onNext: () => void
+  onNext: () => void;
 }
 
 const formSchema = z.object({
@@ -28,26 +33,31 @@ const formSchema = z.object({
   city: z.string().min(2, { message: "Company city is required" }),
   date: z.string().refine(
     (val) => {
-      const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/
-      const dateParts = val.split("/")
+      const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+      const dateParts = val.split("/");
       if (dateRegex.test(val) && dateParts.length === 3) {
-        const month = Number.parseInt(dateParts[0], 10)
-        const day = Number.parseInt(dateParts[1], 10)
-        const year = Number.parseInt(dateParts[2], 10)
-        const d = new Date(year, month - 1, day)
-        return d.getMonth() + 1 === month && d.getFullYear() === year && d.getDate() === day && !isNaN(d.getTime())
+        const month = Number.parseInt(dateParts[0], 10);
+        const day = Number.parseInt(dateParts[1], 10);
+        const year = Number.parseInt(dateParts[2], 10);
+        const d = new Date(year, month - 1, day);
+        return (
+          d.getMonth() + 1 === month &&
+          d.getFullYear() === year &&
+          d.getDate() === day &&
+          !isNaN(d.getTime())
+        );
       }
-      return false
+      return false;
     },
-    { message: "Date must be in MM/DD/YYYY format and valid" },
+    { message: "Date must be in MM/DD/YYYY format and valid" }
   ),
   email: z.string().email(),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -62,28 +72,37 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       city: "",
       date: "",
     },
-  })
+  });
 
   useEffect(() => {
-    const cookieData = Cookies.get("companyDetailsFormData")
+    const cookieData = Cookies.get("companyDetailsFormData");
     if (cookieData) {
-      const parsedData = JSON.parse(cookieData)
+      const parsedData = JSON.parse(cookieData);
       Object.keys(parsedData).forEach((key) => {
-        form.setValue(key as keyof FormData, parsedData[key])
-      })
+        form.setValue(key as keyof FormData, parsedData[key]);
+      });
     }
-  }, [form])
+  }, [form]);
 
   const onSubmit = (values: FormData) => {
-    Cookies.set("companyDetailsFormData", JSON.stringify(values), { expires: 7 }) // Expires in 7 days
-    onNext()
-    console.log(values)
-  }
+    Cookies.set("companyDetailsFormData", JSON.stringify(values), {
+      expires: 7,
+    }); // Expires in 7 days
+    onNext();
+    console.log(values);
+  };
+
+  const handleAddressSelect = (address: string) => {
+    console.log("Selected address:", address);
+  };
 
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-6"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -96,7 +115,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               </FormItem>
             )}
           />
-    
+
           <FormField
             control={form.control}
             name="size"
@@ -107,8 +126,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                     label="Company Size"
                     {...field}
                     onChange={(e) => {
-                      e.target.value = e.target.value.replace(/[^0-9]/g, "")
-                      field.onChange(e)
+                      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(e);
                     }}
                     rightIcon={"/svg/employee.svg"}
                   />
@@ -125,7 +144,13 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <ProfileInput label="Company Street Address" {...field} />
+                  <GoogleAddressInput
+                    onAddressSelect={handleAddressSelect}
+                    label="Enter company address"
+                    placeholder="Enter your address"
+                    apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -190,8 +215,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                         maxLength={10}
                         value={field.value || ""}
                         onChange={(e) => {
-                          handleDateChange(e)
-                          field.onChange(e)
+                          handleDateChange(e);
+                          field.onChange(e);
                         }}
                       />
                     </FormControl>
@@ -238,15 +263,18 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             >
               Return to onboarding
             </Button>
-            <Button type="submit" size={"lg"} className="flex-1 font-bold text-base">
+            <Button
+              type="submit"
+              size={"lg"}
+              className="flex-1 font-bold text-base"
+            >
               Next
             </Button>
           </section>
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default CompanyDetails
-
+export default CompanyDetails;
