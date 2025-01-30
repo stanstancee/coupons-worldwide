@@ -2,7 +2,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -102,15 +102,23 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     console.log(values);
   };
 
+  const [selectedCountry, setSelectedCountry] = useState("");
+  useEffect(() => {
+    if (selectedCountry) {
+      form.setValue("country", selectedCountry);
+    }
+  }, [form, selectedCountry]);
+
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
     if (addressComponents) {
+      form.setValue("address", address?.formatted_address);
       addressComponents?.forEach((component: any) => {
         if (component?.types.includes("locality")) {
           form.setValue("city", component?.long_name);
         }
         if (component.types.includes("country")) {
-          form.setValue("country", component?.long_name);
+          setSelectedCountry(component?.long_name);
         }
         if (component?.types.includes("administrative_area_level_1")) {
           form.setValue("state", component?.long_name);
@@ -186,12 +194,15 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
           />
 
           <div className="grid xl:grid-cols-3 gap-4 ">
-          <FormField
+            <FormField
               control={form.control}
               name="country"
               render={({ field }) => (
                 <FormItem>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                         <SelectValue placeholder="Select country">
@@ -199,8 +210,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                             <div className="flex items-center gap-2">
                               <Image
                                 src={
-                                  getCountryFlag(countries.find((c) => c.name === field.value)?.code || "") ||
-                                  "/placeholder.svg"
+                                  getCountryFlag(
+                                    countries.find(
+                                      (c) => c.name === field.value
+                                    )?.code || ""
+                                  ) || "/placeholder.svg"
                                 }
                                 alt=""
                                 width={24}
@@ -218,7 +232,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                         <SelectItem key={country.code} value={country.name}>
                           <div className="flex items-center gap-2">
                             <Image
-                              src={getCountryFlag(country.code) || "/placeholder.svg" || "/placeholder.svg"}
+                              src={
+                                getCountryFlag(country.code) ||
+                                "/placeholder.svg" ||
+                                "/placeholder.svg"
+                              }
                               alt=""
                               width={24}
                               height={18}
