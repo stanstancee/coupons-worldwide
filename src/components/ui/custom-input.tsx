@@ -272,6 +272,7 @@ export function GoogleAddressInput({
       };
 
       onAddressSelect(address);
+      
     }
   }, [onAddressSelect]);
 
