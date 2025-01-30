@@ -17,7 +17,7 @@ export function TopCountries() {
               <img
                 src={`https://flagcdn.com/w40/${country.flag}.png`}
                 alt={country.name}
-                className="mr-3 h-8 w-14 rounded"
+                className="mr-3 h-8 w-8 xl:h-10 xl:w-10 rounded"
               />
               <span>{country.name}</span>
             </div>

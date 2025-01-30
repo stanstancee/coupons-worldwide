@@ -14,19 +14,19 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 
-const SelectDate = ({ form }: { form: any }) => {
+const SelectDate = ({ form  , title , name }: { form: any , title : string , name : string}) => {
   return (
     <FormField
       control={form.control}
-      name="valid-until"
+      name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel
             className="text-[#1D1B23] font-semibold"
-            htmlFor="valid-until"
+            htmlFor={name}
             aria-required
           >
-            Valid Until<span className="text-red-500 ml-1">*</span>
+            {title}<span className="text-red-500 ml-1">*</span>
           </FormLabel>
           <Popover>
             <PopoverTrigger asChild>

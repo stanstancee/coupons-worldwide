@@ -284,9 +284,11 @@ const CreateCampaignForm = () => {
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4 lg:gap-5">
+            <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
               <MinimumTransactionInput form={form} />
-              <SelectDate form={form} />
+              {/* start date */}
+              <SelectDate form={form} title="Start Date" name="start-date" />
+              <SelectDate form={form} title="Valid Until" name="valid-until" />
             </div>
           </div>
           <div className="lg:col-span-5  space-y-4 lg:space-xy-8 2xl:space-y-10">

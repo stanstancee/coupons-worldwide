@@ -6,6 +6,7 @@ import { TopCountries } from "@/components/dashboard/top-countries";
 import { CampaignTable } from "@/components/dashboard/campaign-table";
 import { PromotionStatus } from "@/components/dashboard/promotion-status";
 import WalletBalance from "@/components/dashboard/wallet-balance";
+import QRCard from "@/components/dashboard/qr-code";
 
 const DashboardContainer = () => {
   return (
@@ -28,6 +29,7 @@ const DashboardContainer = () => {
           <div className="lg:col-span-4 space-y-5">
             <WalletBalance />
             <PromotionStatus />
+            <QRCard />
           </div>
         </div>
       </div>

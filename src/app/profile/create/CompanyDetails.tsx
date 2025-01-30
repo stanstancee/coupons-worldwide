@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type React from "react";
@@ -18,6 +19,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInput, GoogleAddressInput } from "@/components/ui/custom-input";
 import { handleDateChange } from "@/utils/handleDateChange";
 import Cookies from "js-cookie";
+import { countries } from "@/lib/countries";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from "next/image";
 
 interface CompanyDetailsProps {
   onNext: () => void;
@@ -92,8 +102,26 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     console.log(values);
   };
 
-  const handleAddressSelect = (address: string) => {
+  const handleAddressSelect = (address: any) => {
+    const addressComponents = address?.address_components;
+    if (addressComponents) {
+      addressComponents?.forEach((component: any) => {
+        if (component?.types.includes("locality")) {
+          form.setValue("city", component?.long_name);
+        }
+        if (component.types.includes("country")) {
+          form.setValue("country", component?.long_name);
+        }
+        if (component?.types.includes("administrative_area_level_1")) {
+          form.setValue("state", component?.long_name);
+        }
+      });
+    }
     console.log("Selected address:", address);
+  };
+
+  const getCountryFlag = (code: string) => {
+    return `https://flagcdn.com/24x18/${code.toLowerCase()}.png`;
   };
 
   return (
@@ -158,14 +186,50 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
           />
 
           <div className="grid xl:grid-cols-3 gap-4 ">
-            <FormField
+          <FormField
               control={form.control}
               name="country"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <ProfileInput label="Country" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+                        <SelectValue placeholder="Select country">
+                          {field.value && (
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={
+                                  getCountryFlag(countries.find((c) => c.name === field.value)?.code || "") ||
+                                  "/placeholder.svg"
+                                }
+                                alt=""
+                                width={24}
+                                height={18}
+                                className="rounded-sm"
+                              />
+                              {field.value}
+                            </div>
+                          )}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {countries.map((country) => (
+                        <SelectItem key={country.code} value={country.name}>
+                          <div className="flex items-center gap-2">
+                            <Image
+                              src={getCountryFlag(country.code) || "/placeholder.svg" || "/placeholder.svg"}
+                              alt=""
+                              width={24}
+                              height={18}
+                              className="rounded-sm"
+                            />
+                            {country.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

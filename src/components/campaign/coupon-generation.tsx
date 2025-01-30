@@ -6,6 +6,13 @@ import { UploadIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { FormField, FormControl, FormLabel, FormItem } from "../ui/form";
 import { Textarea } from "../ui/textarea";
@@ -13,6 +20,7 @@ import { Textarea } from "../ui/textarea";
 export default function CouponForm({ form }: { form: any }) {
   const [generationType, setGenerationType] = React.useState("automated");
   const [activationType, setActivationType] = React.useState("online");
+  const [claimType, setClaimType] = React.useState("single");
   const formatAmount = (value: string) => {
     return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -115,7 +123,60 @@ export default function CouponForm({ form }: { form: any }) {
             />
           </div>
         )}
+
+        <div className="space-y-4">
+          <h3 className="text-[#1D1B23] font-semibold">Claim Type</h3>
+          <RadioGroup
+            defaultValue="single"
+            onValueChange={setClaimType}
+            className="flex gap-8 text-[#1D1B23] font-normal text-sm"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="single" id="single" />
+              <Label htmlFor="single" className="font-normal">
+                Single
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="multiple" id="multiple" />
+              <Label htmlFor="multiple" className="font-normal">
+                Multiple
+              </Label>
+            </div>
+          </RadioGroup>
+          {claimType === "multiple" && (
+            <FormField
+              control={form.control}
+              name="number_of_claims"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-[#1D1B23] font-semibold">
+                    Number of Claims
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[300px] h-[50px]">
+                        <SelectValue placeholder="Select number of claims" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {[2, 3, 4, 5].map((num) => (
+                        <SelectItem key={num} value={num.toString()}>
+                          {num}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
       </div>
+
       <div className="shadow-grid-item bg-white p-4 lg:p-7 rounded-[12px] space-y-4 lg:space-xy-8 2xl:space-y-10">
         <div className="pt-4">
           <h3 className="text-[#1D1B23] font-semibold mb-5">
