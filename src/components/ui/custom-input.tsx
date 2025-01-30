@@ -268,9 +268,10 @@ export function GoogleAddressInput({
         place_id: place?.place_id,
         address_components: place?.address_components,
       }
-
-      onAddressSelect(address)
+      
       setInputValue(place?.formatted_address || "")
+      onAddressSelect(address)
+    
     }
   }, [onAddressSelect])
 
@@ -291,10 +292,11 @@ export function GoogleAddressInput({
                 rightIcon && "pr-10",
                 className,
               )}
+              {...props}
               placeholder={placeholder}
               value={inputValue}
               onChange={handleInputChange}
-              {...props}
+             
             />
           </Autocomplete>
           {rightIcon && (
