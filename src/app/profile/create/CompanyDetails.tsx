@@ -112,6 +112,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
     if (addressComponents) {
+      form.setValue("address", address?.formatted_address);
       addressComponents?.forEach((component: any) => {
         if (component?.types.includes("locality")) {
           form.setValue("city", component?.long_name);
@@ -124,7 +125,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
         }
       });
     }
-    console.log("Selected address:", address);
+  
   };
 
   const getCountryFlag = (code: string) => {
@@ -210,7 +211,9 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                                 src={
                                   getCountryFlag(
                                     countries.find(
-                                      (c) => (c.name === field.value) || (c.name === country)
+                                      (c) =>
+                                        (c.name === field.value) ||
+                                        (c.name === country)
                                     )?.code || ""
                                   ) || "/placeholder.svg"
                                 }
