@@ -102,7 +102,6 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       expires: 7,
     }); // Expires in 7 days
     onNext();
-   
   };
 
   const handleAddressSelect = (address: any) => {
@@ -122,14 +121,14 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     const place_id = address?.place_id || "";
 
     const data = {
-      address,
-      addr,
+      address: addr,
       lat,
       lng,
       url,
       place_id,
     };
 
+    form.setValue("address", addr);
     form.setValue("address_json", JSON.stringify(data));
 
     if (addressComponents) {
@@ -363,7 +362,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <ProfileInput  label="Email Address" {...field} type="email" />
+                  <ProfileInput label="Email Address" {...field} type="email" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
