@@ -2,7 +2,7 @@
 "use client";
 
 import type * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -37,7 +37,7 @@ interface CompanyDetailsProps {
 const formSchema = z.object({
   name: z.string().min(3),
   size: z.string().min(1, { message: "Company size is required" }),
-  address: z.string().min(3, { message: "Company address is required" }),
+  address: z.string().optional(),
   phone: z.string().min(3, { message: "Company phone is required" }),
   country: z.string().min(2, { message: "Company country is required" }),
   state: z.string().min(2, { message: "Company state is required" }),
@@ -70,6 +70,7 @@ type FormData = z.infer<typeof formSchema>;
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   const router = useRouter();
+  const [address, setAddress] = useState<string>("");
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -77,7 +78,6 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       email: "",
       name: "",
       size: "",
-      address: "",
       phone: "",
       country: "",
       state: "",
@@ -98,7 +98,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   }, [form]);
 
   const onSubmit = (values: FormData) => {
-    Cookies.set("companyDetailsFormData", JSON.stringify(values), {
+    const data = {
+      ...values,
+      address,
+    };
+    Cookies.set("companyDetailsFormData", JSON.stringify(data), {
       expires: 7,
     }); // Expires in 7 days
     onNext();
@@ -106,30 +110,15 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
 
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
-    console.log(address);
-
-    const addr = address?.formatted_address;
-    const lat =
-      typeof address?.geometry?.location?.lat === "function"
-        ? address.geometry.location.lat()
-        : address?.geometry?.location?.lat;
-
-    const lng =
-      typeof address?.geometry?.location?.lng === "function"
-        ? address.geometry.location.lng()
-        : address?.geometry?.location?.lng;
-    const url = address?.url;
-    const place_id = address?.place_id;
 
     const data = {
-      address: addr,
-      lat,
-      lng,
-      url,
-      place_id,
+      address: address?.address,
+      lat: address?.lat,
+      lng: address?.lng,
+      url: address?.url,
+      place_id: address?.place_id,
     };
 
-    form.setValue("address", addr);
     form.setValue("address_json", JSON.stringify(data));
 
     if (addressComponents) {
@@ -209,6 +198,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               <FormItem>
                 <FormControl>
                   <GoogleAddressInput
+                    inputValue={address}
+                    setInputValue={setAddress}
                     onAddressSelect={handleAddressSelect}
                     placeholder="Enter company address"
                     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}

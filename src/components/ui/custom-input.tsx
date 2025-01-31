@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useCallback,  useRef  , useState} from "react";
+import React, { useCallback,  useRef } from "react";
 import { cn } from "@/lib/utils";
 
 import { EyeClosed, Eye } from "lucide-react";
@@ -232,6 +232,8 @@ interface GoogleAddressInputProps extends React.InputHTMLAttributes<HTMLInputEle
   rightIcon?: string
   error?: string
   apiKey: string
+  inputValue: string
+  setInputValue: (value: string) => void
 }
 
 export function GoogleAddressInput({
@@ -242,9 +244,11 @@ export function GoogleAddressInput({
   error,
   onAddressSelect,
   apiKey,
+  inputValue,
+  setInputValue,
   ...props
 }: GoogleAddressInputProps) {
-  const [inputValue, setInputValue] = useState("")
+  
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null)
 
   const onLoad = useCallback((autocomplete: google.maps.places.Autocomplete) => {
