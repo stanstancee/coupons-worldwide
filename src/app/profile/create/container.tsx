@@ -20,10 +20,10 @@ const Container = () => {
         <CompanyDetails onNext={() => setActiveTab("about")} />
       </TabsContent>
       <TabsContent value="about">
-        <About onNext={() => setActiveTab("logo")} />
+        <About setActiveTab={setActiveTab} />
       </TabsContent>
       <TabsContent value="logo">
-        <Uploads onNext={() => setActiveTab("details")} />
+        <Uploads setActiveTab={setActiveTab} />
       </TabsContent>
     </Tabs>
   );

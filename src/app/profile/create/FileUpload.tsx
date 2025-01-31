@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -8,11 +9,17 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { CircleCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { uploadFilesAction } from "@/actions/onboarding";
+import Cookies from "js-cookie";
+import { useToast } from "@/hooks/use-toast";
 
-const FileUpload = () => {
+
+const FileUpload = ({ setActiveTab }: { setActiveTab: any }) => {
   const [logo, setLogo] = useState<File | null>(null);
   const [workplaceImages, setWorkplaceImages] = useState<File[]>([]);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   // Handle logo upload
   const handleLogoDrop = (acceptedFiles: File[]) => {
@@ -73,6 +80,42 @@ const FileUpload = () => {
     onDrop: handleImagesDrop,
     accept: { "image/*": [] },
   });
+
+  const onSubmit = async () => {
+    const formData = new FormData();
+    const business_uid = Cookies.get("business_uid");
+
+    formData.append("business_uid", business_uid as string);
+    formData.append("logo", logo as File);
+
+    workplaceImages.forEach((image, index) => {
+      formData.append(`media[${index}]`, image as File);
+    });
+
+    try {
+      setLoading(true);
+      const res = await uploadFilesAction(formData);
+      if (res.status) {
+        toast({
+          description: res.message,
+          title: "Success",
+        });
+        router.push("/");
+      } else {
+        toast({
+          description: res.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        description: error?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-10">
@@ -190,16 +233,16 @@ const FileUpload = () => {
           size={"lg"}
           variant={"outline"}
           className="flex-1 text-primary border-primary font-bold text-base  "
-          onClick={() => console.log("clicked")}
+          onClick={() => setActiveTab("about")}
         >
-          Return to About Company
+          Return to Company Details
         </Button>
         <Button
-          type="submit"
           size={"lg"}
           className={cn("flex-1 font-bold text-base")}
           disabled={!logo || workplaceImages.length < 5}
-          onClick={() => router.push("/")}
+          isLoading={loading}
+          onClick={onSubmit}
         >
           Complete Setup
         </Button>

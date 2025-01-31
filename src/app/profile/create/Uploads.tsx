@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import FileUpload from "./FileUpload";
 
-const Uploads = ({ onNext }: { onNext: () => void }) => {
-  console.log(onNext);
+const Uploads = ({ setActiveTab }: { setActiveTab: any }) => {
+ 
   return (
     <div>
-      <FileUpload />
+      <FileUpload setActiveTab={setActiveTab} />
     </div>
   );
 };

@@ -1,14 +1,23 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import React, { useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { useForm } from "react-hook-form"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ProfileInput } from "@/components/ui/custom-input"
-import { CustomTextarea } from "@/components/ui/custom-textarea"
-import Cookies from "js-cookie"
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProfileInput } from "@/components/ui/custom-input";
+import { CustomTextarea } from "@/components/ui/custom-textarea";
+import Cookies from "js-cookie";
+import { onboardBusinessAction } from "@/actions/onboarding";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   about: z.string().min(20),
@@ -18,11 +27,19 @@ const formSchema = z.object({
   twitter: z.string().min(0),
   instagram: z.string().min(0),
   facebook: z.string().min(0),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
-const About = ({ onNext }: { onNext: () => void }) => {
+const About = ({ setActiveTab }: { setActiveTab: any }) => {
+  const { toast } = useToast();
+  let companyDetails = Cookies.get("companyDetailsFormData") || "{}";
+  if (companyDetails) {
+    companyDetails = JSON.parse(companyDetails);
+  }
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,43 +51,74 @@ const About = ({ onNext }: { onNext: () => void }) => {
       instagram: "",
       facebook: "",
     },
-  })
+  });
 
   useEffect(() => {
-    const cookieData = Cookies.get("aboutFormData")
+    const cookieData = Cookies.get("aboutFormData");
     if (cookieData) {
-      const parsedData = JSON.parse(cookieData)
+      const parsedData = JSON.parse(cookieData);
       Object.keys(parsedData).forEach((key) => {
-        form.setValue(key as keyof FormData, parsedData[key])
-      })
-    }       
-  }, [form])
+        form.setValue(key as keyof FormData, parsedData[key]);
+      });
+    }
+  }, [form]);
 
-  const onSubmit = (data: FormData) => {
-    const values = JSON.stringify(data)
+  const onSubmit = async (data: FormData) => {
+    const values = JSON.stringify(data);
+    Cookies.set("aboutFormData", values, { expires: 7 });
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    Object.entries(companyDetails).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
-    Cookies.set("aboutFormData", values , { expires: 7 }) 
-    onNext()
-    console.log(values)
-  }
+    try {
+      setIsLoading(true);
+      const response = await onboardBusinessAction(formData);
+      if (response.status) {
+        setActiveTab("logo");
+        Cookies.set('business_uid' , response?.data?.business_uid)
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description:
+          error.message || "Something went wrong. Please try again later.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-6"
+      >
         <FormField
           control={form.control}
           name="about"
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <CustomTextarea className="h-[268px]" label="About Company" {...field} />
+                <CustomTextarea
+                  className="h-[268px]"
+                  label="About Company"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div>
-          <h1 className="text-blue1 font-bold text-sm mb-[10px]">Social Media Accounts</h1>
+          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
+            Social Media Accounts
+          </h1>
           <div className="grid grid-cols-2 gap-4 lg:gap-6">
             <FormField
               control={form.control}
@@ -99,7 +147,9 @@ const About = ({ onNext }: { onNext: () => void }) => {
           </div>
         </div>
         <div>
-          <h1 className="text-blue1 font-bold text-sm mb-[10px]">Social Media Accounts</h1>
+          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
+            Social Media Accounts
+          </h1>
           <div className="grid grid-cols-2 gap-4 lg:gap-6">
             <FormField
               control={form.control}
@@ -107,7 +157,11 @@ const About = ({ onNext }: { onNext: () => void }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput leftIcon="/svg/linkedin.svg" label="Linkedin" {...field} />
+                    <ProfileInput
+                      leftIcon="/svg/linkedin.svg"
+                      label="Linkedin"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,7 +173,11 @@ const About = ({ onNext }: { onNext: () => void }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput leftIcon="/svg/facebook.svg" label="Facebook" {...field} />
+                    <ProfileInput
+                      leftIcon="/svg/facebook.svg"
+                      label="Facebook"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,7 +189,11 @@ const About = ({ onNext }: { onNext: () => void }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput leftIcon="/svg/x.svg" label="X (twitter)" {...field} />
+                    <ProfileInput
+                      leftIcon="/svg/x.svg"
+                      label="X (twitter)"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -143,7 +205,11 @@ const About = ({ onNext }: { onNext: () => void }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <ProfileInput leftIcon="/svg/instagram.svg" label="Instagram" {...field} />
+                    <ProfileInput
+                      leftIcon="/svg/instagram.svg"
+                      label="Instagram"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -156,18 +222,22 @@ const About = ({ onNext }: { onNext: () => void }) => {
             size={"lg"}
             variant={"outline"}
             className="flex-1 text-primary border-primary font-bold text-base"
-            onClick={() => console.log("clicked")}
+            onClick={() => setActiveTab("details")}
           >
             Return to Company Details
           </Button>
-          <Button type="submit" size={"lg"} className="flex-1 font-bold text-base">
+          <Button
+            isLoading={isLoading}
+            type="submit"
+            size={"lg"}
+            className="flex-1 font-bold text-base"
+          >
             Next
           </Button>
         </section>
       </form>
     </Form>
-  )
-}
+  );
+};
 
-export default About
-
+export default About;

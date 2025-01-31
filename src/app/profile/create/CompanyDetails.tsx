@@ -1,25 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
-import type * as React from "react"
-import { useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { PhoneInput } from "@/components/ui/phone-input"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { ProfileInput, GoogleAddressInput } from "@/components/ui/custom-input"
-import { handleDateChange } from "@/utils/handleDateChange"
-import Cookies from "js-cookie"
-import { countries } from "@/lib/countries"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Image from "next/image"
-import { Input } from "@/components/ui/input"
+import type * as React from "react";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { PhoneInput } from "@/components/ui/phone-input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProfileInput, GoogleAddressInput } from "@/components/ui/custom-input";
+import { handleDateChange } from "@/utils/handleDateChange";
+import Cookies from "js-cookie";
+import { countries } from "@/lib/countries";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
 
 interface CompanyDetailsProps {
-  onNext: () => void
+  onNext: () => void;
 }
 
 const formSchema = z.object({
@@ -30,28 +42,34 @@ const formSchema = z.object({
   country: z.string().min(2, { message: "Company country is required" }),
   state: z.string().min(2, { message: "Company state is required" }),
   city: z.string().min(2, { message: "Company city is required" }),
+  address_json: z.string().min(3, { message: "Company address is required" }),
   date: z.string().refine(
     (val) => {
-      const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/
-      const dateParts = val.split("/")
+      const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+      const dateParts = val.split("/");
       if (dateRegex.test(val) && dateParts.length === 3) {
-        const month = Number.parseInt(dateParts[0], 10)
-        const day = Number.parseInt(dateParts[1], 10)
-        const year = Number.parseInt(dateParts[2], 10)
-        const d = new Date(year, month - 1, day)
-        return d.getMonth() + 1 === month && d.getFullYear() === year && d.getDate() === day && !isNaN(d.getTime())
+        const month = Number.parseInt(dateParts[0], 10);
+        const day = Number.parseInt(dateParts[1], 10);
+        const year = Number.parseInt(dateParts[2], 10);
+        const d = new Date(year, month - 1, day);
+        return (
+          d.getMonth() + 1 === month &&
+          d.getFullYear() === year &&
+          d.getDate() === day &&
+          !isNaN(d.getTime())
+        );
       }
-      return false
+      return false;
     },
-    { message: "Date must be in MM/DD/YYYY format and valid" },
+    { message: "Date must be in MM/DD/YYYY format and valid" }
   ),
   email: z.string().email(),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -65,59 +83,90 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       state: "",
       city: "",
       date: "",
+      address_json: "",
     },
-  })
+  });
 
   useEffect(() => {
-    const cookieData = Cookies.get("companyDetailsFormData")
+    const cookieData = Cookies.get("companyDetailsFormData");
     if (cookieData) {
-      const parsedData = JSON.parse(cookieData)
+      const parsedData = JSON.parse(cookieData);
       Object.keys(parsedData).forEach((key) => {
-        form.setValue(key as keyof FormData, parsedData[key])
-      })
+        form.setValue(key as keyof FormData, parsedData[key]);
+      });
     }
-  }, [form])
+  }, [form]);
 
   const onSubmit = (values: FormData) => {
     Cookies.set("companyDetailsFormData", JSON.stringify(values), {
       expires: 7,
-    }) // Expires in 7 days
-    onNext()
-    console.log(values)
-  }
+    }); // Expires in 7 days
+    onNext();
+   
+  };
 
   const handleAddressSelect = (address: any) => {
-    const addressComponents = address?.address_components
+    const addressComponents = address?.address_components;
+
+    const addr = address?.formatted_address || "";
+    const lat =
+      typeof address?.geometry?.location?.lat === "function"
+        ? address.geometry.location.lat()
+        : address?.geometry?.location?.lat || "";
+
+    const lng =
+      typeof address?.geometry?.location?.lng === "function"
+        ? address.geometry.location.lng()
+        : address?.geometry?.location?.lng || "";
+    const url = address?.url || "";
+    const place_id = address?.place_id || "";
+
+    const data = {
+      address,
+      addr,
+      lat,
+      lng,
+      url,
+      place_id,
+    };
+
+    form.setValue("address_json", JSON.stringify(data));
+
     if (addressComponents) {
       addressComponents?.forEach((component: any) => {
         if (component?.types.includes("locality")) {
-          form.setValue("city", component?.long_name)
+          form.setValue("city", component?.long_name);
         }
         if (component.types.includes("country")) {
-          const countryName = component?.long_name
-        
-          form.setValue("country", countryName)
+          const countryName = component?.long_name;
+
+          form.setValue("country", countryName);
           // Update the select component's value
-          const selectElement = document.querySelector('select[name="country"]') as HTMLSelectElement
+          const selectElement = document.querySelector(
+            'select[name="country"]'
+          ) as HTMLSelectElement;
           if (selectElement) {
-            selectElement.value = countryName
+            selectElement.value = countryName;
           }
         }
         if (component?.types.includes("administrative_area_level_1")) {
-          form.setValue("state", component?.long_name)
+          form.setValue("state", component?.long_name);
         }
-      })
+      });
     }
-  }
+  };
 
   const getCountryFlag = (code: string) => {
-    return `https://flagcdn.com/24x18/${code.toLowerCase()}.png`
-  }
+    return `https://flagcdn.com/24x18/${code.toLowerCase()}.png`;
+  };
 
   return (
     <div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-6"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -141,8 +190,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                     label="Company Size"
                     {...field}
                     onChange={(e) => {
-                      e.target.value = e.target.value.replace(/[^0-9]/g, "")
-                      field.onChange(e)
+                      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(e);
                     }}
                     rightIcon={"/svg/employee.svg"}
                   />
@@ -185,8 +234,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                             <div className="flex items-center gap-2">
                               <Image
                                 src={
-                                  getCountryFlag(countries.find((c) => c.name === field.value)?.code || "") ||
-                                  "/placeholder.svg"
+                                  getCountryFlag(
+                                    countries.find(
+                                      (c) => c.name === field.value
+                                    )?.code || ""
+                                  ) || "/placeholder.svg"
                                 }
                                 alt=""
                                 width={24}
@@ -204,7 +256,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                         <SelectItem key={country.code} value={country.name}>
                           <div className="flex items-center gap-2">
                             <Image
-                              src={getCountryFlag(country.code) || "/placeholder.svg" || "/placeholder.svg"}
+                              src={
+                                getCountryFlag(country.code) ||
+                                "/placeholder.svg" ||
+                                "/placeholder.svg"
+                              }
                               alt=""
                               width={24}
                               height={18}
@@ -273,8 +329,8 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                         maxLength={10}
                         value={field.value || ""}
                         onChange={(e) => {
-                          handleDateChange(e)
-                          field.onChange(e)
+                          handleDateChange(e);
+                          field.onChange(e);
                         }}
                       />
                     </FormControl>
@@ -284,7 +340,9 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               />
             </div>
             <div className="flex flex-col gap-4">
-              <h1 className="text-blue1 font-semibold text-sm">Telephone Number</h1>
+              <h1 className="text-blue1 font-semibold text-sm">
+                Telephone Number
+              </h1>
               <FormField
                 control={form.control}
                 name="phone"
@@ -305,7 +363,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <ProfileInput type="email" label="Email Address" {...field} />
+                  <ProfileInput  label="Email Address" {...field} type="email" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -321,15 +379,18 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             >
               Return to onboarding
             </Button>
-            <Button type="submit" size={"lg"} className="flex-1 font-bold text-base">
+            <Button
+              type="submit"
+              size={"lg"}
+              className="flex-1 font-bold text-base"
+            >
               Next
             </Button>
           </section>
         </form>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default CompanyDetails
-
+export default CompanyDetails;
