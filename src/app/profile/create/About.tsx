@@ -78,9 +78,19 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
       setIsLoading(true);
       const response = await onboardBusinessAction(formData);
       if (response.status) {
+        console.log(response?.data)
         setActiveTab("logo");
         Cookies.set('business_uid' , response?.data?.business_uid)
+       
       }
+      else{
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: response?.message
+        })
+      }
+
     } catch (error: any) {
       toast({
         variant: "destructive",
