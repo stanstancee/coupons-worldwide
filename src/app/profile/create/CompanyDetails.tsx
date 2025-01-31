@@ -37,8 +37,7 @@ interface CompanyDetailsProps {
 const formSchema = z.object({
   name: z.string().min(3),
   size: z.string().min(1, { message: "Company size is required" }),
-  //address is optional
-  address: z.string().optional(),
+  address: z.string().min(3, { message: "Company address is required" }),
   phone: z.string().min(3, { message: "Company phone is required" }),
   country: z.string().min(2, { message: "Company country is required" }),
   state: z.string().min(2, { message: "Company state is required" }),
@@ -107,19 +106,20 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
 
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
+    console.log(address);
 
-    const addr = address?.formatted_address || "";
+    const addr = address?.formatted_address;
     const lat =
       typeof address?.geometry?.location?.lat === "function"
         ? address.geometry.location.lat()
-        : address?.geometry?.location?.lat || "";
+        : address?.geometry?.location?.lat;
 
     const lng =
       typeof address?.geometry?.location?.lng === "function"
         ? address.geometry.location.lng()
-        : address?.geometry?.location?.lng || "";
-    const url = address?.url || "";
-    const place_id = address?.place_id || "";
+        : address?.geometry?.location?.lng;
+    const url = address?.url;
+    const place_id = address?.place_id;
 
     const data = {
       address: addr,
