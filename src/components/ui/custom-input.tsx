@@ -79,7 +79,7 @@ export function CustomInput({
           ref={inputRef}
           type={showPassword ? "text" : type}
           className={cn(
-            "flex w-full text-[#1A4F6E] h-12 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
+            "flex w-full text-[#1A4F6E] h-12 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
             leftIcon && "pl-10",
             (rightIcon || type === "password") && "pr-10",
             className
@@ -177,7 +177,7 @@ export function ProfileInput({
           ref={inputRef}
           type={showPassword ? "text" : type}
           className={cn(
-            "flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
+            "flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
             leftIcon && "pl-10",
             (rightIcon || type === "password") && "pr-10",
             className
@@ -287,7 +287,7 @@ export function GoogleAddressInput({
             <Input
               type="text"
               className={cn(
-                "flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
+                "flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
                 leftIcon && "pl-10",
                 rightIcon && "pr-10",
                 className,

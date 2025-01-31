@@ -109,7 +109,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     setCountry(form.watch("country"));
   }, [form]);
 
-  console.log(country, form.getValues("country"));
+ 
 
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
@@ -204,10 +204,10 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+                      <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
                         <SelectValue placeholder="Select country">
                           {country ||
-                            (field.value && (
+                            field.value && (
                               <div className="flex items-center gap-2">
                                 <Image
                                   src={
@@ -226,7 +226,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                                 />
                                 {field.value || country}
                               </div>
-                            ))}
+                            )}
                         </SelectValue>
                       </SelectTrigger>
                     </FormControl>
@@ -263,7 +263,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                 <FormItem>
                   <FormControl>
                     <Input
-                      className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="State"
                       {...field}
                     />
@@ -280,7 +280,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                 <FormItem>
                   <FormControl>
                     <Input
-                      className="flex w-full text-[#1A4F6E] h-14 font-bold border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                       placeholder="City"
                       {...field}
                     />
