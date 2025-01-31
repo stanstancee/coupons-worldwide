@@ -37,7 +37,8 @@ interface CompanyDetailsProps {
 const formSchema = z.object({
   name: z.string().min(3),
   size: z.string().min(1, { message: "Company size is required" }),
-  address: z.string().min(3, { message: "Company address is required" }),
+  //address is optional
+  address: z.string().optional(),
   phone: z.string().min(3, { message: "Company phone is required" }),
   country: z.string().min(2, { message: "Company country is required" }),
   state: z.string().min(2, { message: "Company state is required" }),
