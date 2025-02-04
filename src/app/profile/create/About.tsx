@@ -80,7 +80,7 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
       if (response.status) {
         console.log(response?.data)
         setActiveTab("logo");
-        Cookies.set('business_uid' , response?.data?.business_uid)
+        Cookies.set('business_uid' , response?.data?.uid)
        
       }
       else{
