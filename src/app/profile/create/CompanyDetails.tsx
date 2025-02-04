@@ -36,7 +36,7 @@ interface CompanyDetailsProps {
 
 const formSchema = z.object({
   name: z.string().min(3),
-  size: z.string().min(1, { message: "Company size is required" }),
+  company_size: z.string().min(1, { message: "Company size is required" }),
   address: z.string().optional(),
   phone: z.string().min(3, { message: "Company phone is required" }),
   country: z.string().min(2, { message: "Company country is required" }),
@@ -77,7 +77,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     defaultValues: {
       email: "",
       name: "",
-      size: "",
+      company_size: "",
       phone: "",
       country: "",
       state: "",
@@ -171,7 +171,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
 
           <FormField
             control={form.control}
-            name="size"
+            name="company_size"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
