@@ -6,8 +6,8 @@ import Cookies from "js-cookie"
 
 
 export const fetcher = async (url: string) => {
-    const token = Cookies.get("auth_token")
-    const decryptedToken = decryptData(token!)
+    const token = Cookies.get("token") || ""
+    const decryptedToken = decryptData(token)
     const headers: HeadersInit = {
         "Content-Type": "application/json",
     }

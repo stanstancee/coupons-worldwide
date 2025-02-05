@@ -20,6 +20,7 @@ import { usePathname } from "next/navigation";
 
 import Link from "next/link";
 
+
 const navigation = [
   {
     name: "Dashboard",
@@ -38,6 +39,7 @@ const navigation = [
 
 export function NavSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+
 
   const pathname = usePathname();
   const getActive = (href: string) => {

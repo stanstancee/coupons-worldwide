@@ -21,7 +21,7 @@ export const MinimumTransactionInput = ({ form }: { form: any }) => {
   return (
     <FormField
       control={form.control}
-      name="minimum_transaction"
+      name="minimum_amount"
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel

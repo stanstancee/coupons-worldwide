@@ -15,15 +15,19 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ForgotPasswordToggle from "./ForgotPasswordToggle";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { signInAction } from "@/actions/auth";
 import { encryptData } from "@/lib/crypto";
 import Cookies from "js-cookie";
 
 const Container = () => {
+  const router = useRouter();
   const [staySignedIn, setStaySignedIn] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+
+  const redirectPath = searchParams.get("redirect") || "/dashboard";
 
   const { toast } = useToast();
   const formSchema = z.object({
@@ -42,8 +46,6 @@ const Container = () => {
     },
   });
 
-  const router = useRouter();
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
@@ -61,7 +63,10 @@ const Container = () => {
         });
         Cookies.set("token", encryptData(response.data.token));
         Cookies.set("user", JSON.stringify(response.data.user));
-        router.push("/");
+        if (!response?.data?.is_onboarded) {
+          router.push("/profile/create");
+        }
+        router.push(redirectPath);
       } else {
         toast({
           variant: "destructive",

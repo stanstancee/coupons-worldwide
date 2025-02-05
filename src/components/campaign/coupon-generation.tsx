@@ -18,9 +18,15 @@ import { FormField, FormControl, FormLabel, FormItem } from "../ui/form";
 import { Textarea } from "../ui/textarea";
 
 export default function CouponForm({ form }: { form: any }) {
-  const [generationType, setGenerationType] = React.useState("automated");
-  const [activationType, setActivationType] = React.useState("online");
-  const [claimType, setClaimType] = React.useState("single");
+  const [generationType, setGenerationType] = React.useState<"auto" | "upload">(
+    "auto"
+  );
+  const [activationType, setActivationType] = React.useState<
+    "online" | "store"
+  >("online");
+  const [claimType, setClaimType] = React.useState<"single" | "multiple">(
+    "single"
+  );
   const formatAmount = (value: string) => {
     return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
@@ -33,14 +39,17 @@ export default function CouponForm({ form }: { form: any }) {
             Coupon Generation Type
           </h3>
           <RadioGroup
-            defaultValue="automated"
-            onValueChange={setGenerationType}
+            defaultValue="auto"
+            onValueChange={(value: "auto" | "upload") => {
+              form.setValue("type", value);
+              setGenerationType(value);
+            }}
             className="flex gap-8 text-[#1D1B23] font-normal text-sm "
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem
-                value="automated"
-                id="automated"
+                value="auto"
+                id="auto"
                 className="text-c-orange"
               />
               <Label htmlFor="automated" className="font-normal">
@@ -56,24 +65,24 @@ export default function CouponForm({ form }: { form: any }) {
           </RadioGroup>
         </div>
 
-        {generationType === "automated" ? (
+        {generationType === "auto" ? (
           <FormField
             control={form.control}
-            name="number_of_coupons"
+            name="total_coupons"
             render={({ field }) => (
               <FormItem className="space-y-2">
                 <FormLabel
                   className="text-[#1D1B23] font-semibold"
-                  htmlFor="amount"
+                  htmlFor="total_coupons"
                   aria-required
                 >
                   Number of Coupons to Generate
                   <span className="text-red-500 ml-1">*</span>
                 </FormLabel>
-                <FormControl id="amount">
+                <FormControl id="total_coupons">
                   <Input
                     {...field}
-                    id="amount"
+                    id="total_coupons"
                     placeholder=""
                     className="h-[50px] w-full border-c-orange shadow-grid-item rounded-[12px] px-6 py-5 focus-visible:outline-none focus-visible:ring-c-orange active:border-c-orange max-w-[200px]"
                     onChange={(e) =>
@@ -89,13 +98,13 @@ export default function CouponForm({ form }: { form: any }) {
           <div className="space-y-2">
             <FormField
               control={form.control}
-              name="csv_file"
+              name="csv"
               render={({ field }) => (
                 <FormItem className="space-y-2">
                   <div className="flex items-center justify-between gap-1">
                     <FormLabel
                       className="text-[#1D1B23] font-semibold"
-                      htmlFor="csv_file"
+                      htmlFor="csv"
                       aria-required
                     >
                       Upload your coupon CSV file
@@ -105,7 +114,7 @@ export default function CouponForm({ form }: { form: any }) {
                       Download Sample CSV
                     </span>
                   </div>
-                  <FormControl id="csv_file">
+                  <FormControl id="csv">
                     <div className="relative">
                       <Input
                         {...field}
@@ -128,7 +137,10 @@ export default function CouponForm({ form }: { form: any }) {
           <h3 className="text-[#1D1B23] font-semibold">Claim Type</h3>
           <RadioGroup
             defaultValue="single"
-            onValueChange={setClaimType}
+            onValueChange={(value: "single" | "multiple") => {
+              form.setValue("claim_type", value);
+              setClaimType(value);
+            }}
             className="flex gap-8 text-[#1D1B23] font-normal text-sm"
           >
             <div className="flex items-center space-x-2">
@@ -147,7 +159,7 @@ export default function CouponForm({ form }: { form: any }) {
           {claimType === "multiple" && (
             <FormField
               control={form.control}
-              name="number_of_claims"
+              name="claim_limit"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-[#1D1B23] font-semibold">
@@ -184,7 +196,10 @@ export default function CouponForm({ form }: { form: any }) {
           </h3>
           <RadioGroup
             defaultValue="online"
-            onValueChange={setActivationType}
+            onValueChange={(value: "online" | "store") => {
+              form.setValue("activation_type", value);
+              setActivationType(value);
+            }}
             className="flex gap-8 text-[#1D1B23] font-normal text-sm "
           >
             <div className="flex items-center space-x-2">
@@ -194,8 +209,8 @@ export default function CouponForm({ form }: { form: any }) {
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="instore" id="instore" />
-              <Label htmlFor="instore" className="font-normal">
+              <RadioGroupItem value="store" id="store" />
+              <Label htmlFor="store" className="font-normal">
                 IN STORE ACTIVATION
               </Label>
             </div>

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 
-const UploadImages = () => {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+const UploadImages = ({uploadedFiles, setUploadedFiles}: {uploadedFiles: File[], setUploadedFiles: React.Dispatch<React.SetStateAction<File[]>>}) => {
+ 
 
   const onDrop = (acceptedFiles: File[]) => {
     setUploadedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
@@ -19,6 +19,7 @@ const UploadImages = () => {
     onDrop,
     accept: { "image/*": [".png", ".jpg", ".jpeg", ".gif"] },
     maxSize: 10 * 1024 * 1024, // 10MB
+    maxFiles: 5 , 
   });
 
   return (

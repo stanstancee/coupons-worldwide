@@ -8,3 +8,8 @@ export function formatNumber(num: number): string {
   return num.toString()
 }
 
+
+export function removeCommasAndSpaces(num: string): string {
+  return num.replace(/,/g, '').replace(/ /g, '')
+}
+
