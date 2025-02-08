@@ -1,16 +1,41 @@
+"use client";
+
+import { useDashboard } from "@/context/dashboard-context";
 import { Button } from "../ui/button";
 
+export function formatDate(value: string): string {
+  const date = new Date(value);
+  return date
+    .toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "UTC",
+    })
+    .replace(",", "")
+    .replace(" at", "");
+}
+
 const CampaignHeaderInfo = () => {
+  const { campaignDetails } = useDashboard();
   return (
     <header className="flex items-center md:justify-between gap-4 flex-wrap md:flex-nowrap p-4 md:p-6 shadow-cards bg-white rounded-[10px]">
       <div className="space-y-1">
         <article className="flex items-center gap-4 md:gap-8 flex-wrap md:flex-nowrap">
           <h1 className="text-xl font-bold ">Insights for Campaign</h1>
           <h1 className="text-[#1D1B23] text-sm font-normal">
-            Status:<strong>ACTIVE </strong> - Sat Feb 29 2020 00:15
+            Status:
+            <strong className="uppercase">
+              {campaignDetails?.campaign?.status || ""}{" "}
+            </strong>{" "}
+            - {formatDate(campaignDetails?.campaign?.updated_at || "")}
           </h1>
         </article>
-        <p className="text-[#717579]">Name of Campaign Here</p>
+        <p className="text-[#717579]">{campaignDetails?.campaign?.title}</p>
       </div>
       <Button className="shadow-btn text-c-green bg-white hover:bg-slate-50 py-[17px] font-bold h-[50px]">
         <svg

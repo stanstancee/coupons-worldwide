@@ -14,7 +14,15 @@ import { CalendarIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 
-const SelectDate = ({ form  , title , name }: { form: any , title : string , name : string}) => {
+const SelectDate = ({
+  form,
+  title,
+  name,
+}: {
+  form: any;
+  title: string;
+  name: string;
+}) => {
   return (
     <FormField
       control={form.control}
@@ -26,7 +34,8 @@ const SelectDate = ({ form  , title , name }: { form: any , title : string , nam
             htmlFor={name}
             aria-required
           >
-            {title}<span className="text-red-500 ml-1">*</span>
+            {title}
+            <span className="text-red-500 ml-1">*</span>
           </FormLabel>
           <Popover>
             <PopoverTrigger asChild>
@@ -39,7 +48,11 @@ const SelectDate = ({ form  , title , name }: { form: any , title : string , nam
                   )}
                 >
                   {field.value ? (
-                    format(field.value, "PPP")
+                    typeof field.value === "string" ? (
+                      field.value
+                    ) : (
+                      format(field.value, "PPP")
+                    )
                   ) : (
                     <span>Pick a date</span>
                   )}

@@ -1,12 +1,19 @@
-"use client"
+"use client";
 
-import { MoreVertical, Eye, Edit, Trash2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { MoreVertical, Eye, Edit, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { Campaign } from "@/types/campaign";
 
+export default function ActionDropdown({ campaign }: { campaign: Campaign }) {
+  const router = useRouter();
 
-
-export default function ActionDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -15,12 +22,18 @@ export default function ActionDropdown() {
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem>
+      <DropdownMenuContent align="end" className="w-[200px]">
+        <DropdownMenuItem
+          onClick={() => router.push(`/dashboard/campaign/${campaign.uid}`)}
+        >
           <Eye className="mr-2 h-4 w-4" />
           <span>View</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(`/dashboard/campaign/${campaign.uid}/edit`)
+          }
+        >
           <Edit className="mr-2 h-4 w-4" />
           <span>Edit</span>
         </DropdownMenuItem>
@@ -30,6 +43,5 @@ export default function ActionDropdown() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
-

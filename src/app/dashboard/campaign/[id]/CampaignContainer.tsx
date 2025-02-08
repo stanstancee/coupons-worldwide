@@ -5,7 +5,7 @@ import { ClicksChart } from "@/components/campaign/clicks-chart";
 import ReuseableStats from "@/components/ui/reuseable-stats";
 import CampaignStats from "@/components/campaign/campaign-stats";
 import RecentCampaigns from "@/components/campaign/recent-campaign";
-import { CustomChartIcon } from "@/components/icons/icons";
+
 
 
 const CampaignContainer = () => {
@@ -29,7 +29,7 @@ const CampaignContainer = () => {
           </section>
         </section>
         <RecentCampaigns />
-        <CustomChartIcon className="text-red-400" />
+      
       </main>
     </div>
   );

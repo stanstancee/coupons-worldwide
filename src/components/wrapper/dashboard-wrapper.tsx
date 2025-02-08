@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { NavSidebar } from "@/components/nav/nav-sidebar";
 import { useApi } from "@/hooks/useApi";
 import { useDashboard } from "@/context/dashboard-context";
+import Cookies from "js-cookie";
+import { Profile } from "@/types/profile";
 
 export default function DashboardWrapper({
   children,
@@ -19,7 +21,9 @@ export default function DashboardWrapper({
 
   useEffect(() => {
     if (data) {
-      setProfile(data?.data);
+      const profileData: Profile = data?.data;
+      Cookies.set("business_uid", profileData?.businesses[0]?.uid);
+      setProfile(profileData);
     }
   }, [data, setProfile]);
 

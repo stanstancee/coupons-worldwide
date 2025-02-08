@@ -1,10 +1,13 @@
-import React from 'react'
-import Container from './Container'
+import React from "react";
+import Container from "./Container";
+import { Suspense } from "react";
 
 const page = () => {
   return (
-     <Container />
-  )
-}
+    <Suspense>
+      <Container />
+    </Suspense>
+  );
+};
 
-export default page
+export default page;

@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    // Allow implicit any types
+    "noImplicitAny": false,
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -13,6 +15,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    
     "plugins": [
       {
         "name": "next"

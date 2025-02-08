@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { CircleCheck } from "lucide-react"
-import TitleAndDescription from "../ui/title-and-description"
-import { Button } from "../ui/button"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import { CircleCheck } from "lucide-react";
+import TitleAndDescription from "../ui/title-and-description";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 export default function PricingComparison() {
-  const [activeTab, setActiveTab] = useState<"monthly" | "yearly">("monthly")
+  const [activeTab, setActiveTab] = useState<"monthly" | "yearly">("monthly");
 
   const features = [
     "Job Posting (Limited)",
@@ -21,13 +21,16 @@ export default function PricingComparison() {
     "Customizable Screening Tools",
     "Employer Branding Tools",
     "Priority Customer Support",
-  ]
+  ];
 
   return (
     <div className="space-y-8 max-w-[1200px] py-10 px-4 lg:px-0">
       {/* Header */}
       <div className="mb-12">
-        <TitleAndDescription title="Subscription" description="Desired subscription." />
+        <TitleAndDescription
+          title="Subscription"
+          description="Desired subscription."
+        />
       </div>
 
       {/* Mobile Tab Switcher */}
@@ -37,7 +40,9 @@ export default function PricingComparison() {
             type="button"
             className={cn(
               "px-4 py-2 text-sm font-medium rounded-l-lg",
-              activeTab === "monthly" ? "bg-[#393A3D] text-white" : "bg-white text-gray-900 hover:bg-gray-100",
+              activeTab === "monthly"
+                ? "bg-[#393A3D] text-white"
+                : "bg-white text-gray-900 hover:bg-gray-100"
             )}
             onClick={() => setActiveTab("monthly")}
           >
@@ -47,7 +52,9 @@ export default function PricingComparison() {
             type="button"
             className={cn(
               "px-4 py-2 text-sm font-medium rounded-r-lg",
-              activeTab === "yearly" ? "bg-[#1A2B88] text-white" : "bg-white text-gray-900 hover:bg-gray-100",
+              activeTab === "yearly"
+                ? "bg-[#1A2B88] text-white"
+                : "bg-white text-gray-900 hover:bg-gray-100"
             )}
             onClick={() => setActiveTab("yearly")}
           >
@@ -80,7 +87,10 @@ export default function PricingComparison() {
 
         {/* Features List */}
         {features.map((feature) => (
-          <div key={feature} className="grid grid-cols-[1fr,auto,auto] col-span-3 items-center mb-3">
+          <div
+            key={feature}
+            className="grid grid-cols-[1fr,auto,auto] col-span-3 items-center mb-3"
+          >
             <span className="text-[#515B6F]">{feature}</span>
             <div className="w-[300px] flex justify-center">
               <CircleCheck className="w-5 h-5 text-[#393A3D]" />
@@ -151,6 +161,5 @@ export default function PricingComparison() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

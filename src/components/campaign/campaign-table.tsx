@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { campaignService } from "../services/campaign-service";
+
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -29,7 +29,9 @@ import {
 import Image from "next/image";
 import ActionDropdown from "./action";
 import Pagination from "../pagination";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useDashboard } from "@/context/dashboard-context";
+import { setParams } from "@/utils/urlParams";
 
 export default function CampaignTable() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,27 +39,34 @@ export default function CampaignTable() {
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "views" | "grabs">(
     "newest"
   );
+  const { campaign, campaignResponse } = useDashboard();
 
-  const campaigns = useMemo(() => campaignService.getCampaigns(), []);
+  const campaigns = useMemo(() => campaign || [], [campaign]);
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    const newUrl = setParams(pathname, searchParams, { page: page.toString() });
+    router.push(newUrl);
   };
 
   const filteredCampaigns = useMemo(() => {
-    let result = campaigns;
+    let result = campaigns || [];
 
     // Apply search filter
     if (searchQuery.trim()) {
       result = result.filter((campaign) =>
-        campaign.name.toLowerCase().includes(searchQuery.toLowerCase().trim())
+        campaign.title?.toLowerCase().includes(searchQuery.toLowerCase().trim())
       );
     }
 
     // Apply status filter
     if (statusFilter !== "all") {
-      result = result.filter((campaign) => campaign.status === statusFilter);
+      result = result.filter(
+        (campaign) =>
+          campaign.status?.toLowerCase() === statusFilter?.toLowerCase()
+      );
     }
 
     // Apply sorting
@@ -80,13 +89,6 @@ export default function CampaignTable() {
   };
 
   //totalItems, itemsPerPage, currentPage, onPageChange
-  const totalItems = campaigns.length;
-  const itemsPerPage = 10;
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedCampaigns = filteredCampaigns.slice(startIndex, endIndex);
 
   return (
     <div className="w-full  mx-auto p-4 space-y-6">
@@ -153,16 +155,14 @@ export default function CampaignTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedCampaigns.map((campaign, index) => (
+            {filteredCampaigns?.map((campaign, index) => (
               <TableRow
                 key={index}
                 className="border-none cursor-auto"
-                onClick={() =>
-                  router.push(`/dashboard/campaign/${campaign.id}`)
-                }
+              
               >
                 <TableCell className=" p-5 pl-6 whitespace-nowrap font-semibold">
-                  {campaign.name}
+                  {campaign.title}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
                   {formatNumber(campaign.views)}
@@ -174,17 +174,17 @@ export default function CampaignTable() {
                   {formatNumber(campaign.redeemed)}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
-                  {campaign.quantity.used} / {campaign.quantity.total}
+                  {campaign.quantity}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
                   {campaign.reviews}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
-                  <div className="flex justify-between items-center gap-3">
+                  <div className="flex  items-center gap-3 2xl:gap-8">
                     <Button className="bg-white rounded-[12.13px] hover:bg-[#E5E5E5]">
                       <Image
                         src={
-                          campaign.status === "Active"
+                          campaign.status !== "active"
                             ? "/svg/red.svg"
                             : "/svg/green.svg"
                         }
@@ -193,10 +193,10 @@ export default function CampaignTable() {
                         height={24}
                       />
                       <span className="text-[#1D1B23] font-medium">
-                        {campaign.status === "Active" ? "Active" : "Closed"}
+                        {campaign.status === "active" ? "Active" : "Closed"}
                       </span>
                     </Button>
-                    <ActionDropdown />
+                    <ActionDropdown campaign={campaign} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -205,9 +205,9 @@ export default function CampaignTable() {
         </Table>
       </div>
       <Pagination
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-        currentPage={currentPage}
+        totalItems={campaignResponse?.data?.total || 0}
+        itemsPerPage={20}
+        currentPage={campaignResponse?.data?.current_page || 0}
         onPageChange={handlePageChange}
       />
     </div>

@@ -17,6 +17,12 @@ import {
 import { FormField, FormControl, FormLabel, FormItem } from "../ui/form";
 import { Textarea } from "../ui/textarea";
 
+// const formatAmountCoupon = (value: number | string): string => {
+//   const numValue =
+//     typeof value === "string" ? Number.parseInt(value, 10) : value;
+//   return isNaN(numValue) ? "" : numValue.toLocaleString();
+// };
+
 export default function CouponForm({ form }: { form: any }) {
   const [generationType, setGenerationType] = React.useState<"auto" | "upload">(
     "auto"
@@ -27,8 +33,27 @@ export default function CouponForm({ form }: { form: any }) {
   const [claimType, setClaimType] = React.useState<"single" | "multiple">(
     "single"
   );
-  const formatAmount = (value: string) => {
-    return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // const formatAmount = (value: string) => {
+  //   return value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // };
+
+  const handleNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: any
+  ) => {
+    //  dont allow numbers > 10000
+    e.target.value = e.target.value.replace(/\D/g, "");
+    const value = e.target.value;
+    if (value.length > 0) {
+      const numValue = Number.parseInt(value, 10);
+      if (numValue > 10000) {
+        field.onChange("10000");
+      } else {
+        field.onChange(e.target.value);
+      }
+    } else {
+      field.onChange("");
+    }
   };
 
   return (
@@ -83,12 +108,11 @@ export default function CouponForm({ form }: { form: any }) {
                   <Input
                     {...field}
                     id="total_coupons"
-                    placeholder=""
+                    placeholder="Enter number"
                     className="h-[50px] w-full border-c-orange shadow-grid-item rounded-[12px] px-6 py-5 focus-visible:outline-none focus-visible:ring-c-orange active:border-c-orange max-w-[200px]"
-                    onChange={(e) =>
-                      field.onChange(formatAmount(e.target.value))
-                    }
-                    value={formatAmount(field.value)}
+                    onChange={(e) => {
+                      handleNumberChange(e, field);
+                    }}
                   />
                 </FormControl>
               </FormItem>
