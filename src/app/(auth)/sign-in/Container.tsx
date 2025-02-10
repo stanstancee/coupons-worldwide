@@ -21,8 +21,6 @@ import { signInAction } from "@/actions/auth";
 import { encryptData } from "@/lib/crypto";
 import Cookies from "js-cookie";
 
-
-
 const Container = () => {
   const router = useRouter();
   const [staySignedIn, setStaySignedIn] = useState<boolean>(false);
@@ -36,8 +34,7 @@ const Container = () => {
     login: z.string().email(),
     password: z
       .string()
-      .min(6, { message: "Password must be at least 6 characters" })
-      .max(20, { message: "Password must not be greater than 20 characters" }),
+      .min(6, { message: "Password must be at least 6 characters" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,16 +56,23 @@ const Container = () => {
       const response = await signInAction(formData);
 
       if (response.status) {
-        toast({
-          description: response.message,
-          variant: "default",
-        });
-        Cookies.set("token", encryptData(response.data.token));
-        Cookies.set("user", JSON.stringify(response.data.user));
-        if (!response?.data?.is_onboarded) {
-          router.push("/profile/create");
+        if (response?.data?.user?.response.data.user === "customer") {
+          toast({
+            description: "Sorry, you are not allowed to sign in.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            description: response.message,
+            variant: "default",
+          });
+          Cookies.set("token", encryptData(response.data.token));
+          Cookies.set("user", JSON.stringify(response.data.user));
+          if (!response?.data?.is_onboarded) {
+            router.push("/profile/create");
+          }
+          router.push(redirectPath);
         }
-        router.push(redirectPath);
       } else {
         toast({
           variant: "destructive",
@@ -89,7 +93,6 @@ const Container = () => {
     }
   }
   return (
-    
     <div className="grid place-items-center h-full place-content-center pt-8">
       <div className="flex flex-col gap-6 xl:gap-8 w-[25rem]">
         <div className="grid place-items-center place-content-center">

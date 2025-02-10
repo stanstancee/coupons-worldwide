@@ -47,7 +47,7 @@ const fetchWithAuthFormData = async (
 
 const fetchWithAuth = async (
   url: string,
-  data: FormData,
+  data: FormData | any,
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   tag?: string
 ) => {

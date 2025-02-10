@@ -31,6 +31,28 @@ export interface CampaignResponse {
     errors: any[];
 }
 
+type Keyword = {
+    id: number;
+    name: string;
+    slug: string;
+    description: string;
+    created_at: string | null;
+    updated_at: string | null;
+    pivot: {
+        campaign_id: number;
+        keyword_id: number;
+    };
+};
+
+type Asset = {
+    id: number;
+    uid: string;
+    campaign_id: number;
+    asset_path: string;
+    created_at: string;
+    updated_at: string;
+};
+
 interface ICampaign {
     id: number;
     title: string;
@@ -55,6 +77,8 @@ interface ICampaign {
     updated_at: string;
     claim_limit: number;
     claim_type: string;
+    assets: Asset[];
+    keywords: Keyword[];
 }
 
 export interface ICoupon {

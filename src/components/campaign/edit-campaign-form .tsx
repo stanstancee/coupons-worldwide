@@ -17,7 +17,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { SelectDate } from "./select-date";
 import { MinimumTransactionInput } from "./minimum-transaction-input";
-import UploadImages from "./upload-images";
+
 import CouponForm from "./coupon-generation";
 import EditCampaignHeader from "./edit-campaign-header";
 import { CurrencySelect } from "./currency-select";
@@ -25,31 +25,35 @@ import { CurrencySelect } from "./currency-select";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/hooks/use-toast";
 import { removeCommasAndSpaces } from "@/utils/format-number";
-import { createCampaignAction } from "@/actions/campaign";
+import { editCampaignAction } from "@/actions/campaign";
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
 import { useDashboard } from "@/context/dashboard-context";
+import EditImages from "./edit-images";
 
 // Modified form schema
 const formSchema = z.object({
   title: z.string().min(3).optional(),
-  description: z.string().min(10, { message: "Description must be at least 10 characters" }).optional(),
+  description: z
+    .string()
+    .min(10, { message: "Description must be at least 10 characters" })
+    .optional(),
   keywords: z.array(z.string()).optional(),
   currency: z.string().min(1, { message: "Currency is required" }).optional(),
   amount: z.string().min(1, { message: "Amount is required" }).optional(),
   discount: z.string().min(1, { message: "Discount is required" }).optional(),
   minimum_amount: z.string().min(1, { message: "Required" }).optional(),
   valid_till: z.date().or(z.string()).optional(),
-  start_date: z.date().or(z.string()).optional() ,
+  start_date: z.date().or(z.string()).optional(),
   total_coupons: z.string().min(1, { message: "Required" }).optional(),
   claim_type: z.string().min(1, { message: "Required" }).optional(),
   claim_limit: z.string().min(1, { message: "Required" }).optional(),
   type: z.enum(["auto", "upload"]).optional(),
   activation_type: z.enum(["online", "store"]).optional(),
   csv: z.instanceof(File).optional(),
-})
+});
 
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof formSchema>;
 
 const EditCampaignForm = () => {
   const { campaignDetails } = useDashboard();
@@ -116,7 +120,7 @@ const EditCampaignForm = () => {
       start_date: new Date(),
       total_coupons: "",
       claim_type: "single",
-      claim_limit: '',
+      claim_limit: "",
       type: "auto",
       activation_type: "online",
     },
@@ -132,6 +136,14 @@ const EditCampaignForm = () => {
   }, [data]);
 
   useEffect(() => {
+    setKeywords(
+      campaignDetails?.campaign?.keywords?.map(
+        (keyword: { name: string }) => keyword.name
+      ) || []
+    );
+  }, [campaignDetails?.campaign]);
+
+  useEffect(() => {
     if (campaignDetails?.campaign) {
       form.reset({
         title: campaignDetails.campaign.title || "",
@@ -139,17 +151,24 @@ const EditCampaignForm = () => {
         currency: campaignDetails.campaign.currency || "",
         amount: campaignDetails.campaign.amount?.toString() || "",
         discount: campaignDetails.campaign.discount?.toString() || "",
-        minimum_amount: campaignDetails.campaign.minimum_amount?.toString() || "",
-        valid_till: campaignDetails.campaign.valid_till ? campaignDetails.campaign.valid_till : undefined,
-        start_date: campaignDetails.campaign.start_date ? campaignDetails.campaign.start_date : undefined,
+        minimum_amount:
+          campaignDetails.campaign.minimum_amount?.toString() || "",
+        valid_till: campaignDetails.campaign.valid_till
+          ? campaignDetails.campaign.valid_till
+          : undefined,
+        start_date: campaignDetails.campaign.start_date
+          ? campaignDetails.campaign.start_date
+          : undefined,
         total_coupons: campaignDetails.campaign.total_coupons?.toString() || "",
         claim_type: campaignDetails.campaign.claim_type || "",
         claim_limit: campaignDetails.campaign.claim_limit?.toString() || "",
         type: (campaignDetails.campaign.type as "auto" | "upload") || "auto",
-        activation_type: (campaignDetails.campaign.activation_type as "online" | "store") || "online",
-      })
+        activation_type:
+          (campaignDetails.campaign.activation_type as "online" | "store") ||
+          "online",
+      });
     }
-  }, [campaignDetails, form])
+  }, [campaignDetails, form]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -205,22 +224,10 @@ const EditCampaignForm = () => {
 
   const onSubmit = async (values: FormValues) => {
     const formData = new FormData();
-    const cover_image = uploadedFiles?.length ? uploadedFiles[0] : "";
-    const media = uploadedFiles?.slice(1, uploadedFiles?.length);
-    if (!cover_image) {
-      toast({
-        description: "Cover image is required",
-        variant: "destructive",
-      });
-      return;
-    } else if (media?.length === 0) {
-      toast({
-        description: "Upload more images",
-        variant: "destructive",
-      });
+    const valid_till = new Date(values.valid_till as Date);
+    const start_date = new Date(values.start_date as Date); 
 
-      return;
-    } else if (!keywords?.length) {
+    if (!keywords?.length) {
       toast({
         description: "Keywords are required",
         variant: "destructive",
@@ -245,6 +252,7 @@ const EditCampaignForm = () => {
       });
       return;
     }
+    formData.append("uid", campaignDetails?.campaign?.uid || "");
     formData.append("business_uid", profile?.businesses[0]?.uid || "");
     formData.append("title", values.title as string);
     formData.append("description", values.description as string);
@@ -252,10 +260,7 @@ const EditCampaignForm = () => {
 
     formData.append("activation_type", values.activation_type as string);
     formData.append("claim_type", values.claim_type as string);
-    formData.append("cover_image", cover_image);
-    media?.map((file) => {
-      formData.append("media[]", file);
-    });
+
     keywords?.map((kw) => {
       formData.append("keywords[]", kw);
     });
@@ -265,15 +270,18 @@ const EditCampaignForm = () => {
       "minimum_amount",
       removeCommasAndSpaces(values.minimum_amount as string)
     );
-    formData.append("discount", removeCommasAndSpaces(values.discount as string));
+    formData.append(
+      "discount",
+      removeCommasAndSpaces(values.discount as string)
+    );
     //conver date to 2024-02-14  yyyy-mm-dd
     formData.append(
       "start_date",
-      values.start_date?.toString().split("T")[0] as string 
+      start_date.toISOString()?.split("T")[0] as string
     );
     formData.append(
       "valid_till",
-      values.valid_till?.toString().split("T")[0] as string
+      valid_till.toISOString()?.split("T")[0] as string
     );
 
     if (values.claim_type === "multiple") {
@@ -295,7 +303,7 @@ const EditCampaignForm = () => {
 
     try {
       setIsLoading2(true);
-      const res = await createCampaignAction(formData);
+      const res = await editCampaignAction(formData);
       if (res.status) {
         toast({
           description: res.message,
@@ -563,11 +571,11 @@ const EditCampaignForm = () => {
               </div>
             </div>
             <div className="lg:col-span-5  space-y-4 lg:space-xy-8 2xl:space-y-10">
-              <UploadImages
+              <CouponForm form={form} />
+              <EditImages
                 uploadedFiles={uploadedFiles}
                 setUploadedFiles={setUploadedFiles}
               />
-              <CouponForm form={form} />
             </div>
           </div>
         </form>
@@ -578,4 +586,3 @@ const EditCampaignForm = () => {
 };
 
 export default EditCampaignForm;
-

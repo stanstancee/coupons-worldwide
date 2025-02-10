@@ -56,15 +56,15 @@ const CreateCampaignForm = () => {
     // cover image file
 
     claim_type: z.enum(["single", "multiple"]),
-    claim_limit: z.number(),
+    claim_limit: z.string().optional(),
   });
 
   const router = useRouter();
 
   const { data, isLoading } = useApi("/business/campaign/keywords", {
     revalidateOnFocus: false,
-    revalidateIfStale: false,
     refreshInterval: 60000,
+    revalidateOnReconnect: false,
   });
 
   const [status, setStatus] = useState<"draft" | "">("");
@@ -93,7 +93,7 @@ const CreateCampaignForm = () => {
       start_date: new Date(),
       total_coupons: "",
       claim_type: "single",
-      claim_limit: 0,
+      claim_limit: "0",
       type: "auto",
       activation_type: "online",
     },
@@ -235,7 +235,7 @@ const CreateCampaignForm = () => {
     );
 
     if (values.claim_type === "multiple") {
-      formData.append("claim_limit", values.claim_limit?.toString());
+      formData.append("claim_limit", values.claim_limit as string);
     }
 
     if (values.type === "upload") {
@@ -277,6 +277,7 @@ const CreateCampaignForm = () => {
     }
   };
 
+  console.log(form.formState.errors);
   return (
     <div>
       <Form {...form}>

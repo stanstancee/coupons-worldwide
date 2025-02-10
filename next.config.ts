@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
- 
+
   /* config options here */
   async redirects() {
     return [
@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         port: "",
         search: "",
       },
+      {
+        protocol: 'https',
+        hostname: 'sandbox.couponsworldwide.com',
+        port: '',
+        search: '',
+      }
     ],
   },
 };

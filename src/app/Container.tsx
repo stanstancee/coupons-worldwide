@@ -16,7 +16,7 @@ export default function CountryList() {
   }, []);
 
   if (!countries) return <p>Loading...</p>;
-  console.log(countries);
+ 
 
   return (
     <div>
