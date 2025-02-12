@@ -18,7 +18,7 @@ import { Textarea } from "../ui/textarea";
 import { SelectDate } from "./select-date";
 import { MinimumTransactionInput } from "./minimum-transaction-input";
 
-import CouponForm from "./coupon-generation";
+import CouponForm from "./edit-coupon-generation";
 import EditCampaignHeader from "./edit-campaign-header";
 import { CurrencySelect } from "./currency-select";
 
@@ -563,15 +563,18 @@ const EditCampaignForm = () => {
                 />
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
+             
+              <CouponForm form={form} />
+            </div>
+            <div className="lg:col-span-5  space-y-4 lg:space-xy-8 2xl:space-y-10">
+            <div className="grid  gap-4 lg:gap-5 shadow-grid-item bg-white p-4 lg:p-7 rounded-[12px]">
                 <MinimumTransactionInput form={form} />
                 {/* start date */}
                 <SelectDate form={form} title="Start Date" name="start_date" />
                 <SelectDate form={form} title="Valid Until" name="valid_till" />
+             
               </div>
-            </div>
-            <div className="lg:col-span-5  space-y-4 lg:space-xy-8 2xl:space-y-10">
-              <CouponForm form={form} />
+             
               <EditImages
                 uploadedFiles={uploadedFiles}
                 setUploadedFiles={setUploadedFiles}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -13,36 +14,72 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { TeamMember } from "@/types/member";
+import { deleteTeamAction } from "@/actions/team";
+import { useToast } from "@/hooks/use-toast";
+import Cookies from "js-cookie";
+import Loading from "../loading";
 
-import type { Member } from "../../types/member";
-
-interface MemberCardProps {
-  member: Member;
-  onDelete: (id: string) => void;
-}
-
-export function MemberCard({ member, onDelete }: MemberCardProps) {
-  const [, setShowDelete] = useState(false);
+export function MemberCard({ member }: { member: TeamMember }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { toast } = useToast();
+  const business_uid = Cookies.get("business_uid");
+
+  const handleDelete = async () => {
+    try {
+      setIsLoading(true);
+      const res = await deleteTeamAction({
+        user_uid: member.user?.uid,
+        business_uid: business_uid as string,
+      });
+      if (res.status) {
+        toast({
+          title: "Success",
+          description: res.message,
+        });
+        setShowDeleteDialog(false);
+      } else {
+        toast({
+          title: "Error",
+          description: res.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
       <div
         className="relative p-6 border rounded-lg hover:bg-gray-50 transition-colors bg-white"
-        onMouseEnter={() => setShowDelete(true)}
-        onMouseLeave={() => setShowDelete(false)}
+        // onMouseEnter={() => setShowDelete(true)}
+        // onMouseLeave={() => setShowDelete(false)}
       >
         <div className="flex flex-col items-center gap-3">
           <Avatar className="h-20 w-20 rounded-full">
-            <AvatarImage src={member.avatarUrl} alt={member.name} />
-            <AvatarFallback>{member.name[0]}</AvatarFallback>
+            <AvatarImage
+              src={member.user?.profile_image}
+              alt={member.user?.first_name}
+            />
+            <AvatarFallback>{member?.user?.first_name[0]}</AvatarFallback>
           </Avatar>
           <div className="text-center grid place-content-center place-items-center">
-            <h3 className="font-semibold text-xl">{member.name}</h3>
-            <span className="text-[#7C8493] mt-2">{member.status}</span>
+            <h3 className="font-semibold text-xl">{`${member?.user?.first_name}`}</h3>
+            <span className="text-[#7C8493] mt-2">
+              {member?.invitation_status}
+            </span>
           </div>
         </div>
-        {member.status === "Active" && (
+        {member?.invitation_status !== "accepted" && (
           <svg
             width="40"
             height="40"
@@ -76,21 +113,22 @@ export function MemberCard({ member, onDelete }: MemberCardProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove {member.name} from the team. This action cannot
-              be undone.
+              This will remove {member?.user?.first_name} from the team. This
+              action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               className="bg-c-red hover:bg-c-red"
-              onClick={() => onDelete(member.id)}
+              onClick={handleDelete}
             >
               Delete Member
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Loading loading={isLoading} />
     </>
   );
 }

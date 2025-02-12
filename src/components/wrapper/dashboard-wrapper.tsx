@@ -15,6 +15,7 @@ export default function DashboardWrapper({
   const { data } = useApi("/profile/info", {
     revalidateOnFocus: false,
     revalidateIfStale: false,
+   
   });
 
   const { setProfile } = useDashboard();

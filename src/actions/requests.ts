@@ -19,8 +19,8 @@ const getRequest = async ({
     revalidate,
 }: {
     url: string;
-    tags: string[];
-    revalidate: number;
+    tags?: string[];
+    revalidate?: number;
 }) => {
     let token = (await cookies()).get("token")?.value;
 token = decryptData(token || "");

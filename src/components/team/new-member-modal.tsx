@@ -25,6 +25,9 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
+import { useDashboard } from "@/context/dashboard-context";
+import { useToast } from "@/hooks/use-toast";
+import { createTeamAction } from "@/actions/team";
 
 interface NewMemberModalProps {
   open: boolean;
@@ -32,6 +35,10 @@ interface NewMemberModalProps {
 }
 
 export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
+  const { profile } = useDashboard();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const formSchema = z.object({
     first_name: z.string().min(2, {
       message: "Name must be at least 2 characters.",
@@ -39,8 +46,9 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
     last_name: z.string().min(2, {
       message: "Name must be at least 2 characters.",
     }),
+    business_uid: z.string().optional(),
     email: z.string().email(),
-    avatar: z.any().optional(),
+    profile_image: z.any().optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,7 +57,8 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
       first_name: "",
       last_name: "",
       email: "",
-      avatar: null,
+      profile_image: null,
+      business_uid: profile?.businesses[0]?.uid,
     },
   });
 
@@ -59,7 +68,7 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
     const file = acceptedFiles[0];
 
     setAvatarPreview(URL.createObjectURL(file));
-    form.setValue("avatar", file);
+    form.setValue("profile_image", file);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -70,11 +79,40 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
     maxFiles: 1,
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    const { first_name, last_name, email, profile_image } = data;
+    const formData = new FormData();
+    formData.append("first_name", first_name);
+    formData.append("last_name", last_name);
+    formData.append("email", email);
+    formData.append("profile_image", profile_image);
+    formData.append("business_uid", profile?.businesses[0]?.uid as string);
+    try {
+      setIsLoading(true);
+      const response = await createTeamAction(formData);
+      if (response?.status) {
+        toast({
+          title: "Success",
+          description: response?.message,
+        });
+        onOpenChange(false);
+      } else {
+        toast({
+          title: "Error",
+          description: response?.message,
+          variant: "destructive",
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast({
+        description: error?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  console.log(avatarPreview);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -187,7 +225,7 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
 
             <Separator className="" />
             <div className="flex justify-end w-full">
-              <Button type="submit" className=" h-[36px] ">
+              <Button type="submit" className=" h-[36px]" isLoading={isLoading}>
                 Send Invite
               </Button>
             </div>

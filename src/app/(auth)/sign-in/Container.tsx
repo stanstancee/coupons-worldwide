@@ -56,12 +56,17 @@ const Container = () => {
       const response = await signInAction(formData);
 
       if (response.status) {
-        if (response?.data?.user?.response.data.user === "customer") {
+
+
+        if (response?.data?.user === "customer") {
           toast({
             description: "Sorry, you are not allowed to sign in.",
             variant: "destructive",
           });
-        } else {
+        }
+        
+        
+        else {
           toast({
             description: response.message,
             variant: "default",

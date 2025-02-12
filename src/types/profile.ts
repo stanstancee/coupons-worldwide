@@ -79,6 +79,7 @@ export interface Profile {
     security_setting: SecuritySetting;
     notification_setting: NotificationSetting;
     businesses: Business[];
+    gender: string;
 }
 
 export interface ApiResponse {
