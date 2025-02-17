@@ -5,4 +5,7 @@ const LoadingPage = () => {
   return <Loading loading={true} />;
 };
 
+
+
+
 export default LoadingPage;

@@ -53,10 +53,12 @@ export const SocialSchem = z.object({
 
 
 export const promotionSchema = z.object({
-  promotionType: z.enum(["campaign", "store"]),
+  promotionType: z.enum(["Campaign", "Store"]),
   campaignId: z.string().optional(),
-  adChannel: z.enum(["featured", "promoted", "popular"]),
-  duration: z.enum(["7", "14", "30", "90", "180", "365"]),
+  adChannel: z.enum(["Featured", "Promoted", "Popular"]),
+
+  start_date: z.date(),
+  end_date: z.date(),
 })
 
 

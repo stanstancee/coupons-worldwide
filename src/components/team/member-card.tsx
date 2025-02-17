@@ -73,8 +73,8 @@ export function MemberCard({ member }: { member: TeamMember }) {
             <AvatarFallback>{member?.user?.first_name[0]}</AvatarFallback>
           </Avatar>
           <div className="text-center grid place-content-center place-items-center">
-            <h3 className="font-semibold text-xl">{`${member?.user?.first_name}`}</h3>
-            <span className="text-[#7C8493] mt-2">
+            <h3 className="font-semibold text-xl capitalize">{`${member?.user?.first_name}`}</h3>
+            <span className="text-[#7C8493] mt-2 capitalize">
               {member?.invitation_status}
             </span>
           </div>

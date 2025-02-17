@@ -642,3 +642,13 @@ body {
   animation: moveBox-9 4s infinite;
 }
 
+
+
+@media print {
+  @page {
+    margin: 0;
+  }
+  body {
+    margin: 1.6cm;
+  }
+}

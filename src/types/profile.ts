@@ -32,7 +32,7 @@ interface AddressJson {
     place_id: string;
 }
 
-interface Business {
+export interface Business {
     id: number;
     uid: string;
     user_id: number;

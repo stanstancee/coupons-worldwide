@@ -1,5 +1,10 @@
 import { fetchWithAuthFormData, fetchWithAuth } from ".";
 
+interface TeamInviteData {
+    email: string;
+    invitation_code: string;
+}
+
 const createTeamAction = async (data: FormData) => {
     const response = await fetchWithAuthFormData("business/teams/add-member", data, 'POST', 'teams');
     return response;
@@ -14,7 +19,17 @@ const deleteTeamAction = async (data: {
 }
 
 
-export { createTeamAction, deleteTeamAction };
+
+const inviteTeamAction = async (data: TeamInviteData) => {
+    const response = await fetchWithAuth("business/teams/accept-invite", data, 'POST', 'teams');
+    return response;
+}
+
+
+
+
+export { createTeamAction, deleteTeamAction, inviteTeamAction };
+
 
 
 

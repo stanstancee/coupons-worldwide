@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SlidersHorizontal, Search } from "lucide-react";
 import { format } from "date-fns";
 
@@ -24,89 +24,32 @@ import { cn } from "@/lib/utils";
 import { CustomChartIcon, CustomWalletIcon } from "../icons/icons";
 import Pagination from "../pagination";
 import WalletTopUp from "./wallet-modal";
-import { PromotionForm } from "./promotion-form";
 
-interface Promotion {
-  id: string;
-  campaign: string;
-  displaySpace: string;
-  amount: number;
-  slots: number;
-  startDate: string;
-  status: "Live" | "Expired";
-  expiryDate?: string;
-}
-
-const initialData: Promotion[] = [
-  {
-    id: "01",
-    campaign: "Children Cloth at 50% discount at our...",
-    displaySpace: "Category Display",
-    amount: 500,
-    slots: 4,
-    startDate: "2020-02-29T00:15:00",
-    status: "Live",
-  },
-  {
-    id: "02",
-    campaign: "Children Cloth at 50% discount at our...",
-    displaySpace: "Homepage S2",
-    amount: 500,
-    slots: 20,
-    startDate: "2020-02-29T00:15:00",
-    status: "Expired",
-    expiryDate: "2020-02-29T00:15:00",
-  },
-  {
-    id: "03",
-    campaign: "Children Cloth at 50% discount at our...",
-    displaySpace: "Search Page",
-    amount: 500,
-    slots: 20,
-    startDate: "2020-02-29T00:15:00",
-    status: "Expired",
-    expiryDate: "2020-02-29T00:15:00",
-  },
-  {
-    id: "04",
-    campaign: "Children Cloth at 50% discount at our...",
-    displaySpace: "Featured",
-    amount: 100,
-    slots: 0,
-    startDate: "2020-02-29T00:15:00",
-    status: "Expired",
-    expiryDate: "2020-02-29T00:15:00",
-  },
-  {
-    id: "05",
-    campaign: "Children Cloth at 50% discount at our...",
-    displaySpace: "Featured",
-    amount: 500,
-    slots: 0,
-    startDate: "2020-02-29T00:15:00",
-    status: "Expired",
-    expiryDate: "2020-02-29T00:15:00",
-  },
-];
+import Link from "next/link";
+import { useDashboard } from "@/context/dashboard-context";
+import Cookies from "js-cookie";
 
 export default function PromotionList() {
   const [open, setOpen] = useState<boolean>(false);
-  const [openForm, setOpenForm] = useState<boolean>(false);
+  const { promotions } = useDashboard();
+  const currencySymbol = Cookies.get("currency_symbol");
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [data] = useState<Promotion[]>(initialData);
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 10;
-  const [filter, setFilter] = useState<"All" | "Live" | "Expired">("All");
+  const [, setFilter] = useState<"All" | "Live" | "Expired">("All");
 
-  const filteredData = data.filter(
-    (item) =>
-      (filter === "All" || item.status === filter) &&
-      Object.values(item).some((value) =>
-        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-      )
-  );
+  // const filteredData = data.filter(
+  //   (item) =>
+  //     (filter === "All" || item.status === filter) &&
+  //     Object.values(item).some((value) =>
+  //       value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+  //     )
+  // );
+
+  const data = useMemo(() => promotions || [], [promotions]);
 
   const DisplayStatus = ({
     status,
@@ -158,14 +101,12 @@ export default function PromotionList() {
             <CustomWalletIcon className="h-4 w-4 mr-2 text-c-yellow" />
             Fund Wallet
           </Button>
-          <Button
-            className="h-[50px]"
-            variant={"outline"}
-            onClick={() => setOpenForm(true)}
-          >
-            <CustomChartIcon className="h-4 w-4 mr-2 text-c-yellow" />
-            Run Promotion
-          </Button>
+          <Link href="/dashboard/promote/create">
+            <Button className="h-[50px]" variant={"outline"}>
+              <CustomChartIcon className="h-4 w-4 mr-2 text-c-yellow" />
+              Run Promotion
+            </Button>
+          </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="h-[50px]">
@@ -199,7 +140,7 @@ export default function PromotionList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.map((row) => (
+            {data?.map((row) => (
               <TableRow key={row.id}>
                 <TableCell className=" p-5 pl-6 whitespace-nowrap">
                   {row.id}
@@ -208,18 +149,20 @@ export default function PromotionList() {
                   {row.campaign}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
-                  {row.displaySpace}
+                  {row.display_space}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
-                  ${row.amount} / {row.slots}
+                  {currencySymbol}{" "}
+                  {new Intl.NumberFormat().format(parseFloat(row.total_amount))}{" "}
+                  / {row.slots}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
-                  {format(new Date(row.startDate), "MMM dd yyyy HH:mm")}
+                  {format(new Date(row.start_date), "MMM dd yyyy HH:mm")}
                 </TableCell>
                 <TableCell className=" p-5 whitespace-nowrap">
                   <DisplayStatus
                     status={row.status}
-                    expiryDate={row.expiryDate}
+                    expiryDate={row.end_date}
                   />
                 </TableCell>
               </TableRow>
@@ -229,14 +172,13 @@ export default function PromotionList() {
       </div>
       <div className="mt-4">
         <Pagination
-          totalItems={filteredData.length}
+          totalItems={data.length}
           itemsPerPage={itemsPerPage}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
         />
       </div>
       <WalletTopUp isOpen={open} setIsOpen={setOpen} />
-      <PromotionForm isOpen={openForm} setIsOpen={setOpenForm} />
     </div>
   );
 }

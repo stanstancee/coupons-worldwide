@@ -2,9 +2,10 @@
 
 import type React from "react";
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { Profile } from "@/types/profile";
+import { Profile, Business } from "@/types/profile";
 import { CampaignResponse, Campaign, ICampaignData } from "@/types/campaign";
 import { TeamMember } from "@/types/member";
+import { Promotion, PromotionData } from "@/types/promote";
 
 interface DashboardContextType {
   profile: Profile | null;
@@ -21,6 +22,12 @@ interface DashboardContextType {
   >;
   teamMembers: TeamMember[] | null;
   setTeamMembers: React.Dispatch<React.SetStateAction<TeamMember[] | null>>;
+  business: Business | null;
+  setBusiness: React.Dispatch<React.SetStateAction<Business | null>>;
+  promotions: Promotion[] | null;
+  setPromotions: React.Dispatch<React.SetStateAction<Promotion[] | null>>;
+  promotionData: PromotionData | null;
+  setPromotionData: React.Dispatch<React.SetStateAction<PromotionData | null>>;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(
@@ -36,6 +43,13 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     null
   );
   const [teamMembers, setTeamMembers] = useState<TeamMember[] | null>(null);
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [promotions, setPromotions] = useState<Promotion[] | null>(null);
+  const [promotionData, setPromotionData] = useState<PromotionData | null>(
+    null
+  );
+
+  
 
   return (
     <DashboardContext.Provider
@@ -50,6 +64,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         setCampaignDetails,
         teamMembers,
         setTeamMembers,
+        business,
+        setBusiness,
+        promotions,
+        setPromotions,
+        promotionData,
+        setPromotionData,
       }}
     >
       {children}

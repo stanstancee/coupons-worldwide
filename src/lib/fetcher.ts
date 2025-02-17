@@ -10,6 +10,7 @@ export const fetcher = async (url: string) => {
     const decryptedToken = decryptData(token)
     const headers: HeadersInit = {
         "Content-Type": "application/json",
+        Accept: "application/json",
     }
 
     if (token) {

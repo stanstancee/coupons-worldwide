@@ -1,19 +1,24 @@
 "use client";
 
-import { Card,  } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Copy } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import PrintableCoupon from "./print-qrcode";
+import { useDashboard } from "@/context/dashboard-context";
 
 export default function QRCard() {
-  const { toast } = useToast();
-  const url = "https://coupons-worldwide.vercel.app/listing/stanley-mall";
+  const { profile } = useDashboard();
 
+  const business = profile?.businesses[0];
+  console.log(business);
+  const { toast } = useToast();
+  const url = business?.url;
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(url || "");
       toast({
         title: "Copied!",
         description: "Link copied to clipboard",
@@ -45,7 +50,7 @@ export default function QRCard() {
         </div>
         <div className="flex items-center gap-4 w-full">
           <Link
-            href={url}
+            href={url || ""}
             className="text-sm text-muted-foreground hover:underline break-all flex-1 text-center"
           >
             {url}
@@ -60,6 +65,12 @@ export default function QRCard() {
             <Copy className="h-4 w-4" />
           </Button>
         </div>
+        <PrintableCoupon
+          businessName={business?.name as string}
+          logoImage={business?.logo as string}
+          couponUrl={business?.url as string}
+          instructions="Scan the QR-Code to access exclusive deals and discounts available just for you!"
+        />
       </div>
     </Card>
   );

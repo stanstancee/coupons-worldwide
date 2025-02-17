@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useEffect } from "react";
@@ -6,6 +7,7 @@ import { useApi } from "@/hooks/useApi";
 import { useDashboard } from "@/context/dashboard-context";
 import Cookies from "js-cookie";
 import { Profile } from "@/types/profile";
+import { countries } from "@/lib/countries";
 
 export default function DashboardWrapper({
   children,
@@ -15,16 +17,19 @@ export default function DashboardWrapper({
   const { data } = useApi("/profile/info", {
     revalidateOnFocus: false,
     revalidateIfStale: false,
-   
   });
 
-  const { setProfile } = useDashboard();
+  const { setProfile, setBusiness } = useDashboard();
 
   useEffect(() => {
     if (data) {
       const profileData: Profile = data?.data;
-      Cookies.set("business_uid", profileData?.businesses[0]?.uid);
+      const business = profileData?.businesses[0];
+      const country = countries.find((c) => c.name === business?.country);
+      Cookies.set("business_uid", business?.uid);
+      Cookies.set("currency_symbol", country?.symbol as string);
       setProfile(profileData);
+      setBusiness(business);
     }
   }, [data, setProfile]);
 

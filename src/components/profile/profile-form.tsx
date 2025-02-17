@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Edit } from "lucide-react"
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -21,6 +22,7 @@ import { mutate } from "swr"
 export default function ProfileForm() {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null)
   const { profile } = useDashboard()
   const { toast } = useToast()
 
@@ -52,17 +54,20 @@ export default function ProfileForm() {
     formData.append("gender", data.gender as string)
     formData.append("country", data.country as string)
 
+    if (uploadedImage) {
+      formData.append("profile_image", uploadedImage)
+    }
 
     try {
       setIsLoading(true)
       const response = await updateProfileAction(formData)
       if (response?.status) {
-        await  mutate("/profile/info")
+        await mutate("/profile/info")
         toast({
           title: "Success",
           description: response?.message,
         })
-     
+        setUploadedImage(null)
       } else {
         toast({
           title: "Error",
@@ -91,12 +96,29 @@ export default function ProfileForm() {
       <div className="flex flex-col md:flex-row gap-6 items-start mb-8 md:items-center">
         <div className="relative w-20 h-20 rounded-full overflow-hidden">
           <Image
-            src={profile?.profile_image || `/placeholder.jpg`}
+            src={uploadedImage ? URL.createObjectURL(uploadedImage) : profile?.profile_image || `/placeholder.jpg`}
             alt="Profile picture"
-            className="object-cover"
+            className="object-cover w-full h-full"
             width={100}
             height={100}
+
           />
+          {isEditing && (
+            <label
+              htmlFor="profile-image"
+              className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-pointer"
+            >
+              <Edit className="w-6 h-6 text-white" />
+              <input
+                type="file"
+                id="profile-image"
+                className="hidden"
+                accept="image/*"
+                title="Upload profile image"
+                onChange={(e) => setUploadedImage(e.target.files?.[0] || null)}
+              />
+            </label>
+          )}
         </div>
         <div className="flex-1">
           <h2 className="text-xl font-medium">
