@@ -23,17 +23,17 @@ import { LogOut, Plus, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useDashboard } from "@/context/dashboard-context";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import Cookies from "js-cookie";
 
 const TopNav = ({ title }: { title: string }) => {
   const { profile } = useDashboard();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
-  const router = useRouter();
+
   const clearAllCookies = () => {
     const cookies = Cookies.get(); // Get all cookies as an object
     Object.keys(cookies).forEach((cookie) => {
-      Cookies.remove(cookie, { path: "/" }); // Remove each cookie
+      Cookies.remove(cookie, { path: "/" });
     });
   };
 
@@ -42,9 +42,9 @@ const TopNav = ({ title }: { title: string }) => {
     localStorage.clear();
     sessionStorage.clear();
     clearAllCookies();
+    setShowLogoutDialog(false);
 
-    // Redirect to sign-in
-    router.refresh();
+    window.location.href = "/sign-in";
   };
 
   return (
