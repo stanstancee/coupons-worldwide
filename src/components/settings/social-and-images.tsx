@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,8 +18,15 @@ import { SocialSchem, type SocialFormValues } from "@/lib/schema";
 import { Separator } from "@/components/ui/separator";
 import TitleAndDescription from "../ui/title-and-description";
 import TechStackManager from "./tech-stack-manager";
+import { useDashboard } from "@/context/dashboard-context";
+import { updateSocialAction } from "@/actions/settings";
+import { useToast } from "@/hooks/use-toast";
+import { mutate } from "swr";
 
 export default function SocialForm() {
+  const { toast } = useToast();
+  const { business } = useDashboard();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm<SocialFormValues>({
     resolver: zodResolver(SocialSchem),
     defaultValues: {
@@ -31,9 +38,47 @@ export default function SocialForm() {
     },
   });
 
+  useEffect(() => {
+    if (business) {
+      form.reset({
+        instagram: business.instagram,
+        twitter: business.twitter,
+        facebook: business.facebook,
+        linkedin: business.linkedin,
+        youtube: business.youtube || "",
+      });
+    }
+  }, [business, form]);
+
   async function onSubmit(data: SocialFormValues) {
-    console.log(data);
-    // Handle form submission
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value) formData.append(key, value);
+    });
+    formData.append("business_uid", business?.uid || "");
+
+    try {
+      setIsLoading(true);
+      const res = await updateSocialAction(formData);
+      if (res.status) {
+        toast({
+          title: "Success",
+          description: res?.message,
+        });
+
+        await mutate("/profile/info");
+      } else {
+        toast({
+          title: "Error",
+          description: res?.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -158,14 +203,15 @@ export default function SocialForm() {
           <Separator />
 
           <div className="flex justify-end">
-            <Button type="submit">Save Changes</Button>
+            <Button isLoading={isLoading} type="submit" className="h-[48px]">
+              Save Changes
+            </Button>
           </div>
         </form>
       </Form>
 
-
       <div className="space-y-8 max-w-[1200px] py-10">
-      <Separator />
+        <Separator />
         <TechStackManager />
       </div>
     </div>

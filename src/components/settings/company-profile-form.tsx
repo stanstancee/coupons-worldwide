@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,48 +25,123 @@ import { RichTextEditor } from "./rich-text-editor";
 import { companyFormSchema, type CompanyFormValues } from "@/lib/schema";
 import { Separator } from "../ui/separator";
 import TitleAndDescription from "../ui/title-and-description";
-
-const employeeRanges = [
-  "1 - 50",
-  "51 - 200",
-  "201 - 500",
-  "501 - 1000",
-  "1000+",
-];
-
-const industries = [
-  "Technology",
-  "Healthcare",
-  "Finance",
-  "Education",
-  "Manufacturing",
-  "Retail",
-  "Other",
-];
+import { useDashboard } from "@/context/dashboard-context";
+import { useApi } from "@/hooks/useApi";
+import { useState, useEffect, useMemo } from "react";
+import { updateBasicAction } from "@/actions/settings";
+import { useToast } from "@/hooks/use-toast";
+import { mutate } from "swr";
 
 export default function CompanyProfileForm() {
+  const { business } = useDashboard();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { data } = useApi("/business/list-industries", {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+    revalidateOnReconnect: false,
+  });
+  const [industries, setIndustries] = useState<{ id: number; name: string }[]>(
+    []
+  );
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (data) {
+      setIndustries(data?.data || []);
+    }
+  }, [data]);
+
+  const industriesOptions = useMemo(() => {
+    return industries?.map((industry) => ({
+      value: industry.name,
+      label: industry.name,
+    }));
+  }, [industries]);
+
   const form = useForm<CompanyFormValues>({
     resolver: zodResolver(companyFormSchema),
     defaultValues: {
       name: "",
       website: "",
       email: "",
-      employeeCount: "",
-      industry: "",
+      company_size: "",
+      primary_industry: "",
       phone: "",
-      description: "",
+      about: "",
+      secondary_industry: "",
     },
   });
 
+  useEffect(() => {
+    if (business) {
+      form.reset({
+        name: business.name,
+        website: business.url,
+        email: business.email,
+        company_size: business.company_size,
+        primary_industry: business.primary_industry as string,
+        secondary_industry: business.secondary_industry ||  "" ,
+        phone: business.phone,
+        about: business.about,
+      });
+    }
+  }, [business, form]);
+
+  // useEffect(() => {
+  //   if (business) {
+  //     form.setValue("name", business.name);
+  //     form.setValue("website", business.url);
+  //     form.setValue("email", business.email);
+  //     form.setValue("company_size", business.company_size);
+  //     form.setValue("primary_industry", business.primary_industry as string);
+  //     form.setValue("phone", business.phone);
+  //     form.setValue("about", business.about ?? "");
+  //   }
+  // }, [business, form]);
+
   async function onSubmit(data: CompanyFormValues) {
-    console.log(data);
-    // Handle form submission
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value) formData.append(key, value);
+    });
+    formData.append("business_uid", business?.uid || "");
+
+    try {
+      setIsLoading(true);
+      const res = await updateBasicAction(formData);
+      if (res.status) {
+        toast({
+          title: "Success",
+          description: res?.message,
+        });
+
+        await mutate("/profile/info");
+      } else {
+        toast({
+          title: "Error",
+          description: res?.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error?.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <div className="">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-[1200px]">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 max-w-[1200px]"
+        >
           <div className="space-y-6">
             <h2 className="text-lg font-semibold">Basic Information</h2>
             <Separator />
@@ -115,7 +191,11 @@ export default function CompanyProfileForm() {
                           Company Name
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} className="w-full rounded-none h-[48px] text-[#515B6F]" placeholder="Enter company name" />
+                          <Input
+                            {...field}
+                            className="w-full rounded-none h-[48px] text-[#515B6F]"
+                            placeholder="Enter company name"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -131,7 +211,11 @@ export default function CompanyProfileForm() {
                           Website
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} type="url"  className="w-full text-[#515B6F]  rounded-none h-[48px]" />
+                          <Input
+                            {...field}
+                            type="url"
+                            className="w-full text-[#515B6F]  rounded-none h-[48px]"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -147,7 +231,11 @@ export default function CompanyProfileForm() {
                           Official Email
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} type="email"  className="w-full rounded-none h-[48px] text-[#515B6F]" />
+                          <Input
+                            {...field}
+                            type="email"
+                            className="w-full rounded-none h-[48px] text-[#515B6F]"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -157,29 +245,19 @@ export default function CompanyProfileForm() {
                   <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="employeeCount"
+                      name="company_size"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-[#515B6F] font-semibold text-base">
                             Employee
                           </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger  className="rounded-none h-[48px] text-[#515B6F]">
-                                <SelectValue placeholder="Select range" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {employeeRanges.map((range) => (
-                                <SelectItem key={range} value={range}>
-                                  {range}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              className="w-full rounded-none h-[48px] text-[#515B6F]"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -187,25 +265,30 @@ export default function CompanyProfileForm() {
 
                     <FormField
                       control={form.control}
-                      name="industry"
+                      name="primary_industry"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-[#515B6F] font-semibold text-base">
                             Industry
                           </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
+                          <Select onValueChange={field.onChange}>
                             <FormControl>
-                              <SelectTrigger  className="rounded-none h-[48px] text-[#515B6F]">
-                                <SelectValue placeholder="Select industry" />
+                              <SelectTrigger className="rounded-none h-[48px] text-[#515B6F]">
+                                <SelectValue
+                                  placeholder={
+                                    business?.primary_industry ||
+                                    "Select industry"
+                                  }
+                                />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {industries.map((industry) => (
-                                <SelectItem key={industry} value={industry}>
-                                  {industry}
+                              {industriesOptions.map((industry) => (
+                                <SelectItem
+                                  key={industry.value}
+                                  value={industry.value}
+                                >
+                                  {industry.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -215,6 +298,25 @@ export default function CompanyProfileForm() {
                       )}
                     />
                   </div>
+                  <FormField
+                    control={form.control}
+                    name="secondary_industry"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[#515B6F] font-semibold text-base">
+                          Secondary Industry
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            {...field}
+                            className="w-full  rounded-none h-[48px] text-[#515B6F]"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}
@@ -225,7 +327,11 @@ export default function CompanyProfileForm() {
                           Official Phone number
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} type="tel"  className="w-full  rounded-none h-[48px] text-[#515B6F]" />
+                          <Input
+                            {...field}
+                            type="tel"
+                            className="w-full  rounded-none h-[48px] text-[#515B6F]"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -239,44 +345,48 @@ export default function CompanyProfileForm() {
           <Separator />
 
           <div className="space-y-6">
-              <div className="flex flex-col gap-4 lg:flex-row  xl:gap-11  2xl:gap-28">
-                <div className="md:max-w-[350px]">
-                  <TitleAndDescription
-                    title="About Company"
-                    description="Brief description for your company. URLs are hyperlinked."
+            <div className="flex flex-col gap-4 lg:flex-row  xl:gap-11  2xl:gap-28">
+              <div className="md:max-w-[350px]">
+                <TitleAndDescription
+                  title="About Company"
+                  description="Brief description for your company. URLs are hyperlinked."
+                />
+              </div>
+
+              {business?.uid ? (
+                <div className="w-full ">
+                  <FormField
+                    control={form.control}
+                    name="about"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[#515B6F] font-semibold text-base">
+                          Description
+                        </FormLabel>
+                        <FormControl>
+                          <RichTextEditor
+                            value={field.value || business?.about || ""}
+                            onChange={field.onChange}
+                            placeholder="Enter description"
+                          />
+                        </FormControl>
+                        <p className="text-sm text-muted-foreground text-right">
+                          Maximum 500 characters
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-
-            <div className='w-full '>
-            <FormField
-              control={form.control}
-              name="description"
-
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[#515B6F] font-semibold text-base">
-                    Description
-                  </FormLabel>
-                  <FormControl>
-                    <RichTextEditor
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <p className="text-sm text-muted-foreground text-right">
-                    Maximum 500 characters
-                  </p>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              ) : null}
             </div>
-          </div>
           </div>
           <Separator />
 
           <div className="flex justify-end">
-            <Button type="submit">Save Changes</Button>
+            <Button isLoading={isLoading} type="submit" className="h-[48px]">
+              Save Changes
+            </Button>
           </div>
         </form>
       </Form>

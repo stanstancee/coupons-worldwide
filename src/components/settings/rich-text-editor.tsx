@@ -70,6 +70,7 @@ export function RichTextEditor({
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
+                  type="button"
                 size="sm"
                 className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
                 disabled={disabled}
@@ -90,6 +91,7 @@ export function RichTextEditor({
           <Button
             variant="ghost"
             size="sm"
+            type="button"
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={disabled}
             className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
@@ -99,6 +101,7 @@ export function RichTextEditor({
           <Button
             variant="ghost"
             size="sm"
+              type="button"
             onClick={() => editor.chain().focus().toggleItalic().run()}
             disabled={disabled}
             className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
@@ -108,6 +111,7 @@ export function RichTextEditor({
           <Button
             variant="ghost"
             size="sm"
+              type="button"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             disabled={disabled}
             className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
@@ -117,6 +121,7 @@ export function RichTextEditor({
           <Button
             variant="ghost"
             size="sm"
+              type="button"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             disabled={disabled}
             className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
@@ -125,6 +130,7 @@ export function RichTextEditor({
           </Button>
           <Button
             variant="ghost"
+              type="button"
             size="sm"
             onClick={() => {
               const url = window.prompt("URL");

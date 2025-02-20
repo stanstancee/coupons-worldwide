@@ -16,38 +16,37 @@ export const profileFormSchema = z.object({
 
 
 
-const MAX_FILE_SIZE = 500000
+const MAX_FILE_SIZE = 3000000
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/svg+xml", "image/gif"]
 
 export const companyFormSchema = z.object({
   logo: z
     .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 500KB.`)
+    .refine((file) => file?.size <= MAX_FILE_SIZE, `Max file size is 3mb.`)
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
       "Only .jpg, .jpeg, .png, .svg and .gif formats are supported.",
     )
     .optional(),
-  name: z.string().min(2, "Company name must be at least 2 characters."),
-  website: z.string().url("Please enter a valid URL."),
-  email: z.string().email("Please enter a valid email address."),
-  employeeCount: z.string({
-    required_error: "Please select employee count.",
-  }),
-  industry: z.string({
-    required_error: "Please select industry.",
-  }),
-  phone: z.string().min(10, "Please enter a valid phone number."),
-  description: z.string().max(500, "Description must not exceed 500 characters."),
+  name: z.string().min(2, "Company name must be at least 2 characters.").optional(),
+  website: z.string().url("Please enter a valid URL.").optional(),
+  email: z.string().email("Please enter a valid email address.").optional(),
+  company_size: z.string().optional(),
+
+  primary_industry: z.string().or(z.null()).optional(),
+  secondary_industry: z.string().optional(),
+  phone: z.string().optional(),
+  about: z.string().max(500, "Description must not exceed 500 characters.").optional(),
+
 })
 
 
 export const SocialSchem = z.object({
-  facebook: z.string().url("Please enter a valid URL."),
-  twitter: z.string().url("Please enter a valid URL."),
-  linkedin: z.string().url("Please enter a valid URL."),
-  instagram: z.string().url("Please enter a valid URL."),
-  youtube: z.string().url("Please enter a valid URL."),
+  facebook: z.string().url("Please enter a valid URL.").optional(),
+  twitter: z.string().url("Please enter a valid URL.").optional(),
+  linkedin: z.string().url("Please enter a valid URL.").optional(),
+  instagram: z.string().url("Please enter a valid URL.").optional(),
+  youtube: z.string().url("Please enter a valid URL.").optional(),
 })
 
 

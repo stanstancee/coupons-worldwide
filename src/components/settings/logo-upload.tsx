@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Images} from "lucide-react";
+import { Images } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useDashboard } from "@/context/dashboard-context";
 
 interface LogoUploadProps {
   value?: File;
@@ -21,12 +22,16 @@ export function LogoUpload({ value, onChange, disabled }: LogoUploadProps) {
     [onChange]
   );
 
+  const { business } = useDashboard();
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
       "image/*": [".jpeg", ".jpg", ".png", ".svg", ".gif"],
     },
-    maxSize: 500000, // 500KB
+    // maxSize 5mb
+
+    maxSize: 500000,
     maxFiles: 1,
     disabled,
   });
@@ -43,16 +48,18 @@ export function LogoUpload({ value, onChange, disabled }: LogoUploadProps) {
       <input {...getInputProps()} />
 
       <div className="flex gap-4 items-center">
-        {value && (
-          <div className="relative w-16 h-16">
-            <Image
-              src={URL.createObjectURL(value) || "/placeholder.svg"}
-              alt="Company logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-        )}
+        <div className="relative w-16 h-16">
+          <Image
+            src={
+              value
+                ? URL.createObjectURL(value)
+                : (business?.logo as string) || "/placeholder.jpg"
+            }
+            alt="Company logo"
+            fill
+            className="object-contain"
+          />
+        </div>
 
         <div
           className={cn(

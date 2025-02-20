@@ -652,3 +652,29 @@ body {
     margin: 1.6cm;
   }
 }
+
+.prose ul,
+.prose ol {
+  list-style-type: disc; /* Ensures bullet points are visible */
+  margin-left: 1.5rem; /* Adds indentation */
+}
+
+.prose ol {
+  list-style-type: decimal; /* Ensures numbers show in ordered lists */
+}
+
+.prose p.is-editor-empty:first-child::before {
+  color: #d1d5db;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.prose p.is-empty::before {
+  color: #d1d5db;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+} 

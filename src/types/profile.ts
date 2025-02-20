@@ -59,6 +59,7 @@ export interface Business {
     qr_code: string;
     created_at: string;
     updated_at: string;
+    youtube: string | null
 }
 
 export interface Profile {
