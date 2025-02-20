@@ -23,6 +23,7 @@ import Loading from "../loading";
 export function MemberCard({ member }: { member: TeamMember }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDelete, setShowDelete] = useState<boolean>(false);
   const { toast } = useToast();
   const business_uid = Cookies.get("business_uid");
 
@@ -61,8 +62,8 @@ export function MemberCard({ member }: { member: TeamMember }) {
     <>
       <div
         className="relative p-6 border rounded-lg hover:bg-gray-50 transition-colors bg-white"
-        // onMouseEnter={() => setShowDelete(true)}
-        // onMouseLeave={() => setShowDelete(false)}
+        onMouseEnter={() => setShowDelete(true)}
+        onMouseLeave={() => setShowDelete(false)}
       >
         <div className="flex flex-col items-center gap-3">
           <Avatar className="h-20 w-20 rounded-full">
@@ -79,7 +80,7 @@ export function MemberCard({ member }: { member: TeamMember }) {
             </span>
           </div>
         </div>
-        {member?.invitation_status !== "accepted" && (
+        {showDelete && (
           <svg
             width="40"
             height="40"

@@ -28,17 +28,17 @@ import WalletTopUp from "./wallet-modal";
 import Link from "next/link";
 import { useDashboard } from "@/context/dashboard-context";
 import Cookies from "js-cookie";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { setParams } from "@/utils/urlParams";
 
 export default function PromotionList() {
   const [open, setOpen] = useState<boolean>(false);
-  const { promotions } = useDashboard();
+  const { promotions, promotionData } = useDashboard();
   const currencySymbol = Cookies.get("currency_symbol");
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const itemsPerPage = 10;
   const [, setFilter] = useState<"All" | "Live" | "Expired">("All");
 
   // const filteredData = data.filter(
@@ -48,6 +48,15 @@ export default function PromotionList() {
   //       value.toString().toLowerCase().includes(searchQuery.toLowerCase())
   //     )
   // );
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handlePageChange = (page: number) => {
+    const newUrl = setParams(pathname, searchParams, { page: page.toString() });
+    router.push(newUrl);
+  };
 
   const data = useMemo(() => promotions || [], [promotions]);
 
@@ -172,10 +181,10 @@ export default function PromotionList() {
       </div>
       <div className="mt-4">
         <Pagination
-          totalItems={data.length}
-          itemsPerPage={itemsPerPage}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
+          totalItems={promotionData?.total || 0}
+          itemsPerPage={20}
+          currentPage={promotionData?.current_page || 0}
+          onPageChange={handlePageChange}
         />
       </div>
       <WalletTopUp isOpen={open} setIsOpen={setOpen} />
