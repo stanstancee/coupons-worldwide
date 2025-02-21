@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import {
@@ -18,6 +18,14 @@ import { CustomTextarea } from "@/components/ui/custom-textarea";
 import Cookies from "js-cookie";
 import { onboardBusinessAction } from "@/actions/onboarding";
 import { useToast } from "@/hooks/use-toast";
+import { useApi } from "@/hooks/useApi";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   about: z.string().min(20),
@@ -39,6 +47,28 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
   }
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { data } = useApi("/business/list-industries", {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+    revalidateOnReconnect: false,
+  });
+  const [industries, setIndustries] = useState<{ id: number; name: string }[]>(
+    []
+  );
+
+  useEffect(() => {
+    if (data) {
+      setIndustries(data?.data || []);
+    }
+  }, [data]);
+
+  const industriesOptions = useMemo(() => {
+    return industries?.map((industry) => ({
+      value: industry.name,
+      label: industry.name,
+    }));
+  }, [industries]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -78,19 +108,16 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
       setIsLoading(true);
       const response = await onboardBusinessAction(formData);
       if (response.status) {
-        console.log(response?.data)
+        console.log(response?.data);
         setActiveTab("logo");
-        Cookies.set('business_uid' , response?.data?.uid)
-       
-      }
-      else{
+        Cookies.set("business_uid", response?.data?.uid);
+      } else {
         toast({
           variant: "destructive",
           title: "Error",
-          description: response?.message
-        })
+          description: response?.message,
+        });
       }
-
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -126,18 +153,27 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
           )}
         />
         <div>
-          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
-            Social Media Accounts
-          </h1>
-          <div className="grid grid-cols-2 gap-4 lg:gap-6">
+          <h1 className="text-blue1 font-bold text-sm mb-4">Industry</h1>
+          <div className="grid md:grid-cols-2 gap-4 lg:gap-6">
             <FormField
               control={form.control}
               name="primary_category"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <ProfileInput label="Primary Category" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+                        <SelectValue placeholder={"Primary Category"} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {industriesOptions.map((industry) => (
+                        <SelectItem key={industry.value} value={industry.value}>
+                          {industry.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -157,10 +193,10 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
           </div>
         </div>
         <div>
-          <h1 className="text-blue1 font-bold text-sm mb-[10px]">
+          <h1 className="text-blue1 font-bold text-sm mb-4">
             Social Media Accounts
           </h1>
-          <div className="grid grid-cols-2 gap-4 lg:gap-6">
+          <div className="grid md:grid-cols-2 gap-4 lg:gap-6">
             <FormField
               control={form.control}
               name="linkedin"
@@ -227,11 +263,11 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
             />
           </div>
         </div>
-        <section className="flex justify-between gap-5 w-full mt-4">
+        <section className="flex justify-between gap-5 w-full mt-4 flex-wrap md:flex-nowrap">
           <Button
             size={"lg"}
             variant={"outline"}
-            className="flex-1 text-primary border-primary font-bold text-base"
+            className="flex-1 text-primary border-primary font-bold text-base h-[48px]"
             onClick={() => setActiveTab("details")}
           >
             Return to Company Details
@@ -240,7 +276,7 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
             isLoading={isLoading}
             type="submit"
             size={"lg"}
-            className="flex-1 font-bold text-base"
+            className="flex-1 font-bold text-base h-[48px]"
           >
             Next
           </Button>

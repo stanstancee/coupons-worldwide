@@ -17,7 +17,7 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInput, GoogleAddressInput } from "@/components/ui/custom-input";
-import { handleDateChange } from "@/utils/handleDateChange";
+// import { handleDateChange } from "@/utils/handleDateChange";
 import Cookies from "js-cookie";
 import { countries } from "@/lib/countries";
 import {
@@ -43,26 +43,30 @@ const formSchema = z.object({
   state: z.string().min(2, { message: "Company state is required" }),
   city: z.string().min(2, { message: "Company city is required" }),
   address_json: z.string().min(3, { message: "Company address is required" }),
-  date: z.string().refine(
-    (val) => {
-      const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-      const dateParts = val.split("/");
-      if (dateRegex.test(val) && dateParts.length === 3) {
-        const month = Number.parseInt(dateParts[0], 10);
-        const day = Number.parseInt(dateParts[1], 10);
-        const year = Number.parseInt(dateParts[2], 10);
-        const d = new Date(year, month - 1, day);
-        return (
-          d.getMonth() + 1 === month &&
-          d.getFullYear() === year &&
-          d.getDate() === day &&
-          !isNaN(d.getTime())
-        );
-      }
-      return false;
-    },
-    { message: "Date must be in MM/DD/YYYY format and valid" }
-  ),
+  website: z.string().optional(),
+  date: z
+    .string()
+    .refine(
+      (val) => {
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        const dateParts = val.split("/");
+        if (dateRegex.test(val) && dateParts.length === 3) {
+          const month = Number.parseInt(dateParts[0], 10);
+          const day = Number.parseInt(dateParts[1], 10);
+          const year = Number.parseInt(dateParts[2], 10);
+          const d = new Date(year, month - 1, day);
+          return (
+            d.getMonth() + 1 === month &&
+            d.getFullYear() === year &&
+            d.getDate() === day &&
+            !isNaN(d.getTime())
+          );
+        }
+        return false;
+      },
+      { message: "Date must be in MM/DD/YYYY format and valid" }
+    )
+    .optional(),
   email: z.string().email(),
 });
 
@@ -83,6 +87,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       state: "",
       city: "",
       date: "",
+      website: "",
       address_json: "",
     },
   });
@@ -303,24 +308,24 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             />
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-4 ">
+          <div className="grid  lg:grid-cols-2 gap-4 ">
             <div className="flex flex-col gap-4">
-              <h1 className="text-blue1 font-semibold text-sm">Year Founded</h1>
+              <h1 className="text-blue1 font-semibold text-sm">
+                Official Website
+              </h1>
               <FormField
                 control={form.control}
-                name="date"
+                name="website"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <ProfileInput
-                        leftIcon="/svg/date.svg"
-                        label="Enter Date"
-                        placeholder="MM/DD/YYYY"
+                        leftIcon="/svg/website.svg"
+                        label="Enter Website"
+                        placeholder="https://example.com"
                         type="text"
-                        maxLength={10}
                         value={field.value || ""}
                         onChange={(e) => {
-                          handleDateChange(e);
                           field.onChange(e);
                         }}
                       />
@@ -348,24 +353,34 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
               />
             </div>
           </div>
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <ProfileInput label="Email Address" {...field} type="email" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <section className="flex justify-between gap-5 w-full mt-4">
+          <div className="flex flex-col gap-4">
+            <h1 className="text-blue1 font-semibold text-sm">
+              Company Email Address
+            </h1>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput
+                      label="Email Address"
+                      {...field}
+                      type="email"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <section className="flex justify-between gap-5 w-full mt-4 flex-wrap md:flex-nowrap">
             <Button
               size={"lg"}
               variant={"outline"}
-              className="flex-1 text-primary border-primary font-bold text-base"
+              className="flex-1 text-primary border-primary font-bold text-base h-[48px]"
               onClick={() => router.back()}
             >
               Return to onboarding
@@ -373,7 +388,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             <Button
               type="submit"
               size={"lg"}
-              className="flex-1 font-bold text-base"
+              className="flex-1 font-bold text-base h-[48px]"
             >
               Next
             </Button>

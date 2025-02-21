@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 const Container = () => {
   return (
     <div className="relative">
-      <div className="grid place-items-center place-content-center absolute top-1/4 left-0 right-0 ">
+      <div className="grid place-items-center place-content-center absolute xl:top-1/4 left-0 right-0 ">
         <Image
           height={36}
           width={228}
@@ -42,12 +42,12 @@ const Container = () => {
             <Button
               variant={"outline"}
               size="lg"
-              className="w-full border-primary text-primary font-bold"
+              className="w-full border-primary text-primary font-bold h-[48px]"
             >
               Setup Company Profile
             </Button>
           </Link>
-          <Button size="lg" className="font-bold">
+          <Button size="lg" className="font-bold h-[48px]">
             Logout & Complete Later
           </Button>
         </div>

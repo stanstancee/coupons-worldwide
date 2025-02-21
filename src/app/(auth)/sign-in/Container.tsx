@@ -94,9 +94,9 @@ const Container = () => {
     }
   }
   return (
-    <div className="grid place-items-center h-full place-content-center pt-8">
-      <div className="flex flex-col gap-6 xl:gap-8 w-[25rem]">
-        <div className="grid place-items-center place-content-center">
+    <div className="grid place-items-center h-full place-content-center pt-8 ">
+      <div className="flex flex-col gap-6 xl:gap-8 md:w-[25rem] w-full ">
+        <div className="grid place-items-center md:place-content-center">
           <Image
             height={36}
             width={228}
@@ -106,7 +106,7 @@ const Container = () => {
         </div>
         <h1 className="font-semibold text-[#4A4A4A] text-center">Log In</h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className=" grid gap-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className=" grid gap-8">
             <FormField
               control={form.control}
               name="login"

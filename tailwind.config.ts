@@ -29,6 +29,7 @@ export default {
         'c-orange':"#FF8723",
         'c-blue':"#216FED",
         'c-gray':'#7B7B7B',
+        'blue1':'#1A4F6E' , 
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

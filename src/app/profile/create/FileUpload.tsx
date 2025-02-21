@@ -228,18 +228,18 @@ const FileUpload = ({ setActiveTab }: { setActiveTab: any }) => {
         </div>
       </div>
 
-      <section className="flex flex-col md:flex-row justify-between gap-5 w-full mt-4">
+      <section className="flex flex-col md:flex-row justify-between gap-5 w-full mt-4 flex-wrap md:flex-nowrap">
         <Button
-          size={"lg"}
+         
           variant={"outline"}
-          className="flex-1 text-primary border-primary font-bold text-base  "
+          className="flex-1 text-primary border-primary font-bold text-base h-[48px] "
           onClick={() => setActiveTab("about")}
         >
           Return to Company Details
         </Button>
         <Button
-          size={"lg"}
-          className={cn("flex-1 font-bold text-base")}
+
+          className={cn("flex-1 font-bold text-base h-[48px] ")}
           disabled={!logo || workplaceImages.length < 5}
           isLoading={loading}
           onClick={onSubmit}

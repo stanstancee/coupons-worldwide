@@ -23,10 +23,10 @@ const AuthWrapper: React.FC<ResponsiveWrapperProps> = ({ children }) => {
       </div>
 
       {/* Right Content Section */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 lg:p-12 lg:relative  ">
+      <div className="w-full lg:w-1/2 flex flex-col justify-between p-4 md:p-6  lg:p-12 lg:relative   ">
         <main className="flex-grow ">
           {children}
-          <footer className="absolute bottom-4 left-0 right-0 text-center text-[#4A4A4A] text-xs ">
+          <footer className="lg:absolute bottom-4 left-0 right-0 text-center text-[#4A4A4A] text-xs mt-5 ">
             © 2025 Appylite.
           </footer>
         </main>
@@ -78,7 +78,7 @@ export const ProfileRegWrapper: React.FC<ResponsiveWrapperProps> = ({
         <div className="flex flex-col justify-between p-6 lg:p-12 lg:max-w-[750px] my-0 mx-auto">
           <main className="flex-grow w-full">
             {children}
-            <footer className="absolute bottom-4 left-0 right-0 text-center text-[#4A4A4A] text-xs ">
+            <footer className="md:absolute bottom-4 left-0 right-0 text-center text-[#4A4A4A] text-xs  pt-8">
               © 2025 Appylite.
             </footer>
           </main>

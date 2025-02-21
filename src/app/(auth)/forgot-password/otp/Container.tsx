@@ -113,7 +113,7 @@ const Container = () => {
 
   return (
     <div className="grid place-items-center h-full place-content-center pt-8">
-      <div className="flex flex-col gap-6 xl:gap-8 w-[25rem]">
+      <div className="flex flex-col gap-6 xl:gap-8 md:w-[25rem] w-full">
         <div className="flex justify-center align-middle items-center ml-8 ">
           <Image
             height={36}
