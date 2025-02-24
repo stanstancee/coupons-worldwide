@@ -1,0 +1,39 @@
+@media print {
+    /* Hide everything except the table */
+    body > *:not(.print-content) {
+      display: none !important;
+    }
+  
+    /* Table styles for print */
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+  
+    .print-table th,
+    .print-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+  
+    .print-table th {
+      background-color: #f8f8f8;
+      white-space: nowrap;
+      padding: 8px;
+      color: #333;
+    }
+  
+    /* Header styles */
+    .print-header {
+      margin-bottom: 20px;
+    }
+  
+    /* Hide print button when printing */
+    .no-print {
+      display: none !important;
+    }
+  }
+  
+  
