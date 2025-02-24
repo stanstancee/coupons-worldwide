@@ -5,7 +5,8 @@ import type { NextRequest } from "next/server";
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   const token = (await cookies()).get("token")?.value;
-  if (!token) {
+  const isOnboarded = (await cookies()).get("isOnboarded")?.value;
+  if (!token || !isOnboarded) {
     return NextResponse.redirect(
       new URL(`/sign-in?redirect=${request.nextUrl.pathname}`, request.url)
     );

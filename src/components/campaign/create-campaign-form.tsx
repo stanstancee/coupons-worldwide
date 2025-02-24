@@ -28,7 +28,8 @@ import { removeCommasAndSpaces } from "@/utils/format-number";
 import { createCampaignAction } from "@/actions/campaign";
 import { useRouter } from "next/navigation";
 import Loading from "../loading";
-import { useDashboard } from "@/context/dashboard-context";
+
+import Cookies from "js-cookie";
 
 const CreateCampaignForm = () => {
   const { toast } = useToast();
@@ -77,7 +78,7 @@ const CreateCampaignForm = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputValue, setInputValue] = React.useState("");
-  const { profile } = useDashboard();
+  const business_uid = Cookies.get("business_uid");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -203,7 +204,7 @@ const CreateCampaignForm = () => {
       });
       return;
     }
-    formData.append("business_uid", profile?.businesses[0]?.uid || "");
+    formData.append("business_uid", business_uid || "");
     formData.append("title", values.title);
     formData.append("description", values.description);
     formData.append("type", values.type);
@@ -277,7 +278,6 @@ const CreateCampaignForm = () => {
     }
   };
 
-  console.log(form.formState.errors);
   return (
     <div>
       <Form {...form}>

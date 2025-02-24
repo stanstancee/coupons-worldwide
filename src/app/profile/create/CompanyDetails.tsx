@@ -37,36 +37,36 @@ interface CompanyDetailsProps {
 const formSchema = z.object({
   name: z.string().min(3),
   company_size: z.string().min(1, { message: "Company size is required" }),
-  address: z.string().optional(),
+  address: z.string().or(z.undefined()).optional(),
   phone: z.string().min(3, { message: "Company phone is required" }),
   country: z.string().min(2, { message: "Company country is required" }),
   state: z.string().min(2, { message: "Company state is required" }),
   city: z.string().min(2, { message: "Company city is required" }),
-  address_json: z.string().min(3, { message: "Company address is required" }),
+  address_json: z.string().optional(),
   website: z.string().optional(),
-  date: z
-    .string()
-    .refine(
-      (val) => {
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        const dateParts = val.split("/");
-        if (dateRegex.test(val) && dateParts.length === 3) {
-          const month = Number.parseInt(dateParts[0], 10);
-          const day = Number.parseInt(dateParts[1], 10);
-          const year = Number.parseInt(dateParts[2], 10);
-          const d = new Date(year, month - 1, day);
-          return (
-            d.getMonth() + 1 === month &&
-            d.getFullYear() === year &&
-            d.getDate() === day &&
-            !isNaN(d.getTime())
-          );
-        }
-        return false;
-      },
-      { message: "Date must be in MM/DD/YYYY format and valid" }
-    )
-    .optional(),
+  // date: z
+  //   .string()
+  //   .refine(
+  //     (val) => {
+  //       const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+  //       const dateParts = val.split("/");
+  //       if (dateRegex.test(val) && dateParts.length === 3) {
+  //         const month = Number.parseInt(dateParts[0], 10);
+  //         const day = Number.parseInt(dateParts[1], 10);
+  //         const year = Number.parseInt(dateParts[2], 10);
+  //         const d = new Date(year, month - 1, day);
+  //         return (
+  //           d.getMonth() + 1 === month &&
+  //           d.getFullYear() === year &&
+  //           d.getDate() === day &&
+  //           !isNaN(d.getTime())
+  //         );
+  //       }
+  //       return false;
+  //     },
+  //     { message: "Date must be in MM/DD/YYYY format and valid" }
+  //   )
+  //   .optional(),
   email: z.string().email(),
 });
 
@@ -86,7 +86,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       country: "",
       state: "",
       city: "",
-      date: "",
+
       website: "",
       address_json: "",
     },
@@ -103,6 +103,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   }, [form]);
 
   const onSubmit = (values: FormData) => {
+    console.log(values)
     const data = {
       ...values,
       address,
@@ -112,6 +113,9 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     }); // Expires in 7 days
     onNext();
   };
+
+ 
+
 
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;

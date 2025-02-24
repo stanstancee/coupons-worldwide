@@ -69,10 +69,12 @@ const Container = () => {
           });
           Cookies.set("token", encryptData(response.data.token));
           Cookies.set("user", JSON.stringify(response.data.user));
+          Cookies.set("isOnboarded", response?.data?.user?.is_onboarded);
           if (!response?.data?.user?.is_onboarded) {
             router.push("/profile/create");
+          } else {
+            router.push(redirectPath);
           }
-          router.push(redirectPath);
         }
       } else {
         toast({
