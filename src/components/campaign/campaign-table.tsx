@@ -92,7 +92,7 @@ export default function CampaignTable() {
 
   return (
     <div className="w-full  mx-auto p-4 space-y-6">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex md:items-center md:justify-between gap-4  md:flex-nowrap flex-wrap">
         <div className="relative w-[305px] bg-white ">
           <Input
             placeholder="Search campaign "

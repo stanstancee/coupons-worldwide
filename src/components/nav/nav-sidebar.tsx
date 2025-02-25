@@ -59,7 +59,7 @@ export function NavSidebar() {
       {/* Mobile menu button */}
       <button
         type="button"
-        className="fixed left-4 top-4 z-50 rounded-md  p-2 md:hidden bg-white"
+        className="fixed left-4 top-4 z-50 rounded-md  p-2 lg:hidden bg-white"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -68,7 +68,7 @@ export function NavSidebar() {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 md:hidden"
+          className="fixed inset-0 bg-black/50 lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
@@ -76,7 +76,7 @@ export function NavSidebar() {
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed shadow-nav-bar inset-y-0 left-0 z-40 flex h-screen  w-[286px] bg-white flex-col   transition-transform duration-300 ease-in-out md:sticky md:translate-x-0",
+          "fixed shadow-nav-bar inset-y-0 left-0 z-40 flex h-screen  w-[286px] bg-white flex-col   transition-transform duration-300 ease-in-out lg:sticky lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

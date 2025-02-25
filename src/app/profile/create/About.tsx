@@ -183,9 +183,20 @@ const About = ({ setActiveTab }: { setActiveTab: any }) => {
               name="secondary_category"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <ProfileInput label="Sub Category" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+                        <SelectValue placeholder={"Secondary Category"} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {industriesOptions.map((industry) => (
+                        <SelectItem key={industry.value} value={industry.value}>
+                          {industry.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

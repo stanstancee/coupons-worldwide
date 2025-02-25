@@ -18,7 +18,7 @@ export function StatsCard({
   isLast,
 }: StatsCardProps) {
   return (
-    <div className="flex   gap-4">
+    <div className="flex md:gap-8 gap-4 border-b pb-4 md:border-0 md:pb-0">
       <div
         className={cn(
           `rounded-[31.59px] h-[61.21px] w-[19.2px] `,
@@ -32,12 +32,12 @@ export function StatsCard({
         <p
           className={cn(
             " text-[#717579] font-bold md:text-[22px]",
-            isLast && "font-normal"
+            isLast && "font-normal md:font-bold"
           )}
         >
           {title}
         </p>
-        <p className="text-4xl  font-bold text-[#1D1B23]">{value}</p>
+        <p className="xl:text-4xl md:text-3xl text-2xl font-bold text-[#1D1B23]">{value}</p>  
         <p className="text-[#717579] md:text-xl">{subtitle}</p>
       </div>
     </div>

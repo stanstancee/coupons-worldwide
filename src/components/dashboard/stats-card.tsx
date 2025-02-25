@@ -18,7 +18,7 @@ export function StatsCard({
   isLast,
 }: StatsCardProps) {
   return (
-    <div className="flex md:gap-8   gap-4">
+    <div className="flex md:gap-8 gap-4 border-b pb-4 md:border-0 md:pb-0">
       <div
         className={cn(
           `rounded-[31.59px] h-[61.21px] w-[19.2px] `,
@@ -37,7 +37,7 @@ export function StatsCard({
         >
           {title}
         </p>
-        <p className="text-4xl  font-bold text-[#1D1B23]">{value}</p>
+        <p className="xl:text-4xl md:text-3xl text-2xl font-bold text-[#1D1B23]">{value}</p>
         <p className="text-[#717579] md:text-xl">{subtitle}</p>
       </div>
     </div>
@@ -47,7 +47,7 @@ export function StatsCard({
 export const StatsCards = () => {
   return (
     <section className="shadow-cards rounded-[10.41px] bg-white p-4 md:py-[3.75rem] md:px-6">
-      <div className="flex flex-col lg:flex-row md:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row md:justify-between gap-6">
         {dummyData.map((data, index) => (
           <StatsCard key={index} {...data} />
         ))}

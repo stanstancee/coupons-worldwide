@@ -10,9 +10,9 @@ const NewCampaignHeader = ({
   setStatus: React.Dispatch<React.SetStateAction<"draft" | "">>;
 }) => {
   return (
-    <div className="flex items-center justify-between">
-      <h1 className="text-xl font-bold">New Campaign</h1>
-      <section className="flex items-center gap-4">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <h1 className="md:text-xl text-lg font-bold flex-1">New Campaign</h1>
+      <section className="flex items-center gap-4  ">
         {/* <Button className="bg-white text-primary hover:bg-white/90 ">
           <Image src="/svg/insight.svg" alt="Back" width={24} height={24} />
           <span>View Insights</span>

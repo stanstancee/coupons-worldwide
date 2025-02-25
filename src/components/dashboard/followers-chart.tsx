@@ -34,12 +34,12 @@ export function FollowersChart() {
     <Card>
       <CardHeader className="flex flex-row justify-between ">
         <div className="space-y-4">
-          <CardTitle className="text-2xl font-bold">
+          <CardTitle className="md:text-2xl text-lg text font-bold">
             Followers Statistics
           </CardTitle>
           <div className="flex items-baseline space-x-2">
             <span className="lg:text-[27px] text-xl font-bold">867,123k</span>
-            <span className="text-xs text-[#1D1B23]">
+            <span className="md:text-xs text-[9px]  text-[#1D1B23]">
               +9% from last month
             </span>
           </div>

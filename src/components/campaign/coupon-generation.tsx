@@ -91,13 +91,13 @@ export default function CouponForm({ form }: { form: any }) {
                         id="auto"
                         className="text-c-orange"
                       />
-                      <Label htmlFor="auto" className="font-normal">
+                      <Label htmlFor="auto" className="font-normal text-xs md:text-sm">
                         System Automated Generation
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="upload" id="upload" />
-                      <Label htmlFor="upload" className="font-normal">
+                      <Label htmlFor="upload" className="font-normal text-xs md:text-sm">
                         Upload Coupon Data
                       </Label>
                     </div>
@@ -258,17 +258,17 @@ export default function CouponForm({ form }: { form: any }) {
                       field.onChange(value);
                       setActivationType(value);
                     }}
-                    className="flex gap-8 text-[#1D1B23] font-normal text-sm"
+                    className="flex gap-8 text-[#1D1B23] font-normal "
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="online" id="online" />
-                      <Label htmlFor="online" className="font-normal">
+                      <Label htmlFor="online" className="font-normal text-xs md:text-sm">
                         ONLINE ACTIVATION
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="store" id="store" />
-                      <Label htmlFor="store" className="font-normal">
+                      <Label htmlFor="store" className="font-normal text-xs md:text-sm">
                         IN STORE ACTIVATION
                       </Label>
                     </div>

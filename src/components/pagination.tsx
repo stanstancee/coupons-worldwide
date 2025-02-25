@@ -35,7 +35,7 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex md:items-center md:justify-between flex-col-reverse md:flex-row gap-3">
       <p className="text-sm text-muted-foreground">
         Showing {startItem} from {totalItems} data
       </p>
@@ -46,7 +46,7 @@ export default function Pagination({
           disabled={currentPage === 1}
         >
           <ChevronsLeft className="h-4 w-4" />
-          <span className="">Previous page</span>
+          <span className="md:block hidden">Previous page</span>
         </Button>
         {getPageNumbers().map((pageNumber) => (
           <Button
@@ -63,7 +63,7 @@ export default function Pagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          <span className="">Next page</span>
+          <span className="md:block hidden">Next page</span>
           <ChevronsRight className="h-4 w-4" />
         </Button>
       </div>

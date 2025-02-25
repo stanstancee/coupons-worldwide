@@ -21,7 +21,7 @@ export function formatDate(value: string): string {
     .replace(" at", "");
 }
 
-const CampaignHeaderInfo = () => {
+const CampaignHeaderInfo = () => {    
   const { campaignDetails } = useDashboard();
   return (
     <header className="flex items-center md:justify-between gap-4 flex-wrap md:flex-nowrap p-4 md:p-6 shadow-cards bg-white rounded-[10px]">

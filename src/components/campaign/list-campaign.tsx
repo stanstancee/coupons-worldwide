@@ -142,7 +142,7 @@ export default function ListCampaigns() {
 
   return (
     <div className="w-full  ">
-      <div className="flex items-center justify-between py-4">
+      <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between py-4">
         <div className="relative ">
           <Input
             placeholder="Search here..."
@@ -151,9 +151,9 @@ export default function ListCampaigns() {
             className="pl-4 md:w-[551px]  shadow-md pr-9 h-[50px] bg-white"
           />
           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 " />
-        </div>
+        </div>  
 
-        <div className="flex items-center gap-4 ">
+        <div className="flex md:items-center gap-4 flex-wrap md:flex-nowrap ">
           <Link href={`/dashboard/campaign/${campaignDetails?.campaign?.uid}`}>
             <Button
               variant="outline"

@@ -89,7 +89,7 @@ export default function PromotionList() {
 
   return (
     <div className="w-full  ">
-      <div className="flex items-center justify-between py-4">
+      <div className="flex md:items-center md:justify-between py-4 gap-3  flex-col md:flex-row">
         <div className="flex items-center gap-4">
           <div className="relative ">
             <Input
@@ -101,7 +101,7 @@ export default function PromotionList() {
             <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 " />
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex md:items-center gap-4 md:flex-1 md:flex-nowrap flex-wrap">
           <Button
             className="h-[50px]"
             variant="outline"

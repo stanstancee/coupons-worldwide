@@ -53,17 +53,17 @@ const TopNav = ({ title }: { title: string }) => {
         <h1 className="text-lg lg:text-xl font-bold ml-10 mt-2 md:mt-0 md:ml-0">
           {title}
         </h1>
-        <div className="flex items-center gap-2 md:gap-4 xl:gap-6 mt-4 md:mt-0">
+        <div className="flex items-center w-full md:w-auto gap-2 md:gap-4 xl:gap-6 mt-4 md:mt-0 justify-between">
           <Link href="/dashboard/campaign/create">
             <Button size={"lg"} className="rounded-[4px] bg-primary-blue">
               <Plus size={16} />
-              <span> Create Campaign </span>
+              <span className="hidden md:inline"> Create Campaign </span>
             </Button>
           </Link>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-3 cursor-pointer">
+              <div className="flex items-center  flex-row-reverse md:flex-row gap-3 cursor-pointer">
                 <Avatar>
                   <AvatarImage src={profile?.profile_image || ""} />
                   <AvatarFallback>{`${profile?.first_name?.charAt(

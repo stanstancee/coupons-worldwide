@@ -299,24 +299,40 @@ export default function CompanyProfileForm() {
                     />
                   </div>
                   <FormField
-                    control={form.control}
-                    name="secondary_industry"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-[#515B6F] font-semibold text-base">
+                      control={form.control}
+                      name="secondary_industry"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-[#515B6F] font-semibold text-base">
                           Secondary Industry
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            {...field}
-                            className="w-full  rounded-none h-[48px] text-[#515B6F]"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          </FormLabel>
+                          <Select onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger className="rounded-none h-[48px] text-[#515B6F]">
+                                <SelectValue
+                                  placeholder={
+                                    business?.secondary_industry ||
+                                    "Select secondary industry"
+                                  }
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {industriesOptions.map((industry) => (
+                                <SelectItem
+                                  key={industry.value}
+                                  value={industry.value}
+                                >
+                                  {industry.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  
 
                   <FormField
                     control={form.control}

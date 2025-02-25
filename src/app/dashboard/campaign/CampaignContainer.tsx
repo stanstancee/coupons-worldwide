@@ -8,7 +8,7 @@ const CampaignContainer = () => {
   return (
     <div>
       <TopNav title="Campaign" />
-      <main className="p-4 md:px-5 md:py-6">
+      <main className="md:px-5 md:py-6">
         <CampaignTable />
       </main>
     </div>
