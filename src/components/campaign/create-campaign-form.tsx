@@ -43,7 +43,7 @@ const CreateCampaignForm = () => {
 
     amount: z.string().min(1, { message: "Amount is required" }),
     discount: z.string().min(1, { message: "Discount is required" }),
-    minimum_amount: z.string().min(1, { message: "Required" }),
+    minimum_amount: z.string().optional(),
     valid_till: z.date({
       required_error: "Date is required",
     }),
@@ -89,7 +89,7 @@ const CreateCampaignForm = () => {
       currency: "",
       amount: "",
       discount: "",
-      minimum_amount: "",
+      minimum_amount: "0",
       valid_till: new Date(),
       start_date: new Date(),
       total_coupons: "",
@@ -222,7 +222,7 @@ const CreateCampaignForm = () => {
     formData.append("currency", values.currency);
     formData.append(
       "minimum_amount",
-      removeCommasAndSpaces(values.minimum_amount)
+      removeCommasAndSpaces(values.minimum_amount || "0")
     );
     formData.append("discount", removeCommasAndSpaces(values.discount));
     //conver date to 2024-02-14  yyyy-mm-dd

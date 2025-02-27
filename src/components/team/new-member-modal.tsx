@@ -29,6 +29,7 @@ import { useDashboard } from "@/context/dashboard-context";
 import { useToast } from "@/hooks/use-toast";
 import { createTeamAction } from "@/actions/team";
 
+
 interface NewMemberModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

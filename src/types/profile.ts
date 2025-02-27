@@ -32,6 +32,15 @@ interface AddressJson {
     place_id: string;
 }
 
+
+export interface Asset {
+    id: number;
+    uid: string;
+    business_id: number;
+    asset_path: string;
+    created_at: string;
+    updated_at: string;
+  }
 export interface Business {
     id: number;
     uid: string;
@@ -60,6 +69,7 @@ export interface Business {
     created_at: string;
     updated_at: string;
     youtube: string | null
+    assets: Asset[]
 }
 
 export interface Profile {

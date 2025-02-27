@@ -2,7 +2,7 @@
 "use client";
 
 import type * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileInput, GoogleAddressInput } from "@/components/ui/custom-input";
 // import { handleDateChange } from "@/utils/handleDateChange";
 import Cookies from "js-cookie";
-import { countries } from "@/lib/countries";
+// import { countries } from "@/lib/countries";
 import {
   Select,
   SelectContent,
@@ -27,8 +27,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
+// import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import { useApi } from "@/hooks/useApi";
+
 
 interface CompanyDetailsProps {
   onNext: () => void;
@@ -70,11 +72,29 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
+
+
 type FormData = z.infer<typeof formSchema>;
+type Country = {
+  name: string;
+  currency: string;
+  id: number;
+  emojiU: string;
+};
+
+// interface CountryFlagProps {
+//   emojiU: string;
+// }
+
+// const CountryFlag: React.FC<CountryFlagProps> = ({ emojiU }) => {
+//   const emoji = emojiU
+//     ?.split(" ")
+//     ?.map((code) => String.fromCodePoint(parseInt(code.replace("U+", ""), 16)));
+
+//   return <span>{emoji?.join("")}</span>;
+// };
 
 const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
-  const router = useRouter();
-  const [address, setAddress] = useState<string>("");
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -91,6 +111,52 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
       address_json: "",
     },
   });
+  const { data } = useApi("/business/list-countries", {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  });
+
+  const countryList = useMemo(() => {
+    return data?.data?.map((country: Country) => ({
+      value: country.name,
+      name: country.name,
+      code: country.currency,
+      id: country.id,
+      emojiU: country.emojiU,
+    }));
+  }, [data]);
+  const [country_id, setCountryId] = useState<number | null>();
+  const country = form.watch("country");
+  useEffect(() => {
+    if(country){
+      const countryObj = countryList?.find((c) => c.value === country);
+      setCountryId(countryObj?.id);
+    }
+    
+  }, [country, countryList])
+
+
+  const router = useRouter();
+  const [address, setAddress] = useState<string>("");
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+
+
+
+
 
   useEffect(() => {
     const cookieData = Cookies.get("companyDetailsFormData");
@@ -103,10 +169,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   }, [form]);
 
   const onSubmit = (values: FormData) => {
-    console.log(values)
+    console.log(values);
     const data = {
       ...values,
       address,
+      country_id,
     };
     Cookies.set("companyDetailsFormData", JSON.stringify(data), {
       expires: 7,
@@ -114,11 +181,10 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     onNext();
   };
 
- 
-
-
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
+
+  
 
     const data = {
       address: address?.address,
@@ -154,9 +220,11 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
     }
   };
 
-  const getCountryFlag = (code: string) => {
-    return `https://flagcdn.com/24x18/${code.toLowerCase()}.png`;
-  };
+  // const getCountryFlag = (code: string) => {
+
+
+  //   return `https://flagcdn.com/24x18/${joinedCode?.toLowerCase()}.png`;
+  // };
 
   return (
     <div>
@@ -232,19 +300,20 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                         <SelectValue placeholder="Select country">
                           {field.value && (
                             <div className="flex items-center gap-2">
-                              <Image
+                              {/* <Image
                                 src={
                                   getCountryFlag(
-                                    countries.find(
+                                   countryList?.find(
                                       (c) => c.name === field.value
-                                    )?.code || ""
+                                    )?.currency || ""
                                   ) || "/placeholder.svg"
                                 }
                                 alt=""
                                 width={24}
                                 height={18}
                                 className="rounded-sm"
-                              />
+                              /> */}
+                              <span></span>
                               {field.value}
                             </div>
                           )}
@@ -252,20 +321,20 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {countries.map((country) => (
-                        <SelectItem key={country.code} value={country.name}>
+                      {countryList?.map((country, index) => (
+                        <SelectItem key={index} value={country.name}>
                           <div className="flex items-center gap-2">
-                            <Image
+                            {/* <Image
                               src={
-                                getCountryFlag(country.code) ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg"
+                                country.emojiU ||
+                                "/placeholder.svg" 
                               }
                               alt=""
                               width={24}
                               height={18}
                               className="rounded-sm"
-                            />
+                            /> */}
+                            {/* <CountryFlag emojiU={country.emojiU} /> */}
                             {country.name}
                           </div>
                         </SelectItem>

@@ -46,22 +46,22 @@ export function CampaignTable() {
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
-            <tr className="text-left font-semibold text-[#717171] border-b md:text-lg">
-              <th className="whitespace-nowrap pb-4">Campaign</th>
-              <th className="whitespace-nowrap pb-4">Views</th>
-              <th className="whitespace-nowrap pb-4">Grabs</th>
-              <th className="whitespace-nowrap pb-4">Redeemed</th>
-              <th className="whitespace-nowrap pb-4">Reviews</th>
+            <tr className="text-left font-semibold text-[#717171] border-b md:text-base text-sm">
+              <th className="whitespace-nowrap pb-4 text-sm">Campaign</th>
+              <th className="whitespace-nowrap pb-4 text-sm">Views</th>
+              <th className="whitespace-nowrap pb-4 text-sm">Grabs</th>
+              <th className="whitespace-nowrap pb-4 text-sm">Redeemed</th>
+              <th className="whitespace-nowrap pb-4 text-sm">Reviews</th>
             </tr>
           </thead>
           <tbody className="text-sm">
             {campaigns.map((campaign) => (
               <tr key={campaign.name} className="md:text-lg">
-                <td className="whitespace-nowrap py-4 font-semibold md:text-lg">{campaign.name}</td>
-                <td className="whitespace-nowrap py-4">{campaign.views}</td>
-                <td className="whitespace-nowrap py-4">{campaign.grabs}</td>
-                <td className="whitespace-nowrap py-4">{campaign.redeemed}</td>
-                <td className="whitespace-nowrap py-4">{campaign.reviews}</td>
+                <td className="whitespace-nowrap py-4 font-semibold md:text-base text-sm">{campaign.name}</td>
+                <td className="whitespace-nowrap py-4 text-sm">{campaign.views}</td>
+                <td className="whitespace-nowrap py-4 text-sm">{campaign.grabs}</td>
+                <td className="whitespace-nowrap py-4 text-sm">{campaign.redeemed}</td>
+                <td className="whitespace-nowrap py-4 text-sm">{campaign.reviews}</td>
               </tr>
             ))}
           </tbody>

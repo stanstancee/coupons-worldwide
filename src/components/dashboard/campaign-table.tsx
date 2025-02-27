@@ -46,7 +46,7 @@ export function CampaignTable() {
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
-            <tr className="text-left font-semibold text-[#717171] border-b md:text-lg ">
+            <tr className="text-left font-semibold text-[#717171] border-b md:text-base text-sm ">
               <th className="whitespace-nowrap pb-4 px-2">Campaign</th>
               <th className="whitespace-nowrap pb-4 px-2">Views</th>
               <th className="whitespace-nowrap pb-4 px-2">Grabs</th>
@@ -56,8 +56,8 @@ export function CampaignTable() {
           </thead>
           <tbody className="text-sm">
             {campaigns.map((campaign) => (
-              <tr key={campaign.name} className="md:text-lg">
-                <td className="whitespace-nowrap py-4 font-semibold md:text-lg px-2">{campaign.name}</td>
+              <tr key={campaign.name} className="md:text-base text-sm">
+                <td className="whitespace-nowrap py-4 font-semibold md:text-base px-2">{campaign.name}</td>
                 <td className="whitespace-nowrap py-4 px-2">{campaign.views}</td>
                 <td className="whitespace-nowrap py-4 px-2">{campaign.grabs}</td>
                 <td className="whitespace-nowrap py-4 px-2">{campaign.redeemed}</td>

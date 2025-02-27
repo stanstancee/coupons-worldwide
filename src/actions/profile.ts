@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchWithAuthFormData, } from ".";
+import { fetchWithAuthFormData, fetchWithAuth } from ".";
 
 
 
@@ -9,4 +9,13 @@ const updateProfileAction = async (data: FormData) => {
     return response;
 }
 
-export { updateProfileAction }
+
+const updatePasswordAction = async (data: {
+    password: string;
+    password_confirmation: string;
+}) => {
+    const response = await fetchWithAuth("profile/change-password", data, 'PUT', 'profile');
+    return response;
+}
+
+export { updateProfileAction, updatePasswordAction }

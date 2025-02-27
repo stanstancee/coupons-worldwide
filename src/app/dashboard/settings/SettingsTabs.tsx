@@ -5,8 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/tabs";
 import { Separator } from "@/components/ui/separator";
 import CompanyProfileForm from "@/components/settings/company-profile-form";
 import SocialForm from "@/components/settings/social-and-images";
-import PricingComparison from "@/components/settings/pricing-comparison";
-
+// import PricingComparison from "@/components/settings/pricing-comparison";
+import SubscriptionTable from "@/components/settings/subscription-table";
 
 const SettingsTabs = () => {
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -28,7 +28,7 @@ const SettingsTabs = () => {
         <SocialForm />
       </TabsContent>
       <TabsContent value="subscription">
-        <PricingComparison />
+        <SubscriptionTable />
       </TabsContent>
     </Tabs>
   );

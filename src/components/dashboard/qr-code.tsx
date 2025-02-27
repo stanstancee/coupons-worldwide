@@ -13,7 +13,7 @@ export default function QRCard() {
   const { profile } = useDashboard();
 
   const business = profile?.businesses[0];
-  console.log(business);
+
   const { toast } = useToast();
   const url = business?.url;
   const handleCopy = async () => {
@@ -34,6 +34,8 @@ export default function QRCard() {
       });
     }
   };
+
+  
 
   return (
     <Card className="bg-white shadow-cards rounded-[10px] border-none">

@@ -36,10 +36,10 @@ export default function ReuseableStats({
     <Card className="rounded-lg bg-white  shadow-cards">
       <CardContent className="p-6 md:py-8  relative flex items-center gap-3 ">
         <div>
-          <h3 className="text-xl font-bold text-[#1D1B23] mb-1">{title}</h3>
+          <h3 className="xl:text-xl md:text-lg font-bold text-[#1D1B23] mb-1">{title}</h3>
 
           <div className="space-y-1">
-            <p className="md:text-[30px] text-2xl font-bold tracking-tight">
+            <p className="md:text-2xl text-xl font-bold tracking-tight">
               ${amount.toLocaleString()}
             </p>
             <p className="text-[13px] text-[#717579]">{subtitle}</p>

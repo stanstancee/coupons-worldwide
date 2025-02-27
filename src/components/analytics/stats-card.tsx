@@ -18,27 +18,37 @@ export function StatsCard({
   isLast,
 }: StatsCardProps) {
   return (
-    <div className="flex md:gap-8 gap-4 border-b pb-4 md:border-0 md:pb-0">
-      <div
-        className={cn(
-          `rounded-[31.59px] h-[61.21px] w-[19.2px] `,
-          color === "blue" && "bg-c-blue",
-          color === "orange" && "bg-c-orange",
-          color === "green" && "bg-c-green",
-          color === "red" && "bg-c-red"
-        )}
-      />
-      <div className="space-y-2">
+    <div
+    className={cn(
+      "flex md:gap-6 gap-4 border-b pb-4 lg:border-0  p-4 md:p-6 rounded-lg shadow-sm ",
+      color === "blue" && "bg-c-blue/5",
+      color === "orange" && "bg-c-orange/5",
+      color === "green" && "bg-c-green/5",
+      color === "red" && "bg-c-red/5"
+    )}
+  >
+    <div
+      className={cn(
+        `rounded-[31.59px] h-[61.21px] w-[1rem] `,
+        color === "blue" && "bg-c-blue",
+        color === "orange" && "bg-c-orange",
+        color === "green" && "bg-c-green",
+        color === "red" && "bg-c-red"
+      )}
+    />
+       <div className="space-y-2">
         <p
           className={cn(
-            " text-[#717579] font-bold md:text-[22px]",
-            isLast && "font-normal md:font-bold"
+            " text-[#717579] font-bold ",
+            isLast && "font-normal"
           )}
         >
           {title}
         </p>
-        <p className="xl:text-4xl md:text-3xl text-2xl font-bold text-[#1D1B23]">{value}</p>  
-        <p className="text-[#717579] md:text-xl">{subtitle}</p>
+        <p className="xl:text-2xl md:text-xl text-lg font-bold text-[#1D1B23]">
+          {value}
+        </p>
+        <p className="text-[#717579] text-sm md:text-base">{subtitle}</p>
       </div>
     </div>
   );
@@ -55,7 +65,7 @@ export const StatsCards = () => {
             using our platform
           </p>
         </div>
-        <div className="flex flex-col lg:flex-row md:justify-between gap-4">
+        <div className="flex flex-col md:grid md:grid-cols-2 2xl:grid-cols-4  md:justify-between gap-6">
           {dummyData.map((data, index) => (
             <StatsCard key={index} {...data} />
           ))}

@@ -20,6 +20,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import { useApi } from "@/hooks/useApi";
+import Cookies from "js-cookie";
+
 interface RenewSubscriptionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -29,6 +32,13 @@ export default function RenewSubscriptionDialog({
   open,
   onOpenChange,
 }: RenewSubscriptionDialogProps) {
+  const business_uid = Cookies.get("business_uid");
+  const { data } = useApi(`/subscription/plans?business_uid=${business_uid}`, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  });
+
+  console.log(data);
   // Calculate next billing date (1 month from current expiry)
   const currentExpiryDate = new Date("2025-03-24");
   const nextBillingDate = new Date(currentExpiryDate);

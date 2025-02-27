@@ -1,6 +1,6 @@
 'use server'
 
-import { fetchWithAuthFormData, } from ".";
+import { fetchWithAuthFormData, fetchWithAuth } from ".";
 
 const updateBasicAction = async (data: FormData) => {
     const response = await fetchWithAuthFormData("business/edit", data, 'POST', 'profile');
@@ -13,8 +13,16 @@ const updateSocialAction = async (data: FormData) => {
 }
 
 const updateMediaAction = async (data: FormData) => {
-    const response = await fetchWithAuthFormData("business/edit-media", data, 'POST', 'profile');
+    const response = await fetchWithAuthFormData("business/edit-media", data, 'POST', '');
     return response;
 }
 
-export { updateBasicAction, updateSocialAction, updateMediaAction }
+const removeMediaAction = async (data: {
+    business_uid: string;
+    asset_uid: string;
+}) => {
+    const response = await fetchWithAuth("business/remove-media", data, 'POST', 'profile');
+    return response;
+}
+
+export { updateBasicAction, updateSocialAction, updateMediaAction, removeMediaAction }  

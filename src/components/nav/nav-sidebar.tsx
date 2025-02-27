@@ -20,7 +20,6 @@ import { usePathname } from "next/navigation";
 
 import Link from "next/link";
 
-
 const navigation = [
   {
     name: "Dashboard",
@@ -39,7 +38,6 @@ const navigation = [
 
 export function NavSidebar() {
   const [isOpen, setIsOpen] = useState(false);
-
 
   const pathname = usePathname();
   const getActive = (href: string) => {
@@ -98,14 +96,14 @@ export function NavSidebar() {
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "py-3 px-6 grid grid-cols-[2.5rem_1fr]  text-[#0C0C0D] md:text-lg hover:text-[#1A2B88] hover:font-bold hover:transition-all hover:animate-out",
+                  "py-3 px-6 grid grid-cols-[2.5rem_1fr]  text-[#0C0C0D] md:text-base text-sm hover:text-[#1A2B88] hover:font-bold hover:transition-all hover:animate-out",
                   getActive(item.href)
                     ? "font-bold text-[#1A2B88] shadow-nav-item border border-[#EFEEEB] rounded-[1rem]"
                     : ""
                 )}
               >
-                <item.icon />
-              <span>  {item.name} </span>
+                <item.icon className="text-base" />
+                <span> {item.name} </span>
               </Link>
             )
           )}

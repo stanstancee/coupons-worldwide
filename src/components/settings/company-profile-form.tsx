@@ -72,12 +72,13 @@ export default function CompanyProfileForm() {
       secondary_industry: "",
     },
   });
+  
 
   useEffect(() => {
     if (business) {
       form.reset({
         name: business.name,
-        website: business.url,
+        website: business.website as string,
         email: business.email,
         company_size: business.company_size,
         primary_industry: business.primary_industry as string,
