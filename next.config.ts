@@ -18,8 +18,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-
-  
   images: {
     remotePatterns: [
       {
@@ -29,15 +27,18 @@ const nextConfig: NextConfig = {
         search: "",
       },
       {
+        protocol: "https",
+        hostname: "sandbox.couponsworldwide.com",
+        port: "",
+        search: "",
+      },
+      {
         protocol: 'https',
-        hostname: 'sandbox.couponsworldwide.com',
-        port: '',
-        search: '',
+        hostname: 'images.unsplash.com',
+       
       }
     ],
   },
 };
-
-
 
 export default nextConfig;

@@ -56,7 +56,7 @@ const Container = () => {
       const response = await signInAction(formData);
 
       if (response.status) {
-        if (response?.data?.user === "customer") {
+        if (response?.data?.user?.account_type === "customer") {
           toast({
             description: "Sorry, you are not allowed to sign in.",
             variant: "destructive",
@@ -70,7 +70,10 @@ const Container = () => {
           Cookies.set("token", encryptData(response.data.token));
           Cookies.set("user", JSON.stringify(response.data.user));
           Cookies.set("isOnboarded", response?.data?.user?.is_onboarded);
-          if (!response?.data?.user?.is_onboarded) {
+          if (
+            !response?.data?.user?.is_onboarded &&
+            response?.data?.user?.account_type !== "team"
+          ) {
             router.push("/profile/create");
           } else {
             router.push(redirectPath);

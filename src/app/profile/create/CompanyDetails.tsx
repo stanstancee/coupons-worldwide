@@ -31,7 +31,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useApi } from "@/hooks/useApi";
 
-
 interface CompanyDetailsProps {
   onNext: () => void;
 }
@@ -72,8 +71,6 @@ const formSchema = z.object({
   email: z.string().email(),
 });
 
-
-
 type FormData = z.infer<typeof formSchema>;
 type Country = {
   name: string;
@@ -94,8 +91,18 @@ type Country = {
 //   return <span>{emoji?.join("")}</span>;
 // };
 
-const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
+const employeeSizeRange = [
+  "1-9",
+  "10-19",
+  "20-49",
+  "50-99",
+  "100-249",
+  "250-499",
+  "500-999",
+  "1000+",
+];
 
+const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -128,35 +135,14 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
   const [country_id, setCountryId] = useState<number | null>();
   const country = form.watch("country");
   useEffect(() => {
-    if(country){
+    if (country) {
       const countryObj = countryList?.find((c) => c.value === country);
       setCountryId(countryObj?.id);
     }
-    
-  }, [country, countryList])
-
+  }, [country, countryList]);
 
   const router = useRouter();
   const [address, setAddress] = useState<string>("");
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-
-
-
-
-
 
   useEffect(() => {
     const cookieData = Cookies.get("companyDetailsFormData");
@@ -183,8 +169,6 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
 
   const handleAddressSelect = (address: any) => {
     const addressComponents = address?.address_components;
-
-  
 
     const data = {
       address: address?.address,
@@ -222,7 +206,6 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
 
   // const getCountryFlag = (code: string) => {
 
-
   //   return `https://flagcdn.com/24x18/${joinedCode?.toLowerCase()}.png`;
   // };
 
@@ -251,17 +234,31 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
             name="company_size"
             render={({ field }) => (
               <FormItem>
-                <FormControl>
-                  <ProfileInput
-                    label="Company Size"
-                    {...field}
-                    onChange={(e) => {
-                      e.target.value = e.target.value.replace(/[^0-9]/g, "");
-                      field.onChange(e);
-                    }}
-                    rightIcon={"/svg/employee.svg"}
-                  />
-                </FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="flex w-full text-[#1A4F6E] h-14 font-medium border border-[#E8E8E8] bg-white px-4 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:border-primary focus-visible:ring-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+                      <SelectValue placeholder="Select company size">
+                        {field.value && (
+                          <div className="flex items-center gap-2">
+                           
+                            <span></span>
+                            {field.value}
+                          </div>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {employeeSizeRange?.map((size, index) => (
+                      <SelectItem key={index} value={size}>
+                        <div className="flex items-center gap-2">
+
+                          {size}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -327,7 +324,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                             {/* <Image
                               src={
                                 country.emojiU ||
-                                "/placeholder.svg" 
+                                "/placeholder.svg"
                               }
                               alt=""
                               width={24}

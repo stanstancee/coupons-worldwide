@@ -68,6 +68,8 @@ export function PromotionForm({}) {
     }
   );
 
+  console.log(channels)
+
   const campaignsList = useMemo(() => {
     return campaigns?.data?.campaigns;
   }, [campaigns]);

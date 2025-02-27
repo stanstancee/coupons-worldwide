@@ -72,7 +72,6 @@ export default function CompanyProfileForm() {
       secondary_industry: "",
     },
   });
-  
 
   useEffect(() => {
     if (business) {
@@ -82,7 +81,7 @@ export default function CompanyProfileForm() {
         email: business.email,
         company_size: business.company_size,
         primary_industry: business.primary_industry as string,
-        secondary_industry: business.secondary_industry ||  "" ,
+        secondary_industry: business.secondary_industry || "",
         phone: business.phone,
         about: business.about,
       });
@@ -135,6 +134,17 @@ export default function CompanyProfileForm() {
       setIsLoading(false);
     }
   }
+
+  const employeeSizeRange = [
+    "1-9",
+    "10-19",
+    "20-49",
+    "50-99",
+    "100-249",
+    "250-499",
+    "500-999",
+    "1000+",
+  ];
 
   return (
     <div className="">
@@ -250,15 +260,34 @@ export default function CompanyProfileForm() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-[#515B6F] font-semibold text-base">
-                            Employee
+                            Company Size
                           </FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              type="number"
-                              className="w-full rounded-none h-[48px] text-[#515B6F]"
-                            />
-                          </FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="rounded-none h-[48px] text-[#515B6F]">
+                                <SelectValue placeholder="Select company size">
+                                  {field.value && (
+                                    <div className="flex items-center gap-2">
+                                      <span></span>
+                                      {field.value}
+                                    </div>
+                                  )}
+                                </SelectValue>
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {employeeSizeRange?.map((size, index) => (
+                                <SelectItem key={index} value={size}>
+                                  <div className="flex items-center gap-2">
+                                    {size}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -300,40 +329,39 @@ export default function CompanyProfileForm() {
                     />
                   </div>
                   <FormField
-                      control={form.control}
-                      name="secondary_industry"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="text-[#515B6F] font-semibold text-base">
+                    control={form.control}
+                    name="secondary_industry"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-[#515B6F] font-semibold text-base">
                           Secondary Industry
-                          </FormLabel>
-                          <Select onValueChange={field.onChange}>
-                            <FormControl>
-                              <SelectTrigger className="rounded-none h-[48px] text-[#515B6F]">
-                                <SelectValue
-                                  placeholder={
-                                    business?.secondary_industry ||
-                                    "Select secondary industry"
-                                  }
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {industriesOptions.map((industry) => (
-                                <SelectItem
-                                  key={industry.value}
-                                  value={industry.value}
-                                >
-                                  {industry.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  
+                        </FormLabel>
+                        <Select onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger className="rounded-none h-[48px] text-[#515B6F]">
+                              <SelectValue
+                                placeholder={
+                                  business?.secondary_industry ||
+                                  "Select secondary industry"
+                                }
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {industriesOptions.map((industry) => (
+                              <SelectItem
+                                key={industry.value}
+                                value={industry.value}
+                              >
+                                {industry.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}
