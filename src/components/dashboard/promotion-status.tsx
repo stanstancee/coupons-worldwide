@@ -1,7 +1,7 @@
 export function PromotionStatus() {
   return (
     <div className="rounded-lg bg-white p-4 md:p-6 shadow-cards">
-      <h3 className="mb-8  md:text-xl font-bold">Promotion Status</h3>
+      <h3 className="mb-4  md:text-xl font-bold">Promotion Status</h3>
       <div className="flex items-center justify-between gap-3 flex-wrap md:flex-nowrap">
         <div className="space-y-4">
           <div className="flex items-center gap-2 ">

@@ -6,13 +6,14 @@ import { useToast } from "@/hooks/use-toast";
 import { Copy } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import PrintableCoupon from "./print-qrcode";
+// import PrintableCoupon from "./print-qrcode";
 import { useDashboard } from "@/context/dashboard-context";
+import PrintQrCode from '@/components/dashboard/Bottom/print-qrcode'
 
 export default function QRCard() {
-  const { profile } = useDashboard();
+  const { business} = useDashboard();
 
-  const business = profile?.businesses[0];
+ 
 
   const { toast } = useToast();
   const url = business?.url;
@@ -67,12 +68,7 @@ export default function QRCard() {
             <Copy className="h-4 w-4" />
           </Button>
         </div>
-        <PrintableCoupon
-          businessName={business?.name as string}
-          logoImage={business?.logo as string}
-          couponUrl={business?.url as string}
-          instructions="Scan the QR-Code to access exclusive deals and discounts available just for you!"
-        />
+        <PrintQrCode />
       </div>
     </Card>
   );

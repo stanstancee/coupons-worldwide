@@ -34,7 +34,7 @@ export function FollowersChart() {
     <Card>
       <CardHeader className="flex flex-row justify-between ">
         <div className="space-y-4">
-          <CardTitle className="md:text-2xl text-lg text font-bold"> 
+          <CardTitle className="md:text-lg text-base xl:text-xl text font-bold"> 
             Followers Statistics
           </CardTitle>
           <div className="flex items-baseline space-x-2">

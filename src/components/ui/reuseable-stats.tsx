@@ -6,31 +6,31 @@ interface PromotionStatsProps {
   title: string;
   amount: number;
   subtitle: string;
-  trendData: number[]; // Array of numbers for the trend line
+  trendData?: number[]; // Array of numbers for the trend line
 }
 
 export default function ReuseableStats({
   title = "Promotion Spent",
   amount = 67124,
   subtitle = "Spent so far",
-  trendData = [0, 20, 10, 30, 15, 45],
+  // trendData = [0, 20, 10, 30, 15, 45],
 }: PromotionStatsProps) {
   // Determine if the trend is up or down
-  const isTrendUp = trendData[trendData.length - 1] > trendData[0];
-  const trendColor = isTrendUp ? "#09BD3C" : "#E02849"; // Green if up, red if down
+  // const isTrendUp = trendData[trendData.length - 1] > trendData[0];
+  // const trendColor = isTrendUp ? "#09BD3C" : "#E02849"; // Green if up, red if down
 
   // Calculate points for the trend line
-  const points = trendData
-    .map((value, index) => {
-      const x = (index / (trendData.length - 1)) * 100;
-      const y =
-        100 -
-        ((value - Math.min(...trendData)) /
-          (Math.max(...trendData) - Math.min(...trendData))) *
-          100;
-      return `${x},${y}`;
-    })
-    .join(" ");
+  // const points = trendData
+  //   .map((value, index) => {
+  //     const x = (index / (trendData.length - 1)) * 100;
+  //     const y =
+  //       100 -
+  //       ((value - Math.min(...trendData)) /
+  //         (Math.max(...trendData) - Math.min(...trendData))) *
+  //         100;
+  //     return `${x},${y}`;
+  //   })
+  //   .join(" ");
 
   return (
     <Card className="rounded-lg bg-white  shadow-cards">
@@ -45,7 +45,7 @@ export default function ReuseableStats({
             <p className="text-[13px] text-[#717579]">{subtitle}</p>
           </div>
         </div>
-        <div className="h-16 w-24 ">
+        {/* <div className="h-16 w-24 ">
           <svg
             className="h-full w-full"
             viewBox="0 0 100 100"
@@ -60,7 +60,7 @@ export default function ReuseableStats({
               strokeLinejoin="round"
             />
           </svg>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );
