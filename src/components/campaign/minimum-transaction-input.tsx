@@ -8,10 +8,7 @@ import {
   FormMessage,
 } from "../ui/form";
 
-
 import { Input } from "../ui/input";
-
-
 
 export const MinimumTransactionInput = ({ form }: { form: any }) => {
   const formatAmount = (value: string) => {
@@ -28,9 +25,7 @@ export const MinimumTransactionInput = ({ form }: { form: any }) => {
             className="text-[#1D1B23] font-semibold"
             htmlFor="minimum-transaction"
             aria-required
-          >
-            Minimum Transaction<span className="text-red-500 ml-1">*</span>
-          </FormLabel>
+          ></FormLabel>
           <FormControl>
             <div className="relative">
               <Input

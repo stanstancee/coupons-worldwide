@@ -30,12 +30,13 @@ import { useApi } from "@/hooks/useApi";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-
+import { useDashboard } from "@/context/dashboard-context";
 import { runPromotionAction } from "@/actions/promotion";
 
 export function PromotionForm({}) {
   const { toast } = useToast();
   const business_uid = Cookies.get("business_uid");
+  const { business } = useDashboard();
 
   const form = useForm<PromotionFormData>({
     resolver: zodResolver(promotionSchema),
@@ -43,7 +44,7 @@ export function PromotionForm({}) {
       promotionType: "" as "Store" | "Campaign",
       adChannel: "" as "Featured" | "Promoted" | "Popular",
       start_date: new Date(),
-      end_date: new Date(new Date().setDate(new Date().getDate() + 7)), // Default to 7 days from now
+      end_date: new Date(new Date().setDate(new Date().getDate() + 7)),
     },
   });
 
@@ -68,8 +69,6 @@ export function PromotionForm({}) {
     }
   );
 
-  console.log(channels)
-
   const campaignsList = useMemo(() => {
     return campaigns?.data?.campaigns;
   }, [campaigns]);
@@ -92,7 +91,10 @@ export function PromotionForm({}) {
   const pType = form.watch("promotionType");
   const pChannel = form.watch("adChannel");
   const campaignId = form.watch("campaignId");
-  const currencySymbol = Cookies.get("currency_symbol");
+  const currencySymbol = useMemo(
+    () => business?.business_country?.currency_symbol as string,
+    [business]
+  );
 
   useEffect(() => {
     setPromotionType(
@@ -177,7 +179,6 @@ export function PromotionForm({}) {
     }
   }
 
-  
   return (
     <div className="flex flex-col gap-4 md:gap-6 p-4 bg-white md:py-6 md:px-8 min-h-[calc(100vh-100px)]">
       <h2 className="font-semibold text-xl xl:text-2xl">Create Promotion</h2>
@@ -339,7 +340,7 @@ export function PromotionForm({}) {
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Duration:</span>
-                    <span>{duration} days</span>
+                    <span>{duration} day(s)</span>
                   </div>
                 </div>
               </div>
@@ -403,7 +404,17 @@ function convertDateFormat(dateString: any): string {
   const adjustedDate = new Date(inputDate.getTime() - tzOffset * 60000);
 
   const date = adjustedDate.toISOString().split("T")[0];
-  const time = adjustedDate.toISOString().split("T")[1];
-  const formattedTime = time.split(".")[0];
+  // const time = adjustedDate.toISOString().split("T")[1];
+
+  // const formattedTime = time.split(".")[0];
+  const today = new Date();
+  //12:35:52 format
+  const currentTime = today.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  const formattedTime = currentTime;
   return `${date} ${formattedTime}`;
 }

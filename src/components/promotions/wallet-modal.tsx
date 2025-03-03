@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -16,6 +17,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { AmountInput } from "./amount-input";
+import { fundWalletAction } from "@/actions/wallet";
+import { useToast } from "@/hooks/use-toast";
+import Cookies from "js-cookie";
 
 export default function WalletTopUp({
   isOpen,
@@ -26,6 +30,9 @@ export default function WalletTopUp({
 }) {
   const [amount, setAmount] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const business_uid = Cookies.get("business_uid");
+  const { toast } = useToast();
 
   const formSchema = z.object({
     amount: z.string().min(1, "Amount is required"),
@@ -38,29 +45,40 @@ export default function WalletTopUp({
     },
   });
 
-  // const formatAmount = (value: string) => {
-  //   // Remove all non-digit characters
-  //   const numberOnly = value.replace(/\D/g, "");
-
-  //   // Convert to number and format with commas
-  //   const formatted = Number(numberOnly).toLocaleString("en-US");
-
-  //   // Handle empty or invalid input
-  //   if (formatted === "0" || formatted === "NaN") return "";
-
-  //   return formatted;
-  // };
-
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
     setAmount(data.amount);
     setShowConfirmation(true);
   };
 
-  const handleConfirm = () => {
-    // Handle the final top up logic here
-    console.log("Processing payment for:", amount.replace(/,/g, ""));
-    setShowConfirmation(false);
-    setIsOpen(false);
+  const handleConfirm = async () => {
+    const formData = new FormData();
+    formData.append("amount", amount.replace(/,/g, ""));
+    formData.append("business_uid", business_uid || ("" as string));
+
+    try {
+      setIsLoading(true);
+      const res = await fundWalletAction(formData);
+      if (res?.status) {
+        //redirect to payment page
+        window.open(res?.data?.payment_url, "_blank");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: res?.message || "Something went wrong",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error?.message || "Something went wrong",
+      });
+    } finally {
+      setIsLoading(false);
+      setShowConfirmation(false);
+      setIsOpen(false);
+    }
   };
 
   return (
@@ -104,6 +122,7 @@ export default function WalletTopUp({
         onClose={() => setShowConfirmation(false)}
         amount={amount}
         onConfirm={handleConfirm}
+        isLoading={isLoading}
       />
     </>
   );

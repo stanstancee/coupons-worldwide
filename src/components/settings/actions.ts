@@ -1,7 +1,7 @@
 "use server"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function downloadInvoice(subscriptionId: string) {
+export async function downloadInvoice(subscriptionId: string | number) {
   // This is a mock implementation
   // In a real application, you would:
   // 1. Call your payment provider's API (e.g., Stripe)

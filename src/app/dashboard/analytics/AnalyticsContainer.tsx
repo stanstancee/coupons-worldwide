@@ -1,4 +1,4 @@
-
+"use client";
 import React from "react";
 import TopNav from "@/components/nav/top-nav";
 import { StatsCards } from "@/components/analytics/stats-card";
@@ -7,12 +7,10 @@ import CampaignStats from "@/components/analytics/campaign-stats";
 import { PromotionStatus } from "@/components/analytics/promotion-status";
 import PromotionStats from "@/components/ui/reuseable-stats";
 import TrendingCampaigns from "@/components/analytics/trending-campaigns";
-
-
-
-
+import { useDashboard } from "@/context/dashboard-context";
 
 const AnalyticsContainer = () => {
+  const { business } = useDashboard();
   return (
     <div>
       <TopNav title="Analytics" />
@@ -33,12 +31,11 @@ const AnalyticsContainer = () => {
             />
             <PromotionStats
               title="Wallet Balance"
-              amount={54321}
+              amount={business?.wallet.balance || 0}
               subtitle="Promotion Wallet Balance"
               trendData={[70, 65, 55, 40, 30, 20]}
             />
             <PromotionStatus />
-
           </section>
         </section>
       </main>

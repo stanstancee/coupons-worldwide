@@ -20,7 +20,7 @@ import { MinimumTransactionInput } from "./minimum-transaction-input";
 import UploadImages from "./upload-images";
 import CouponForm from "./coupon-generation";
 import NewCampaignHeader from "./new-campaign-header";
-import { CurrencySelect } from "./currency-select";
+import { useDashboard } from "@/context/dashboard-context";
 
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/hooks/use-toast";
@@ -69,7 +69,7 @@ const CreateCampaignForm = () => {
   });
 
   const [status, setStatus] = useState<"draft" | "">("");
-
+  const { business } = useDashboard();
   const [isLoading2, setIsLoading2] = useState<boolean>(false);
   const [keywords, setKeywords] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -428,7 +428,7 @@ const CreateCampaignForm = () => {
                         aria-required
                       >
                         Currency
-                        <span className="text-red-500 ml-1">*</span>
+                        {/* <span className="text-red-500 ml-1">*</span> */}
                       </FormLabel>
                       <FormControl id="currency">
                         {/* <div className="relative">
@@ -442,9 +442,17 @@ const CreateCampaignForm = () => {
                             className=" h-[50px] w-full border-c-orange shadow-grid-item rounded-[12px] px-6 py-5 pl-10 focus-visible:outline-none focus-visible:ring-c-orange active:border-c-orange"
                           />
                         </div> */}
-                        <CurrencySelect
+                        {/* <CurrencySelect
                           value={field.value}
                           onChange={field.onChange}
+                        /> */}
+
+                        <Input
+                          {...field}
+                          value={business?.business_country?.currency}
+                          id="currency"
+                          disabled
+                          className="h-[50px] w-full border-c-orange shadow-grid-item rounded-[12px] px-6 py-5 focus-visible:outline-none focus-visible:ring-c-orange active:border-c-orange"
                         />
                       </FormControl>
                       <FormMessage />

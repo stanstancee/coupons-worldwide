@@ -19,46 +19,45 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { downloadInvoice, cancelSubscription } from "./actions";
 import { toast } from "sonner";
+import { useApi } from "@/hooks/useApi";
+import Cookies from "js-cookie";
+import  {format }from "date-fns";
+
+interface Subscription {
+  amount: number;
+  auto_renewal: number;
+  business_id: number;
+  created_at: string;
+  expires_at: string;
+  id: number;
+  license: string;
+  license_id: number;
+  license_type: string | null;
+  status: number;
+  stripe_id: string;
+  subscription_id: string;
+  updated_at: string;
+  user_id: number;
+}
 
 export default function SubscriptionTable() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const business_uid = Cookies.get("business_uid");
+  const { data } = useApi(
+    `/subscription/list?business_uid=${business_uid}`,
+    {}
+  );
 
-  const subscriptions = [
-    {
-      id: "sub_1234",
-      plan: "Business Pro",
-      date: "Jan 1, 2024",
-      expires: "Dec 31, 2024",
-      paymentChannel: "Visa •••• 4242",
-      autoRenewal: true,
-      status: "active",
-    },
-    {
-      id: "sub_5678",
-      plan: "Team Plus",
-      date: "Dec 1, 2023",
-      expires: "Nov 30, 2024",
-      paymentChannel: "Mastercard •••• 5555",
-      autoRenewal: true,
-      status: "active",
-    },
-    {
-      id: "sub_9012",
-      plan: "Starter",
-      date: "Jun 1, 2023",
-      expires: "Nov 30, 2023",
-      paymentChannel: "PayPal",
-      autoRenewal: false,
-      status: "expired",
-    },
-  ];
+  const subscriptions: Subscription[] = useMemo(() => {
+    return data?.data || [];
+  }, [data]);
 
-  const handleDownloadInvoice = async (subscriptionId: string) => {
+  const handleDownloadInvoice = async (subscriptionId: string | number) => {
     try {
       setIsLoading(true);
       await downloadInvoice(subscriptionId);
@@ -109,35 +108,35 @@ export default function SubscriptionTable() {
                     className="border-b last:border-b-0 hover:bg-muted/50"
                   >
                     <td className="py-3 px-4">
-                      <div className="font-medium">{subscription.plan}</div>
+                      <div className="font-medium">{subscription.license}</div>
                     </td>
                     <td className="py-3 px-4 text-sm text-muted-foreground">
-                      {subscription.date}
+                      {format(new Date(subscription.created_at), "MMMM d, yyyy")}
                     </td>
                     <td className="py-3 px-4 text-sm text-muted-foreground">
-                      {subscription.expires}
+                      {format(new Date(subscription.expires_at), "MMMM d, yyyy")}
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {subscription.paymentChannel}
+                      {subscription.stripe_id}
                     </td>
                     <td className="py-3 px-4">
                       <Badge
                         variant={
-                          subscription.autoRenewal ? "default" : "secondary"
+                          subscription.auto_renewal ? "default" : "secondary"
                         }
                       >
-                        {subscription.autoRenewal ? "Yes" : "No"}
+                        {subscription.auto_renewal ? "Yes" : "No"}
                       </Badge>
                     </td>
                     <td className="py-3 px-4">
                       <Badge
                         variant={
-                          subscription.status === "active"
+                          subscription.status === 1 
                             ? "success"
                             : "destructive"
                         }
                       >
-                        {subscription.status}
+                        {subscription.status === 1 ? "Active" : "Inactive"}
                       </Badge>
                     </td>
                     <td className="py-3 px-4">
@@ -155,12 +154,12 @@ export default function SubscriptionTable() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem
                             onClick={() =>
-                              handleDownloadInvoice(subscription.id)
+                              handleDownloadInvoice(subscription.license_id)
                             }
                           >
                             Download invoice
                           </DropdownMenuItem>
-                          {subscription.status === "active" && (
+                          {subscription.status === 1 && (
                             <DropdownMenuItem
                               className="text-destructive"
                               onClick={() => {
@@ -189,7 +188,7 @@ export default function SubscriptionTable() {
               className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm"
             >
               <div className="flex items-center justify-between mb-2">
-                <div className="font-medium">{subscription.plan}</div>
+                <div className="font-medium">{subscription.license}</div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -207,7 +206,7 @@ export default function SubscriptionTable() {
                     >
                       Download invoice
                     </DropdownMenuItem>
-                    {subscription.status === "active" && (
+                    {subscription.status === 1 && (
                       <DropdownMenuItem
                         className="text-destructive"
                         onClick={() => {
@@ -224,34 +223,36 @@ export default function SubscriptionTable() {
               <div className="grid gap-1 text-sm">
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Date</span>
-                  <span>{subscription.date}</span>
+                  <span>  {format(new Date(subscription.created_at), "MMMM d, yyyy")}</span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Expires</span>
-                  <span>{subscription.expires}</span>
+                  <span> {format(new Date(subscription.expires_at), "MMMM d, yyyy")}</span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Payment</span>
-                  <span>{subscription.paymentChannel}</span>
+                  <span> {subscription.stripe_id}</span>
                 </div>
                 <div className="flex justify-between items-center py-1">
                   <span className="text-muted-foreground">Auto Renewal</span>
                   <Badge
-                    variant={subscription.autoRenewal ? "default" : "secondary"}
+                    variant={
+                      subscription.auto_renewal ? "default" : "secondary"
+                    }
                   >
-                    {subscription.autoRenewal ? "Yes" : "No"}
+                    {subscription.auto_renewal ? "Yes" : "No"}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center py-1">
                   <span className="text-muted-foreground">Status</span>
                   <Badge
-                    variant={
-                      subscription.status === "active"
+                     variant={
+                      subscription.status === 1 
                         ? "success"
                         : "destructive"
                     }
                   >
-                    {subscription.status}
+                    {subscription.status === 1 ? "Active" : "Inactive"}
                   </Badge>
                 </div>
               </div>

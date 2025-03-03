@@ -1,15 +1,28 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { CheckCircle } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
 
 interface ConfirmationModalProps {
-  isOpen: boolean
-  onClose: () => void
-  amount: string
-  onConfirm: () => void
+  isOpen: boolean;
+  onClose: () => void;
+  amount: string;
+  onConfirm: () => void;
+  isLoading?: boolean;
 }
 
-export function ConfirmationModal({ isOpen, onClose, amount, onConfirm }: ConfirmationModalProps) {
+export function ConfirmationModal({
+  isOpen,
+  onClose,
+  amount,
+  onConfirm,
+  isLoading,
+}: ConfirmationModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -42,12 +55,11 @@ export function ConfirmationModal({ isOpen, onClose, amount, onConfirm }: Confir
           <Button variant="outline" onClick={onClose} className="flex-1">
             Cancel
           </Button>
-          <Button onClick={onConfirm} className="flex-1">
+          <Button isLoading={isLoading} onClick={onConfirm} className="flex-1">
             Proceed
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
