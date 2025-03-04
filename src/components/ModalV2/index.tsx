@@ -1,12 +1,11 @@
 "use client";
 
-
-
 import type React from "react";
 
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
+
 
 interface ModalProps {
   isOpen: boolean;
@@ -15,12 +14,7 @@ interface ModalProps {
   className?: string;
 }
 
-const  ModalV2  = ({
-  isOpen,
-  onClose,
-  children,
-  className = "",
-}: ModalProps) => {
+const ModalV2 = ({ isOpen, onClose, children, className = "" }: ModalProps) => {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,15 +52,15 @@ const  ModalV2  = ({
       <div
         className={cn(
           "bg-white rounded-lg shadow-lg relative max-w-lg w-full mx-auto",
-            className
-
+          className
         )}
       >
+       
         {children}
       </div>
     </div>,
     document.body
   );
-}
+};
 
-export default ModalV2
+export default ModalV2;

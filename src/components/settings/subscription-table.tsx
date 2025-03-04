@@ -3,15 +3,8 @@
 "use client";
 
 import { Badge } from "./badge";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,27 +13,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useState, useMemo } from "react";
-import { downloadInvoice, cancelSubscription } from "./actions";
-import { toast } from "sonner";
+import { cancelSubscriptionAction } from "@/actions/subscription";
+import { useToast } from "@/hooks/use-toast";
 import { useApi } from "@/hooks/useApi";
 import Cookies from "js-cookie";
-import  {format }from "date-fns";
+
+import ModalV2 from "../ModalV2";
+import { useDashboard } from "@/context/dashboard-context";
+import { X } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface Subscription {
-  amount: number;
-  auto_renewal: number;
-  business_id: number;
-  created_at: string;
-  expires_at: string;
   id: number;
-  license: string;
-  license_id: number;
-  license_type: string | null;
-  status: number;
-  stripe_id: string;
-  subscription_id: string;
+  plan: string;
+  amount: number;
+  payment_channel: string;
+  expires: string;
+  status: string;
+  auto_renewal: string;
+  date: string;
+  created_at: string;
   updated_at: string;
-  user_id: number;
 }
 
 export default function SubscriptionTable() {
@@ -56,18 +49,6 @@ export default function SubscriptionTable() {
   const subscriptions: Subscription[] = useMemo(() => {
     return data?.data || [];
   }, [data]);
-
-  const handleDownloadInvoice = async (subscriptionId: string | number) => {
-    try {
-      setIsLoading(true);
-      await downloadInvoice(subscriptionId);
-      toast.success("Invoice downloaded successfully");
-    } catch (error) {
-      toast.error("Failed to download invoice");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <>
@@ -102,22 +83,22 @@ export default function SubscriptionTable() {
                 </tr>
               </thead>
               <tbody>
-                {subscriptions.map((subscription) => (
+                {subscriptions?.map((subscription) => (
                   <tr
                     key={subscription.id}
                     className="border-b last:border-b-0 hover:bg-muted/50"
                   >
                     <td className="py-3 px-4">
-                      <div className="font-medium">{subscription.license}</div>
+                      <div className="font-medium">{subscription.plan}</div>
                     </td>
                     <td className="py-3 px-4 text-sm text-muted-foreground">
-                      {format(new Date(subscription.created_at), "MMMM d, yyyy")}
+                      {subscription?.date}
                     </td>
                     <td className="py-3 px-4 text-sm text-muted-foreground">
-                      {format(new Date(subscription.expires_at), "MMMM d, yyyy")}
+                      {subscription.expires}
                     </td>
                     <td className="py-3 px-4 text-sm">
-                      {subscription.stripe_id}
+                      {subscription.payment_channel}
                     </td>
                     <td className="py-3 px-4">
                       <Badge
@@ -131,12 +112,14 @@ export default function SubscriptionTable() {
                     <td className="py-3 px-4">
                       <Badge
                         variant={
-                          subscription.status === 1 
+                          subscription.status?.toLowerCase() === "active"
                             ? "success"
                             : "destructive"
                         }
                       >
-                        {subscription.status === 1 ? "Active" : "Inactive"}
+                        {subscription.status?.toLowerCase() === "active"
+                          ? "Active"
+                          : "Inactive"}
                       </Badge>
                     </td>
                     <td className="py-3 px-4">
@@ -152,14 +135,7 @@ export default function SubscriptionTable() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() =>
-                              handleDownloadInvoice(subscription.license_id)
-                            }
-                          >
-                            Download invoice
-                          </DropdownMenuItem>
-                          {subscription.status === 1 && (
+                          {subscription.status?.toLowerCase() === "active" && (
                             <DropdownMenuItem
                               className="text-destructive"
                               onClick={() => {
@@ -188,7 +164,7 @@ export default function SubscriptionTable() {
               className="rounded-lg border bg-card p-4 text-card-foreground shadow-sm"
             >
               <div className="flex items-center justify-between mb-2">
-                <div className="font-medium">{subscription.license}</div>
+                <div className="font-medium">{subscription.plan}</div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -201,12 +177,7 @@ export default function SubscriptionTable() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      onClick={() => handleDownloadInvoice(subscription.id)}
-                    >
-                      Download invoice
-                    </DropdownMenuItem>
-                    {subscription.status === 1 && (
+                    {subscription.status?.toLowerCase() === "active" && (
                       <DropdownMenuItem
                         className="text-destructive"
                         onClick={() => {
@@ -223,15 +194,15 @@ export default function SubscriptionTable() {
               <div className="grid gap-1 text-sm">
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Date</span>
-                  <span>  {format(new Date(subscription.created_at), "MMMM d, yyyy")}</span>
+                  <span> {subscription.date}</span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Expires</span>
-                  <span> {format(new Date(subscription.expires_at), "MMMM d, yyyy")}</span>
+                  <span> {subscription.expires}</span>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-muted-foreground">Payment</span>
-                  <span> {subscription.stripe_id}</span>
+                  <span> {subscription.payment_channel}</span>
                 </div>
                 <div className="flex justify-between items-center py-1">
                   <span className="text-muted-foreground">Auto Renewal</span>
@@ -246,13 +217,15 @@ export default function SubscriptionTable() {
                 <div className="flex justify-between items-center py-1">
                   <span className="text-muted-foreground">Status</span>
                   <Badge
-                     variant={
-                      subscription.status === 1 
+                    variant={
+                      subscription.status?.toLowerCase() === "active"
                         ? "success"
                         : "destructive"
                     }
                   >
-                    {subscription.status === 1 ? "Active" : "Inactive"}
+                    {subscription.status?.toLowerCase() === "active"
+                      ? "Active"
+                      : "Inactive"}
                   </Badge>
                 </div>
               </div>
@@ -286,48 +259,86 @@ const SubscriptionDialog = ({
   isLoading,
   setIsLoading,
 }: SubscriptionDiologProps) => {
+  const { business } = useDashboard();
+  const { toast } = useToast();
   const handleCancelSubscription = async () => {
-    if (!selectedSubscription) return;
-
     try {
       setIsLoading(true);
-      await cancelSubscription(selectedSubscription.id);
-      toast.success("Subscription cancelled successfully");
-      setCancelDialogOpen(false);
+      const res = await cancelSubscriptionAction({
+        business_uid: business?.uid as string,
+        subscription_id: selectedSubscription?.id as string,
+      });
+
+      if (res.status) {
+        toast({
+          description: res?.message,
+        });
+        setCancelDialogOpen(false);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: res?.message,
+        });
+      }
     } catch (error) {
-      toast.error("Failed to cancel subscription");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Something went wrong",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen} modal>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Cancel Subscription</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to cancel your {selectedSubscription?.plan}{" "}
+    <ModalV2
+      isOpen={cancelDialogOpen}
+      onClose={() => setCancelDialogOpen(false)}
+    >
+      <div className="relative w-full  p-4  md:p-6 space-y-6">
+        {/* Close Button */}
+        <Button
+          variant="ghost"
+          className="absolute top-3 right-3 hover:text-red-500"
+          onClick={() => setCancelDialogOpen(false)}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+
+        {/* Header */}
+        <header className="text-center space-y-3">
+          <h1 className="text-lg font-semibold md:text-xl">
+            Cancel Subscription
+          </h1>
+          <p className="mt-2 text-sm text-gray-600 md:text-base">
+            Are you sure you want to cancel your{" "}
+            <span className="font-bold">{selectedSubscription?.plan}</span>{" "}
             subscription? This action cannot be undone.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
+          </p>
+        </header>
+
+        {/* Buttons */}
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center ">
           <Button
             variant="outline"
             onClick={() => setCancelDialogOpen(false)}
             disabled={isLoading}
+            className="w-full sm:w-auto"
           >
-            Keep subscription
+            Keep Subscription
           </Button>
           <Button
             variant="destructive"
             onClick={handleCancelSubscription}
             disabled={isLoading}
+            className="w-full sm:w-auto"
           >
-            {isLoading ? "Cancelling..." : "Yes, cancel subscription"}
+            {isLoading ? "Cancelling..." : "Yes, Cancel Subscription"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+    </ModalV2>
   );
 };

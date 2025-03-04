@@ -28,6 +28,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { setParams } from "@/utils/urlParams";
 import Link from "next/link";
 import { PrintableTable } from "./printable-table";
+import { PrintableCSV } from "./print-csv";
 
 // import { Badge } from "@/components/ui/badge";
 
@@ -193,6 +194,7 @@ export default function ListCampaigns() {
           </Link>
           {/* print table */}
           <PrintableTable data={filteredData || []} />
+          <PrintableCSV data={filteredData || []} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className=" bg-white rounded-[.5rem] hover:bg-[#E5E5E5] w-[48px] h-[48px]">

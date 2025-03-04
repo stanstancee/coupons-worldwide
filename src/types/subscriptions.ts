@@ -1,4 +1,4 @@
-interface Currency {
+export interface Currency {
     id: number;
     name: string;
     symbol: string;
@@ -10,17 +10,18 @@ interface Currency {
 
 export interface Plan {
     id: number;
-    name: string;
-    duration_days: number;
-    price: string;
-    description: string;
-    status: number;
-    license_type: string;
-    gateway: string;
-    stripe_id: string;
-    currency_id: number;
+    plan: string;
+    amount: number;
+    payment_channel: string;
+    expires: string;
+    status: string;
+    auto_renewal: string;
+    date: string;
     created_at: string;
     updated_at: string;
-    currency: Currency;
 }
+   
+
+
+
  

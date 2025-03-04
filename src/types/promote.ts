@@ -21,6 +21,7 @@ export interface Promotion {
   export interface PromotionData {
     total_promotion_amount: number;
     active_promotions_count: number;
+    total_promotion_count: number;
     total_spent: number;
     wallet_balance: number;
     promotions: Promotion[];
