@@ -25,7 +25,9 @@ export const MinimumTransactionInput = ({ form }: { form: any }) => {
             className="text-[#1D1B23] font-semibold"
             htmlFor="minimum-transaction"
             aria-required
-          ></FormLabel>
+          >
+            Minimum Transaction
+          </FormLabel>
           <FormControl>
             <div className="relative">
               <Input

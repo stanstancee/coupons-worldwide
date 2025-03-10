@@ -39,7 +39,7 @@ const CreateCampaignForm = () => {
       .string()
       .min(10, { message: "Description must be at least 10 characters" }),
     keywords: z.array(z.string()),
-    currency: z.string().min(1, { message: "Currency is required" }),
+    currency: z.string()?.optional(),
 
     amount: z.string().min(1, { message: "Amount is required" }),
     discount: z.string().min(1, { message: "Discount is required" }),
@@ -219,7 +219,7 @@ const CreateCampaignForm = () => {
       formData.append("keywords[]", kw);
     });
     formData.append("amount", removeCommasAndSpaces(values.amount));
-    formData.append("currency", values.currency);
+    formData.append("currency", business?.business_country?.currency || "");
     formData.append(
       "minimum_amount",
       removeCommasAndSpaces(values.minimum_amount || "0")

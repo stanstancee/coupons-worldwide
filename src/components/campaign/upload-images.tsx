@@ -2,11 +2,24 @@ import React from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 
-const UploadImages = ({uploadedFiles, setUploadedFiles}: {uploadedFiles: File[], setUploadedFiles: React.Dispatch<React.SetStateAction<File[]>>}) => {
- 
-
+const UploadImages = ({
+  uploadedFiles,
+  setUploadedFiles,
+}: {
+  uploadedFiles: File[];
+  setUploadedFiles: React.Dispatch<React.SetStateAction<File[]>>;
+}) => {
   const onDrop = (acceptedFiles: File[]) => {
-    setUploadedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+    if (
+      uploadedFiles.length > 10 ||
+      acceptedFiles.length > 10 ||
+      uploadedFiles.length + acceptedFiles.length > 10
+    ) {
+      alert("You cannot upload more than 10 images");
+      return;
+    } else {
+      setUploadedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+    }
   };
 
   const handleDelete = (fileIndex: number) => {
@@ -19,7 +32,7 @@ const UploadImages = ({uploadedFiles, setUploadedFiles}: {uploadedFiles: File[],
     onDrop,
     accept: { "image/*": [".png", ".jpg", ".jpeg", ".gif"] },
     maxSize: 10 * 1024 * 1024, // 10MB
-    maxFiles: 5 , 
+    maxFiles: 10,
   });
 
   return (

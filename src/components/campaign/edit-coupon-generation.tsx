@@ -1,58 +1,75 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
-import type React from "react"
-import { useEffect, useState } from "react"
-import { UploadIcon } from "lucide-react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import type React from "react";
+import { useEffect, useState } from "react";
+import { UploadIcon } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-import { FormField, FormControl, FormLabel, FormItem } from "../ui/form"
-import { Textarea } from "../ui/textarea"
-import { useDashboard } from "@/context/dashboard-context"
+import { FormField, FormControl, FormLabel, FormItem } from "../ui/form";
+import { Textarea } from "../ui/textarea";
+import { useDashboard } from "@/context/dashboard-context";
 
 export default function CouponForm({ form }: { form: any }) {
-  const { campaignDetails } = useDashboard()
+  const { campaignDetails, business } = useDashboard();
   // Highlight: Changed initial states to null to properly handle uninitialized values
-  const [generationType, setGenerationType] = useState<"auto" | "upload" | null>(null)
-  const [activationType, setActivationType] = useState<"online" | "store" | null>(null)
-  const [claimType, setClaimType] = useState<"single" | "multiple" | null>(null)
+  const [generationType, setGenerationType] = useState<
+    "auto" | "upload" | null
+  >(null);
+  const [activationType, setActivationType] = useState<
+    "online" | "store" | null
+  >(null);
+  const [claimType, setClaimType] = useState<"single" | "multiple" | null>(
+    null
+  );
 
   useEffect(() => {
     if (campaignDetails?.campaign) {
-      const { type, activation_type, claim_type } = campaignDetails.campaign
+      const { type, activation_type, claim_type } = campaignDetails.campaign;
 
       // Highlight: Updated to set both local state and form values
       if (type) {
-        setGenerationType(type as "auto" | "upload")
-        form.setValue("type", type)
+        setGenerationType(type as "auto" | "upload");
+        form.setValue("type", type);
       }
 
       if (activation_type) {
-        setActivationType(activation_type as "online" | "store")
-        form.setValue("activation_type", activation_type)
+        setActivationType(activation_type as "online" | "store");
+        form.setValue("activation_type", activation_type);
       }
 
       if (claim_type) {
-        setClaimType(claim_type as "single" | "multiple")
-        form.setValue("claim_type", claim_type)
+        setClaimType(claim_type as "single" | "multiple");
+        form.setValue("claim_type", claim_type);
       }
     }
-  }, [campaignDetails, form])
+  }, [campaignDetails, form]);
 
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
-    const value = e.target.value.replace(/\D/g, "")
-    const numValue = Number.parseInt(value, 10)
-    field.onChange(numValue > 10000 ? "10000" : value)
-  }
+  const handleNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: any
+  ) => {
+    const value = e.target.value.replace(/\D/g, "");
+    const numValue = Number.parseInt(value, 10);
+    field.onChange(numValue > 10000 ? "10000" : value);
+  };
 
   return (
     <div className="w-full space-y-8 lg:space-y-14 ">
       <div className=" space-y-4 lg:space-y-8 2xl:space-y-10">
         <div>
-          <h3 className="text-[#1D1B23] font-semibold mb-5">Coupon Generation Type</h3>
+          <h3 className="text-[#1D1B23] font-semibold mb-5">
+            Coupon Generation Type
+          </h3>
           {/* Highlight: Wrapped RadioGroup with FormField */}
           <FormField
             control={form.control}
@@ -63,13 +80,17 @@ export default function CouponForm({ form }: { form: any }) {
                   <RadioGroup
                     value={field.value}
                     onValueChange={(value: "auto" | "upload") => {
-                      field.onChange(value)
-                      setGenerationType(value)
+                      field.onChange(value);
+                      setGenerationType(value);
                     }}
                     className="flex gap-8 text-[#1D1B23] font-normal text-sm"
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="auto" id="auto" className="text-c-orange" />
+                      <RadioGroupItem
+                        value="auto"
+                        id="auto"
+                        className="text-c-orange"
+                      />
                       <Label htmlFor="auto" className="font-normal">
                         System Automated Generation
                       </Label>
@@ -93,7 +114,11 @@ export default function CouponForm({ form }: { form: any }) {
             name="total_coupons"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel className="text-[#1D1B23] font-semibold" htmlFor="total_coupons" aria-required>
+                <FormLabel
+                  className="text-[#1D1B23] font-semibold"
+                  htmlFor="total_coupons"
+                  aria-required
+                >
                   Number of Coupons to Generate
                   <span className="text-red-500 ml-1">*</span>
                 </FormLabel>
@@ -117,11 +142,17 @@ export default function CouponForm({ form }: { form: any }) {
               render={({ field }) => (
                 <FormItem className="space-y-2">
                   <div className="flex items-center justify-between gap-1">
-                    <FormLabel className="text-[#1D1B23] font-semibold" htmlFor="csv" aria-required>
+                    <FormLabel
+                      className="text-[#1D1B23] font-semibold"
+                      htmlFor="csv"
+                      aria-required
+                    >
                       Upload your coupon CSV file
                       <span className="text-red-500 ml-1">*</span>
                     </FormLabel>
-                    <span className="text-c-orange  text-xs font-semibold">Download Sample CSV</span>
+                    <span className="text-c-orange  text-xs font-semibold">
+                      Download Sample CSV
+                    </span>
                   </div>
                   <FormControl id="csv">
                     <div className="relative">
@@ -154,8 +185,8 @@ export default function CouponForm({ form }: { form: any }) {
                   <RadioGroup
                     value={field.value}
                     onValueChange={(value: "single" | "multiple") => {
-                      field.onChange(value)
-                      setClaimType(value)
+                      field.onChange(value);
+                      setClaimType(value);
                     }}
                     className="flex gap-8 text-[#1D1B23] font-normal text-sm"
                   >
@@ -182,8 +213,13 @@ export default function CouponForm({ form }: { form: any }) {
               name="claim_limit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#1D1B23] font-semibold">Number of Claims</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormLabel className="text-[#1D1B23] font-semibold">
+                    Number of Claims
+                  </FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-[300px] h-[50px]">
                         <SelectValue placeholder="Select number of claims" />
@@ -206,7 +242,9 @@ export default function CouponForm({ form }: { form: any }) {
 
       <div className=" space-y-4 lg:space-y-8 2xl:space-y-10">
         <div className="pt-4">
-          <h3 className="text-[#1D1B23] font-semibold mb-5">Coupon Activation Type</h3>
+          <h3 className="text-[#1D1B23] font-semibold mb-5">
+            Coupon Activation Type
+          </h3>
           {/* Highlight: Wrapped RadioGroup with FormField */}
           <FormField
             control={form.control}
@@ -217,8 +255,8 @@ export default function CouponForm({ form }: { form: any }) {
                   <RadioGroup
                     value={field.value}
                     onValueChange={(value: "online" | "store") => {
-                      field.onChange(value)
-                      setActivationType(value)
+                      field.onChange(value);
+                      setActivationType(value);
                     }}
                     className="flex gap-8 text-[#1D1B23] font-normal text-sm"
                   >
@@ -254,6 +292,8 @@ export default function CouponForm({ form }: { form: any }) {
                     type="url"
                     placeholder="www.websiteaddress.com display website address here"
                     className="w-full shadow-grid-item rounded-[12px] px-6  h-[50px]"
+                    value={business?.website || "No business website"}
+                    readOnly
                   />
                 </FormControl>
               </FormItem>
@@ -271,6 +311,8 @@ export default function CouponForm({ form }: { form: any }) {
                     id="activation_code"
                     placeholder="Display store address here"
                     className="w-full shadow-grid-item rounded-[12px] px-6 py-5 h-[130px]"
+                    value={business?.address || "No business address"}
+                    readOnly
                   />
                 </FormControl>
               </FormItem>
@@ -279,6 +321,5 @@ export default function CouponForm({ form }: { form: any }) {
         )}
       </div>
     </div>
-  )
+  );
 }
-

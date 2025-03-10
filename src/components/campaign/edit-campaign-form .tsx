@@ -20,7 +20,7 @@ import { MinimumTransactionInput } from "./minimum-transaction-input";
 
 import CouponForm from "./edit-coupon-generation";
 import EditCampaignHeader from "./edit-campaign-header";
-import { CurrencySelect } from "./currency-select";
+// import { CurrencySelect } from "./currency-select";
 
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/hooks/use-toast";
@@ -56,7 +56,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const EditCampaignForm = () => {
-  const { campaignDetails } = useDashboard();
+  const { campaignDetails , business } = useDashboard();
 
   const { toast } = useToast();
   // const formSchema = z.object({
@@ -491,9 +491,12 @@ const EditCampaignForm = () => {
                             className=" h-[50px] w-full border-c-orange shadow-grid-item rounded-[12px] px-6 py-5 pl-10 focus-visible:outline-none focus-visible:ring-c-orange active:border-c-orange"
                           />
                         </div> */}
-                        <CurrencySelect
-                          value={field.value || ""}
-                          onChange={field.onChange}
+                       <Input
+                          {...field}
+                          value={business?.business_country?.currency}
+                          id="currency"
+                          disabled
+                          className="h-[50px] w-full border-c-orange shadow-grid-item rounded-[12px] px-6 py-5 focus-visible:outline-none focus-visible:ring-c-orange active:border-c-orange"
                         />
                       </FormControl>
                       <FormMessage />
