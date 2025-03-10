@@ -24,19 +24,21 @@ import {
 import { PartyPopper } from "lucide-react";
 import { promotionSchema, type PromotionFormData } from "@/lib/schema";
 import { PromotionPreview } from "./promotion-preview";
+import { Campaign } from "@/types/campaign";
 
 import { DatePicker } from "@/components/ui/date-picker";
 import { useApi } from "@/hooks/useApi";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { useDashboard } from "@/context/dashboard-context";
+
 import { runPromotionAction } from "@/actions/promotion";
 
 export function PromotionForm({}) {
   const { toast } = useToast();
   const business_uid = Cookies.get("business_uid");
-  const { business } = useDashboard();
+
+  const currencySymbol = "$";
 
   const form = useForm<PromotionFormData>({
     resolver: zodResolver(promotionSchema),
@@ -69,8 +71,8 @@ export function PromotionForm({}) {
     }
   );
 
-  const campaignsList = useMemo(() => {
-    return campaigns?.data?.campaigns;
+  const campaignsList: Campaign[] = useMemo(() => {
+    return campaigns?.data?.campaigns || [];
   }, [campaigns]);
 
   const channelsList = useMemo(() => {
@@ -91,10 +93,6 @@ export function PromotionForm({}) {
   const pType = form.watch("promotionType");
   const pChannel = form.watch("adChannel");
   const campaignId = form.watch("campaignId");
-  const currencySymbol = useMemo(
-    () => business?.business_country?.currency_symbol as string,
-    [business]
-  );
 
   useEffect(() => {
     setPromotionType(
@@ -235,15 +233,17 @@ export function PromotionForm({}) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {campaignsList?.map((item) => (
-                            <SelectItem
-                              key={item.id}
-                              value={item.title}
-                              onClick={() => setPromotionChannel(item)}
-                            >
-                              {item.title}
-                            </SelectItem>
-                          ))}
+                          {campaignsList
+                            ?.filter((item) => item.status === "active")
+                            .map((item) => (
+                              <SelectItem
+                                key={item.id}
+                                value={item.title}
+                                onClick={() => setPromotionChannel(item)}
+                              >
+                                {item.title}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />

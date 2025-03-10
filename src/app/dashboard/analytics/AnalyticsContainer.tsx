@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import TopNav from "@/components/nav/top-nav";
-import { StatsCards } from "@/components/analytics/stats-card";
-import { FollowersChart } from "@/components/analytics/followers-chart";
+import { AnalyticsStatsCards  } from "@/components/analytics/stats-card";
+import { FollowersChart } from "@/components/dashboard/followers-chart";
 import CampaignStats from "@/components/analytics/campaign-stats";
-import { PromotionStatus } from "@/components/analytics/promotion-status";
+import { PromotionStatus } from "@/components/dashboard/promotion-status";
 import PromotionStats from "@/components/ui/reuseable-stats";
 import TrendingCampaigns from "@/components/analytics/trending-campaigns";
 import { useDashboard } from "@/context/dashboard-context";
@@ -15,7 +15,7 @@ const AnalyticsContainer = () => {
     <div>
       <TopNav title="Analytics" />
       <main className="p-4 md:px-5 md:py-6">
-        <StatsCards />
+        <AnalyticsStatsCards />
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 mt-4 md:mt-6">
           <section className="lg:col-span-8 space-y-4 md:space-y-6 xl:space-y-8 ">
             <FollowersChart />

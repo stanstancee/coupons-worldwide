@@ -8,7 +8,6 @@ import {
   Form,
   FormField,
   FormControl,
-  FormLabel,
   FormItem,
   FormMessage,
 } from "../ui/form";
@@ -169,12 +168,10 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
               name="first_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#515B6F] font-semibold">
-                    First Name
-                  </FormLabel>
+                 
                   <FormControl>
                     <Input
-                      placeholder="John"
+                      placeholder="First Name"
                       {...field}
                       className="h-[44px] rounded-none"
                     />
@@ -189,12 +186,10 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
               name="last_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#515B6F] font-semibold">
-                    Last Name
-                  </FormLabel>
+                 
                   <FormControl>
                     <Input
-                      placeholder="Doe"
+                      placeholder="Last Name"
                       {...field}
                       className="h-[44px] rounded-none"
                     />
@@ -209,12 +204,10 @@ export function NewMemberModal({ open, onOpenChange }: NewMemberModalProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#515B6F] font-semibold">
-                    Email
-                  </FormLabel>
+                 
                   <FormControl>
                     <Input
-                      placeholder="jD6oM@example.com"
+                      placeholder="Email Address"
                       {...field}
                       className="h-[44px] rounded-none"
                     />

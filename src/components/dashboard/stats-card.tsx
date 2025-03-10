@@ -1,6 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useDashboard } from "@/context/dashboard-context";
+
+const formatNumber = (num: number) => {
+  if (num === null || num === undefined) {
+    return "0";
+  } else {
+    return new Intl.NumberFormat("en-US").format(num);
+  }
+};
 
 interface StatsCardProps {
   title: string;
@@ -38,10 +47,7 @@ export function StatsCard({
       />
       <div className="space-y-2">
         <p
-          className={cn(
-            " text-[#717579] font-bold ",
-            isLast && "font-normal"
-          )}
+          className={cn(" text-[#717579] font-bold ", isLast && "font-normal")}
         >
           {title}
         </p>
@@ -55,44 +61,51 @@ export function StatsCard({
 }
 
 export const StatsCards = () => {
+  const { dashboardData } = useDashboard();
+  const data: StatsCardProps[] = [
+    {
+      title: "Total Campaigns",
+      value: formatNumber(dashboardData?.total_campaigns || 0),
+      subtitle: `${formatNumber(dashboardData?.active_campaigns || 0)} Active`,
+      color: "blue",
+    },
+
+    {
+      title: "Coupons Value",
+      value: `$${formatNumber(Number(dashboardData?.coupon_value) || 0)}`,
+      subtitle: `${formatNumber(
+        dashboardData?.coupons_redeemed || 0
+      )} Redeemed`,
+      color: "orange",
+    },
+
+    {
+      title: "Coupons Grabbed",
+      value: formatNumber(dashboardData?.coupons_grabbed || 0),
+      subtitle: `${formatNumber(
+        dashboardData?.total_followers || 0
+      )} This Month`,
+      color: "green",
+    },
+
+    {
+      title: "Followers",
+      value: formatNumber(dashboardData?.total_followers || 0),
+      subtitle: `${formatNumber(
+        Number(dashboardData?.followers?.avg_monthly) || 0
+      )} Average Monthly`,
+      color: "red",
+      isLast: true,
+    },
+  ];
+
   return (
     <section className="shadow-cards rounded-[10.41px] bg-white p-4 md:py-[3.75rem] md:px-6">
       <div className="flex flex-col md:grid md:grid-cols-2 2xl:grid-cols-4  md:justify-between gap-6">
-        {dummyData.map((data, index) => (
+        {data.map((data, index) => (
           <StatsCard key={index} {...data} />
         ))}
       </div>
     </section>
   );
 };
-
-const dummyData: StatsCardProps[] = [
-  {
-    title: "Total Campaigns",
-    value: "63,500",
-    subtitle: "112 Active",
-    color: "blue",
-  },
-
-  {
-    title: "Coupons Value",
-    value: "$97,125 ",
-    subtitle: "124 Redeemed",
-    color: "orange",
-  },
-
-  {
-    title: "Coupons Grabbed",
-    value: "$872,335",
-    subtitle: "321k This Month",
-    color: "green",
-  },
-
-  {
-    title: "Followers",
-    value: "21,224",
-    subtitle: "22 Average Monthly ",
-    color: "red",
-    isLast: true,
-  },
-];

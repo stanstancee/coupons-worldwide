@@ -2,17 +2,16 @@
 "use client";
 
 import { useState } from "react";
-
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ConfirmationModal } from "./confirmation-modal";
 import { Form } from "@/components/ui/form";
-
+import { CheckCircle, ArrowLeft } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,7 +28,7 @@ export default function WalletTopUp({
   setIsOpen: (value: boolean) => void;
 }) {
   const [amount, setAmount] = useState("");
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isConfirmationView, setIsConfirmationView] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const business_uid = Cookies.get("business_uid");
   const { toast } = useToast();
@@ -47,7 +46,7 @@ export default function WalletTopUp({
 
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
     setAmount(data.amount);
-    setShowConfirmation(true);
+    setIsConfirmationView(true);
   };
 
   const handleConfirm = async () => {
@@ -76,54 +75,114 @@ export default function WalletTopUp({
       });
     } finally {
       setIsLoading(false);
-      setShowConfirmation(false);
+      setIsConfirmationView(false);
       setIsOpen(false);
     }
   };
 
-  return (
-    <>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="lg:max-w-[716px] pb-14 p-4 lg:p-6 lg:pb-16  shadow-btn items-start">
-          <DialogHeader className="">
-            <DialogTitle className="font-bold text-xl">
-              Wallet Top Up
-            </DialogTitle>
-          </DialogHeader>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-6 mt-4"
-            >
-              <p className="text-sm text-[#717579]">
-                Top up your promotional wallet balance, please note that wallet
-                balance can not be used for subscription renewal.
-              </p>
-              <div className="max-w-[400px]">
-                <AmountInput form={form} />
-              </div>
-              <p className="italic text-c-green">
-                Click on the below button, you will be redirected to a secured
-                payment page.
-              </p>
-              <Button
-                type="submit"
-                className=" bg-primary shadow-lg w-[153px] text-lg h-[50px]"
-              >
-                Top Up
-              </Button>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+  const handleClose = () => {
+    setIsConfirmationView(false);
+    setIsOpen(false);
+  };
 
-      <ConfirmationModal
-        isOpen={showConfirmation}
-        onClose={() => setShowConfirmation(false)}
-        amount={amount}
-        onConfirm={handleConfirm}
-        isLoading={isLoading}
-      />
-    </>
+  const handleBack = () => {
+    setIsConfirmationView(false);
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-[425px] pb-14 p-4 lg:p-6 lg:pb-16 shadow-btn items-start">
+        {!isConfirmationView ? (
+          <>
+            <DialogHeader>
+              <DialogTitle className="font-bold text-lg">
+                Wallet Top Up
+              </DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="space-y-6 mt-4 w-full"
+              >
+                <p className="text-sm text-gray-500">
+                  Top up your promotional wallet balance, please note that
+                  wallet balance can not be used for subscription renewal.
+                </p>
+                <div className="max-w-[400px]">
+                  <AmountInput form={form} />
+                </div>
+                <p className="italic text-c-green text-sm">
+                  Click on the below button, you will be redirected to a secured
+                  payment page.
+                </p>
+                <Button
+                  size={'lg'}
+                  type="submit"
+                  className="bg-primary"
+                >
+                  Top Up
+                </Button>
+              </form>
+            </Form>
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <div className="flex items-center">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleBack}
+                  className="mr-2 h-8 w-8"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <DialogTitle className="text-center">
+                  Confirm Top Up
+                </DialogTitle>
+              </div>
+            </DialogHeader>
+            <div className="space-y-6 py-4 w-full">
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <CheckCircle className="h-12 w-12 text-green-500" />
+                <p className="text-lg font-semibold">
+                  Please Confirm Your Top Up
+                </p>
+              </div>
+              <div className="rounded-lg bg-muted p-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    Amount to Top Up
+                  </span>
+                  <span className="font-medium">${amount}</span>
+                </div>
+                {/* <div className="mt-2 flex justify-between text-sm">
+                  <span className="text-muted-foreground">Processing Fee</span>
+                  <span className="font-medium">$0.00</span>
+                </div> */}
+                <div className="mt-3 border-t pt-3">
+                  <div className="flex justify-between">
+                    <span className="font-medium">Total</span>
+                    <span className="font-medium">${amount}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="flex space-x-3 w-full">
+              <Button variant="outline" onClick={handleBack} className="flex-1">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleConfirm}
+                className="flex-1 bg-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? "Processing..." : "Proceed"}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

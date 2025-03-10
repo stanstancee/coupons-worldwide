@@ -15,10 +15,36 @@ import {
 
 import { useApi } from "@/hooks/useApi";
 import Cookies from "js-cookie";
-import type { Plan } from "@/types/subscriptions";
+
 import { useMemo, useState } from "react";
 import { updateSubscriptionAction } from "@/actions/subscription";
 import { useToast } from "@/hooks/use-toast";
+
+interface Currency {
+  id: number;
+  name: string;
+  code: string;
+  symbol: string;
+  status: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface SubscriptionPlan {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  duration_days: number;
+  license_type: string;
+  gateway: string;
+  stripe_id: string;
+  currency_id: number;
+  status: number;
+  created_at: string;
+  updated_at: string;
+  currency: Currency;
+}
 
 interface RenewSubscriptionDialogProps {
   open: boolean;
@@ -41,7 +67,7 @@ export default function RenewSubscriptionDialog({
     return data?.data?.plans;
   }, [data]);
 
-  const handleSubscribe = async (plan: Plan) => {
+  const handleSubscribe = async (plan: SubscriptionPlan) => {
     const formData = new FormData();
 
     formData.append("license_id", plan.id?.toString() as string);
@@ -58,7 +84,6 @@ export default function RenewSubscriptionDialog({
       if (res?.data?.url) {
         window.open(res?.data?.url, "_blank");
         onOpenChange(false);
-        
       }
     } catch (error: any) {
       toast({
@@ -70,6 +95,8 @@ export default function RenewSubscriptionDialog({
       setIsLoading(false);
     }
   };
+
+  console.log(subscriptions);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -83,7 +110,7 @@ export default function RenewSubscriptionDialog({
 
         <div className="space-y-4">
           {subscriptions && subscriptions?.length > 0 ? (
-            subscriptions.map((plan: Plan) => (
+            subscriptions.map((plan: SubscriptionPlan) => (
               <div
                 key={plan.id}
                 className="flex items-center justify-between p-4 border rounded-lg"

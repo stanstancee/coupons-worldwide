@@ -36,7 +36,7 @@ export function CampaignTable() {
   return (
     <div className="">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-base md:text-lg font-semibold lg:text-xl">
+        <h3 className="text-base md:text-lg font-bold lg:text-xl">
           Campaign Performance
         </h3>
         <Button className="font-bold text-primary bg-[#F6F6F6] rounded-[14.13px] hover:bg-[#E5E5E5]">

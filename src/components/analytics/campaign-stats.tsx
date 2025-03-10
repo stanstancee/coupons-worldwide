@@ -5,14 +5,18 @@ import { Cell, Pie, PieChart } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 import Image from "next/image";
+import { useDashboard } from "@/context/dashboard-context";
 
-const data = [
-  { name: "Active Campaign", value: 2393, color: "#09BD3C" },
-  { name: "Closed Campaign", value: 920, color: "#F83737" },
-];
+
 
 export default function CampaignStats() {
   //   const total = data.reduce((sum, item) => sum + item.value, 0)
+  const { dashboardData } = useDashboard();
+  
+const data = [
+  { name: "Active Campaign", value: dashboardData?.active_campaigns || 0, color: "#09BD3C" },
+  { name: "Closed Campaign", value:  '00' , color: "#F83737" },
+];
 
   return (
     <Card className="w-full shadow-cards">

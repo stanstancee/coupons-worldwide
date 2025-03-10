@@ -6,8 +6,11 @@ import { Profile, Business } from "@/types/profile";
 import { CampaignResponse, Campaign, ICampaignData } from "@/types/campaign";
 import { TeamMember } from "@/types/member";
 import { Promotion, PromotionData } from "@/types/promote";
+import { DashboardBusiness } from "@/types/dashboard";
 
 interface DashboardContextType {
+  dashboardData: DashboardBusiness | null;
+  setDashboardData: React.Dispatch<React.SetStateAction<DashboardBusiness | null>>;
   profile: Profile | null;
   setProfile: React.Dispatch<React.SetStateAction<Profile | null>>;
   campaign: Campaign[];
@@ -48,12 +51,15 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [promotionData, setPromotionData] = useState<PromotionData | null>(
     null
   );
-
-  
+  const [dashboardData, setDashboardData] = useState<DashboardBusiness | null>(
+    null
+  );
 
   return (
     <DashboardContext.Provider
       value={{
+        dashboardData,
+        setDashboardData,
         profile,
         setProfile,
         campaign,

@@ -22,7 +22,7 @@ export const AmountInput = ({ form }: { form: any }) => {
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel
-            className="text-[#1D1B23] font-semibold"
+            className="text-[#1D1B23] font-medium text-sm"
             htmlFor="amount"
             aria-required
           >
@@ -51,7 +51,7 @@ export const AmountInput = ({ form }: { form: any }) => {
                 {...field}
                 id="amount"
                 placeholder="Enter amount"
-                className="w-full shadow-grid-item rounded-[12px] px-6  h-[50px] pl-16"
+                className="w-full shadow-grid-item rounded-[12px] px-6  h-[45px] pl-16"
                 onChange={(e) => field.onChange(formatAmount(e.target.value))}
                 value={formatAmount(field.value)}
               />
