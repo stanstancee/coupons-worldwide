@@ -16,6 +16,11 @@ const CampaignDetailPage = async ({
     tags: ["campaigns"],
     revalidate: 100,
   });
+  // const analyticsResponse = await getRequest({
+  //   url: `business/campaign/analytics?campaign_uid=${id}`,
+  //   tags: ["campaigns"],
+  //   revalidate: 100,
+  // });
 
   return (
     <CampaignDetailsWrapper data={res.data}>

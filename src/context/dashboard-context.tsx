@@ -8,6 +8,7 @@ import { TeamMember } from "@/types/member";
 import { Promotion, PromotionData } from "@/types/promote";
 import { DashboardBusiness } from "@/types/dashboard";
 
+
 interface DashboardContextType {
   dashboardData: DashboardBusiness | null;
   setDashboardData: React.Dispatch<React.SetStateAction<DashboardBusiness | null>>;
