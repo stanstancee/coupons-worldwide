@@ -6,7 +6,8 @@ import type { NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const token = (await cookies()).get("token")?.value;
   const isOnboarded = (await cookies()).get("isOnboarded")?.value;
-  if (!token || !isOnboarded) {
+  const accountType = (await cookies()).get("accountType")?.value;
+  if (!token || (!isOnboarded && accountType !== "team")) {
     return NextResponse.redirect(
       new URL(`/sign-in?redirect=${request.nextUrl.pathname}`, request.url)
     );

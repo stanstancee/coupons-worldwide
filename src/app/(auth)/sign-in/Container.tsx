@@ -70,6 +70,7 @@ const Container = () => {
           Cookies.set("token", encryptData(response.data.token));
           Cookies.set("user", JSON.stringify(response.data.user));
           Cookies.set("isOnboarded", response?.data?.user?.is_onboarded);
+          Cookies.set("accountType", response?.data?.user?.account_type);
           if (
             !response?.data?.user?.is_onboarded &&
             response?.data?.user?.account_type !== "team"
