@@ -391,7 +391,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                     <FormControl>
                       <ProfileInput
                         leftIcon="/svg/website.svg"
-                        label="Enter Website"
+                        label=""
                         placeholder="https://example.com"
                         type="text"
                         value={field.value || ""}
@@ -415,7 +415,7 @@ const CompanyDetails: React.FC<CompanyDetailsProps> = ({ onNext }) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <PhoneInput placeholder="Phone" {...field} />
+                      <PhoneInput  placeholder="Phone" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
