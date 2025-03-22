@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { useDashboard } from "@/context/dashboard-context";
 import { NoData } from "../ui/no-data";
-import { format } from "date-fns";
+
 import { cn } from "@/lib/utils";
 
 // interface Campaign {
@@ -18,8 +18,8 @@ import { cn } from "@/lib/utils";
 export function RecentPromotions() {
   const { dashboardData } = useDashboard();
   return (
-    <div className="">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="space-y-4 md:space-y-6">
+      <div className="mb-4  flex items-center justify-between">
         <h3 className="text-base md:text-lg font-bold lg:text-xl">
           Recent Promotions
         </h3>
@@ -33,24 +33,25 @@ export function RecentPromotions() {
         <div className="overflow-x-auto">
           <table className="min-w-full">
             <thead>
-              <tr className="text-left   border-b  text-sm ">
-                <th className="whitespace-nowrap pb-4 px-2 ">Start Date</th>
-                <th className="whitespace-nowrap pb-4 px-2">End Date</th>
-                <th className="whitespace-nowrap pb-4 px-2">Duration</th>
-                <th className="whitespace-nowrap pb-4 px-2 text-right">
-                  Approval Status
+              <tr className="text-left   border-b  text-sm  ">
+                <th className="whitespace-nowrap pb-4 px-2 font-semibold ">
+                  Campaign
+                </th>
+                <th className="whitespace-nowrap pb-4 px-2 font-semibold">
+                  Duration
+                </th>
+                <th className="whitespace-nowrap pb-4 px-2 text-right font-semibold">
+                  Status
                 </th>
               </tr>
             </thead>
             <tbody className="text-sm">
               {dashboardData?.recent_promotions?.map((promotion, index) => (
                 <tr key={index} className="md:text-base text-sm">
-                  <td className="whitespace-nowrap py-4 font-semibold md:text-base px-2">
-                    {format(new Date(promotion?.start_date), "dd/MM/yyyy")}
+                  <td className="whitespace-nowrap py-4 px-2 truncate max-w-[150px]">
+                    {`campaign ${index + 1}`}
                   </td>
-                  <td className="whitespace-nowrap py-4 px-2">
-                    {format(new Date(promotion?.end_date), "dd/MM/yyyy")}
-                  </td>
+
                   <td className="whitespace-nowrap py-4 px-2">
                     {`${parseInt(promotion?.duration)} days`}
                   </td>
