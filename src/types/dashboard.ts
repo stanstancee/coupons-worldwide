@@ -15,6 +15,7 @@ export interface DashboardBusiness {
     uid: string;
     name: string;
     total_campaigns: number;
+    promotion_spent: string;
     active_campaigns: number;
     coupon_value: string;
     coupons_redeemed: number;
@@ -23,6 +24,7 @@ export interface DashboardBusiness {
     followers: Followers;
     campaigns: Campaign[];
     promotions: Promotions;
+    recent_promotions: RecentPromotions[];
 }
 
 
@@ -63,6 +65,25 @@ interface MonthlyFollowers {
     month: number;
     total_followers: number;
 }
+
+interface RecentPromotions {
+    id: number;
+    status: string;
+    total_amount: string;
+    approval_status: string;
+    start_date: string;
+    end_date: string;
+    duration: string;
+    uid: string;
+    promotion_type_id: number;
+    promotion_channel_id: number;
+    business_id: number;
+    campaign_id: number;
+    created_at: string;
+    updated_at: string;
+}
+    
+
 
 
 

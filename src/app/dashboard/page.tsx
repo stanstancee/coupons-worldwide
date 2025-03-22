@@ -13,6 +13,8 @@ const DashboardPage = async () => {
     url: `business/dashboard?business_uid=${business_uid}`,
   });
 
+  console.log(response)
+
   return (
     <DashboardWrapper dashboardData={response?.data?.business}>
       <DashboardContainer />

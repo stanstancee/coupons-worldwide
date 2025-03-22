@@ -7,16 +7,24 @@ import { ChartContainer } from "@/components/ui/chart";
 import Image from "next/image";
 import { useDashboard } from "@/context/dashboard-context";
 
-
-
 export default function CampaignStats() {
   //   const total = data.reduce((sum, item) => sum + item.value, 0)
   const { dashboardData } = useDashboard();
-  
-const data = [
-  { name: "Active Campaign", value: dashboardData?.active_campaigns || 0, color: "#09BD3C" },
-  { name: "Closed Campaign", value:  '00' , color: "#F83737" },
-];
+
+  const data = [
+    {
+      name: "Active Campaign",
+      value: dashboardData?.active_campaigns || 0,
+      color: "#09BD3C",
+    },
+    {
+      name: "Closed Campaign",
+      value:
+        (dashboardData?.total_campaigns || 0) -
+        (dashboardData?.active_campaigns || 0),
+      color: "#F83737",
+    },
+  ];
 
   return (
     <Card className="w-full shadow-cards">

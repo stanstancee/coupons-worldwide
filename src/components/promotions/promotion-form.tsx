@@ -56,13 +56,10 @@ export function PromotionForm({}) {
       refreshInterval: 0,
     }
   );
-  const { data: channels, isLoading: isLoadingChannels } = useApi(
-    "/business/promotion/channels",
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  );
+  const { data: channels } = useApi("/business/promotion/channels", {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  });
   const { data: campaigns, isLoading: isLoadingCampaigns } = useApi(
     `/business/campaign/list?business_uid=${business_uid}`,
     {
@@ -90,9 +87,32 @@ export function PromotionForm({}) {
   const [promotionType, setPromotionType] = useState<any>({});
   const [promotionChannel, setPromotionChannel] = useState<any>({});
   const [campaign, setCampaign] = useState<any>({});
+
   const pType = form.watch("promotionType");
   const pChannel = form.watch("adChannel");
+
   const campaignId = form.watch("campaignId");
+
+  useEffect(() => {
+    const featured = channelsList?.find(
+      (channel: any) => channel.name?.toLowerCase() === "featured"
+    );
+    const promoted = channelsList?.find(
+      (channel: any) => channel.name?.toLowerCase() === "promoted"
+    );
+
+    if (pType === "Store") {
+      setPromotionChannel(featured);
+      setPromotionType(
+        typesList?.find((type: any) => type.name?.toLowerCase() === "Store")
+      );
+    } else if (pType === "Campaign") {
+      setPromotionChannel(promoted);
+      setPromotionType(
+        typesList?.find((type: any) => type.name?.toLowerCase() === "Campaign")
+      );
+    }
+  }, [channelsList, pType]);
 
   useEffect(() => {
     setPromotionType(
@@ -183,12 +203,13 @@ export function PromotionForm({}) {
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
         <div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                disabled={isLoadingTypes}
-                name="promotionType"
-                render={({ field }) => (
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 md:gap-6 justify-between h-full">
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  disabled={isLoadingTypes}
+                  name="promotionType"
+                  render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-[#515B6F] font-semibold text-base">
                       Promotion Type
@@ -252,7 +273,7 @@ export function PromotionForm({}) {
                 />
               )}
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="adChannel"
                 disabled={isLoadingChannels}
@@ -278,7 +299,7 @@ export function PromotionForm({}) {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={form.control}
@@ -322,7 +343,7 @@ export function PromotionForm({}) {
                 )}
               />
 
-              <div className="rounded-lg bg-muted p-4">
+              <div className="rounded-lg bg-muted p-4 ">
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Cost per day:</span>
@@ -344,21 +365,26 @@ export function PromotionForm({}) {
                   </div>
                 </div>
               </div>
+              </div>
 
               <Button
                 type="submit"
                 size={"lg"}
-                className="w-full"
+                className="w-full "
                 isLoading={isLoading}
               >
-                Run Ads
+                Run Promotion
               </Button>
             </form>
           </Form>
         </div>
 
         <div className="order-first lg:order-last">
-          <PromotionPreview data={formData} duration={duration} />
+          <PromotionPreview
+            data={formData}
+            duration={duration}
+            promotionChannel={promotionChannel}
+          />
         </div>
 
         {showSuccess && (

@@ -10,8 +10,8 @@ import TrendingCampaigns from "@/components/analytics/trending-campaigns";
 import { useDashboard } from "@/context/dashboard-context";
 
 const AnalyticsContainer = () => {
-  const { business } = useDashboard();
-  console.log(business);
+  const { business, dashboardData } = useDashboard();
+
   return (
     <div>
       <TopNav title="Analytics" />
@@ -26,7 +26,7 @@ const AnalyticsContainer = () => {
             <CampaignStats />
             <PromotionStats
               title="Promotion Spent"
-              amount={67124}
+              amount={parseFloat(dashboardData?.promotion_spent || "0")}
               subtitle="Spent so far"
               trendData={[10, 25, 15, 45, 35, 70]}
             />

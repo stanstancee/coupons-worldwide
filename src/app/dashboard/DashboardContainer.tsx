@@ -2,7 +2,7 @@ import React from "react";
 import TopNav from "@/components/nav/top-nav";
 import { StatsCards } from "@/components/dashboard/stats-card";
 import { FollowersChart } from "@/components/dashboard/followers-chart";
-import { TopCountries } from "@/components/dashboard/top-countries";
+import { RecentPromotions } from "@/components/dashboard/recent-promtions";
 import { CampaignTable } from "@/components/dashboard/campaign-table";
 import { PromotionStatus } from "@/components/dashboard/promotion-status";
 import WalletBalance from "@/components/dashboard/wallet-balance";
@@ -19,7 +19,7 @@ const DashboardContainer = () => {
             <FollowersChart />
           </div>
           <div className="lg:col-span-4 rounded-[10px] bg-white p-4 md:py-5 shadow-cards md:pb-16">
-            <TopCountries />
+            <RecentPromotions />
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">

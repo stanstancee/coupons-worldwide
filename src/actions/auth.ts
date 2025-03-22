@@ -32,9 +32,8 @@ const verifyAction = async (data: FormData) => {
     const response = await unAuthenticatedFetchWithFormData("auth/verify_password_otp", data);
     return response;
 
-
-
 }
+
 
 
 
