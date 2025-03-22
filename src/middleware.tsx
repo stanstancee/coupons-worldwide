@@ -17,7 +17,8 @@ export async function middleware(request: NextRequest) {
   }
 }
 
-// See "Matching Paths" below to learn more
+
+// !!TODO: Update matcher
 export const config = {
   matcher: ["/dashboard/:path*"],
 };

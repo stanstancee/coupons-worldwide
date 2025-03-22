@@ -4,8 +4,13 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: "100mb",
+      allowedOrigins: ['app.couponsworldwide.com', '*.couponsworldwide.com']
     },
   },
+  // Helps with routing in Passenger
+  poweredByHeader: false,
+  // Ensure this is false for Server Actions
+  output: 'standalone',
 
   /* config options here */
   async redirects() {
@@ -42,3 +47,6 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+
+

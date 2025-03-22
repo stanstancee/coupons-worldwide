@@ -96,7 +96,7 @@ const CreateCampaignForm = () => {
       claim_type: "single",
       claim_limit: "0",
       type: "auto",
-      activation_type: "online",
+      activation_type: "store",
     },
   });
 

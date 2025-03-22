@@ -1,0 +1,24 @@
+# Passenger configuration is already in the main .htaccess
+# This is additional configuration for Next.js routing
+
+# Handle static files
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # If the request is for an actual file or directory, serve it directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  
+  # Handle Next.js static files
+  RewriteRule ^_next/(.*) _next/$1 [L]
+  
+  # Let Passenger handle all other requests
+  RewriteRule ^(.*)$ - [L]
+</IfModule>
+
+# Set headers for Server Actions
+<IfModule mod_headers.c>
+  Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+  Header set Access-Control-Allow-Headers "Content-Type, Authorization, x-nextjs-data"
+</IfModule>

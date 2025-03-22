@@ -13,6 +13,7 @@ const AnalyticsPage = async () => {
     url: `business/dashboard?business_uid=${business_uid}`,
   });
 
+
   return (
     <AnalyticsWrapper dashboardData={response?.data?.business}>
       <AnalyticsContainer  />
