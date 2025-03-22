@@ -7,10 +7,6 @@ const nextConfig: NextConfig = {
       allowedOrigins: ['app.couponsworldwide.com', '*.couponsworldwide.com']
     },
   },
-  // Helps with routing in Passenger
-  poweredByHeader: false,
-  // Ensure this is false for Server Actions
-  output: 'standalone',
 
   /* config options here */
   async redirects() {
@@ -18,7 +14,7 @@ const nextConfig: NextConfig = {
       {
         source: "/",
         destination: "/dashboard",
-        permanent: false, // Set to true if this redirect is permanent
+        permanent: false, 
       },
     ];
   },
